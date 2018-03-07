@@ -11,6 +11,7 @@ import static com.reloj.vista.VistaReloj.r2;
 import static com.reloj.vista.VistaReloj.r3;
 import static com.reloj.vista.VistaReloj.r4;
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  *
@@ -21,12 +22,18 @@ public class VistaModificacion extends javax.swing.JFrame {
     private int mhoras;
     private int mminutos;
     private int msegundos;
+    private InetAddress ipCliente;
     //private Servidor serv;
 
     /**
      * Creates new form VistaModificacion
      */
-    public VistaModificacion() {
+    public VistaModificacion(InetAddress ipCliente) {
+        initComponents();
+        this.ipCliente = ipCliente;
+    }
+
+    private VistaModificacion() {
         initComponents();
     }
 
@@ -170,7 +177,7 @@ public class VistaModificacion extends javax.swing.JFrame {
             case 1:
                 VistaReloj.r1.modificarHora(mhoras, mminutos, msegundos);
                 VistaReloj.stoph[0] = false;
-               // VistaReloj.h1.start();
+                // VistaReloj.h1.start();
                 break;
             case 2:
                 VistaReloj.r2.modificarHora(mhoras, mminutos, msegundos);
@@ -190,30 +197,34 @@ public class VistaModificacion extends javax.swing.JFrame {
 
         }
 
-        
+
     }//GEN-LAST:event_jbtnModificarActionPerformed
 
     private void jbtnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEnviarActionPerformed
 
         switch (VistaReloj.numHilo) {
             case 1:
+
                 VistaReloj.serv.enviarHora(r1);
-                VistaReloj.serv.enviarHora(r1);
-                VistaReloj.h1.start();                
+                //VistaReloj.serv.enviarHora(r1);
+                VistaReloj.h1.start();
+
                 break;
             case 2:
+
                 VistaReloj.serv.enviarHora(r2);
-                VistaReloj.serv.enviarHora(r2);
+                //VistaReloj.serv.enviarHora(r2);
                 VistaReloj.h2.start();
+
                 break;
             case 3:
                 VistaReloj.serv.enviarHora(r3);
-                VistaReloj.serv.enviarHora(r3);
+                //VistaReloj.serv.enviarHora(r3);
                 VistaReloj.h3.start();
                 break;
             case 4:
                 VistaReloj.serv.enviarHora(r4);
-                VistaReloj.serv.enviarHora(r4);
+                //VistaReloj.serv.enviarHora(r4);
                 VistaReloj.h4.start();
                 break;
         }

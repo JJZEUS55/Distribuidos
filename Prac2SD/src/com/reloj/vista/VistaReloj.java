@@ -20,7 +20,7 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
     protected static Reloj r1, r2, r3, r4;
     protected static Boolean[] stoph;
-    protected static Thread h1, h2, h3, h4, h5;
+    protected static Thread h1, h2, h3, h4, h5, h6, h7;
     protected static int numHilo;
     protected static Servidor serv;
 
@@ -32,7 +32,7 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         stoph = new Boolean[4];
         Arrays.fill(stoph, false);
         numHilo = 0;
-        
+
         try {
             serv = new Servidor();
         } catch (IOException ex) {
@@ -41,7 +41,9 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
         r1 = new Reloj();
         r2 = new Reloj();
+        r2.modificarHora(r2.getHoras() - 1, r2.getMinutos() - 30, r2.getSegundos());
         r3 = new Reloj();
+        r3.modificarHora(r3.getHoras() + 1, r3.getMinutos(), r3.getSegundos());
         r4 = new Reloj();
 
         h1 = new Thread(this);
@@ -49,12 +51,16 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         h3 = new Thread(this);
         h4 = new Thread(this);
         h5 = new Thread(this);
+        h6 = new Thread(this);
+        h7 = new Thread(this);
 
         h1.start();
         h2.start();
         h3.start();
         h4.start();
         h5.start();
+        h6.start();
+        h7.start();
     }
 
     //CODIGO DE HILO
@@ -72,7 +78,7 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 //        Servidor serv;
         iniciarRelojes();
         try {
-            
+
             //serv.startServer();
             while (hiloActual == h1 && !h1.isInterrupted()) {
                 //serv.startServer();
@@ -113,7 +119,7 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
                 }
             }
-            
+
             while (hiloActual == h5 && !h5.isInterrupted()) {
                 serv.startServer();
 //                try {
@@ -122,53 +128,24 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 //                    System.out.println("Error al abrir el servidor " + e.getMessage());
 //                }
             }
+
+//            while (hiloActual == h6 && !h6.isInterrupted()) {
+//                serv.startServer();
+//               
+//            }
+//            
+//            while (hiloActual == h7 && !h7.isInterrupted()) {
+//                serv.startServer();
+////                try {
+////                    Thread.sleep(4000);
+////                } catch (Exception e) {
+////                    System.out.println("Error al abrir el servidor " + e.getMessage());
+////                }
+//            }
         } catch (Exception e) {
             System.out.println("Fallo al conectar con el servidor " + e.getMessage());
         }
 
-//        while (!stoph[0]) {
-//            r1.pasarTiempo();
-//            hora1.setText(r1.imprimeHora());
-//
-//            try {
-//                Thread.sleep(1000);
-//            } catch (Exception e) {
-//
-//            }
-//        }
-//
-//        while (!h2.isInterrupted()) {
-//            r2.pasarTiempo();
-//            hora2.setText(r2.imprimeHora());
-//
-//            try {
-//                Thread.sleep(1000);
-//            } catch (Exception e) {
-//
-//            }
-//        }
-//
-//        while (!stoph[2]) {
-//            r3.pasarTiempo();
-//            hora3.setText(r3.imprimeHora());
-//
-//            try {
-//                Thread.sleep(1000);
-//            } catch (Exception e) {
-//
-//            }
-//        }
-//
-//        while (!stoph[3]) {
-//            r4.pasarTiempo();
-//            hora4.setText(r4.imprimeHora());
-//
-//            try {
-//                Thread.sleep(1000);
-//            } catch (Exception e) {
-//
-//            }
-//        }
     }
 
     /**
@@ -388,22 +365,43 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
     private void hora2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora2MouseClicked
 
+        while (!(serv.getCliente().equals(serv.ipPermitidos[0]))) {
+            //System.out.println(serv.getCliente());
+            if(serv.getCliente().equals(serv.ipPermitidos[0])){
+                break;
+            }else{
+                 serv.cerrarCliente();
+            }
+           
+//            System.out.println("conexion cerrada");
+//
+//            h5 = new Thread(this);
+//            h5.start();
+            //serv.startServer();
+        }
         stoph[1] = true;
         h2.interrupt();
         numHilo = 2;
         h2 = new Thread(this);
-        VistaModificacion modificar = new VistaModificacion();
+        VistaModificacion modificar = new VistaModificacion(serv.getCliente());
         modificar.setVisible(true);
-         
+
     }//GEN-LAST:event_hora2MouseClicked
 
     private void hora3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora3MouseClicked
 
+        while (!(serv.getCliente().equals(serv.ipPermitidos[1]))) {
+            if(serv.getCliente().equals(serv.ipPermitidos[1])){
+                break;
+            }else{
+                 serv.cerrarCliente();
+            }
+        }
         stoph[2] = true;
         h3.interrupt();
         numHilo = 3;
         h3 = new Thread(this);
-        VistaModificacion modificar = new VistaModificacion();
+        VistaModificacion modificar = new VistaModificacion(serv.getCliente());
         modificar.setVisible(true);
     }//GEN-LAST:event_hora3MouseClicked
 
@@ -414,18 +412,28 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         numHilo = 4;
         h4 = new Thread(this);
 
-        VistaModificacion modificar = new VistaModificacion();
-        modificar.setVisible(true);
+        // VistaModificacion modificar = new VistaModificacion();
+        //modificar.setVisible(true);
     }//GEN-LAST:event_hora4MouseClicked
 
     private void hora1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora1MouseClicked
 
+        while (!serv.ipPermitidos[1].equals(serv.getCliente())) {
+            if(serv.getCliente().equals(serv.ipPermitidos[1])){
+                break;
+            }else{
+                 serv.cerrarCliente();
+            }
+            //h5.interrupt();
+//            h5 = new Thread(this);
+//            h5.start();
+        }
         stoph[0] = true;
         h1.interrupt();
         numHilo = 1;
         h1 = new Thread(this);
 
-        VistaModificacion modificar = new VistaModificacion();
+        VistaModificacion modificar = new VistaModificacion(serv.getCliente());
         modificar.setVisible(true);
 
     }//GEN-LAST:event_hora1MouseClicked

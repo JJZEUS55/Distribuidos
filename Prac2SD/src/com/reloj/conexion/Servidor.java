@@ -14,24 +14,42 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
 {
 
     private byte[] mensaje;
-    private InetAddress [] ipPermitidos;
+    public static InetAddress[] ipPermitidos;
+    private int conexiones;
 
     public Servidor() throws IOException {
         super("servidor");
         mensaje = new byte[3];
         ipPermitidos = new InetAddress[3];
+        conexiones = 0;
+        iniciarIPsPermitidas();
     } //Se usa el constructor para servidor de Conexion
 
     public void startServer()//Método para iniciar el servidor
     {
 
         try {
-           
+
             System.out.println("Esperando..."); //Esperando conexión
 
             cs = ss.accept(); //Accept comienza el socket y espera una conexión desde un cliente
+//            while (conexiones < 3) {                
+//                cs = ss.accept(); //Accept comienza el socket y espera una conexión desde un cliente
+//                ipPermitidos[conexiones] = cs.getInetAddress();
+//                conexiones++;
+//            }
+            if (cs.getInetAddress().equals(ipPermitidos[0])) {
+                System.out.println("soy pc samsung");
+            } else if (cs.getInetAddress().equals(ipPermitidos[2])) {
+                System.out.println("Soy pc alienware");
+            }else if (cs.getInetAddress().equals(ipPermitidos[1])){
+                System.out.println("Maquina virtual 1");
+            }
 
-            System.out.println("Cliente en línea ");
+//            System.out.println("Cliente en línea ");
+//            for (int i = 0; i < 3; i++) {
+//                System.out.println(ipPermitidos[i]);
+//            }
 //            System.out.println(cs.getInetAddress());
 //            InetAddress i = InetAddress.getByName("10.0.0.20");
 //            if (cs.getInetAddress().equals(i)) {
@@ -56,6 +74,7 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
             System.out.println("Fin de la conexión");
             cs.close();
 
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
 
@@ -72,20 +91,27 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
             System.out.println("No se pudo enviar la Hora al cliente " + ex.getMessage());
         }
     }
-    
-    public void queMaquinaSoy(){
-        
+
+    public InetAddress getCliente() {
+         return cs.getInetAddress();
     }
     
-    private void iniciarIPsPermitidas(){
+    public void cerrarCliente(){
+        try {
+            cs.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void iniciarIPsPermitidas() {
         try {
             ipPermitidos[0] = InetAddress.getByName("10.0.0.20");
-            ipPermitidos[1] = InetAddress.getByName("10.0.0.21");
-            ipPermitidos[2] = InetAddress.getByName("10.0.0.22");
+            ipPermitidos[1] = InetAddress.getByName("10.0.0.26");
+            ipPermitidos[2] = InetAddress.getByName("10.0.0.6");
         } catch (UnknownHostException ex) {
             System.out.println("No se pudieron inicar las IPs conocidas " + ex.getMessage());
         }
     }
-    
-    
+
 }
