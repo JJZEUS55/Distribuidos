@@ -39,11 +39,11 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
 //                conexiones++;
 //            }
             if (cs.getInetAddress().equals(ipPermitidos[0])) {
-                System.out.println("soy pc samsung");
+                System.out.println("soy pc alienware mv1");
             } else if (cs.getInetAddress().equals(ipPermitidos[2])) {
-                System.out.println("Soy pc alienware");
+                System.out.println("Soy pc samsung");
             }else if (cs.getInetAddress().equals(ipPermitidos[1])){
-                System.out.println("Maquina virtual 1");
+                System.out.println("soy pc samsung mv1");
             }
 
 //            System.out.println("Cliente en línea ");
@@ -106,9 +106,9 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
 
     private void iniciarIPsPermitidas() {
         try {
-            ipPermitidos[0] = InetAddress.getByName("10.0.0.20");
-            ipPermitidos[1] = InetAddress.getByName("10.0.0.26");
-            ipPermitidos[2] = InetAddress.getByName("10.0.0.6");
+            ipPermitidos[0] = InetAddress.getByName("10.0.0.28");
+            ipPermitidos[1] = InetAddress.getByName("10.0.0.20");
+            ipPermitidos[2] = InetAddress.getByName("10.0.0.27");
         } catch (UnknownHostException ex) {
             System.out.println("No se pudieron inicar las IPs conocidas " + ex.getMessage());
         }

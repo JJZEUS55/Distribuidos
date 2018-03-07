@@ -365,9 +365,9 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
     private void hora2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora2MouseClicked
 
-        while (!(serv.getCliente().equals(serv.ipPermitidos[0]))) {
+        while (!(serv.getCliente().equals(serv.ipPermitidos[1]))) {
             //System.out.println(serv.getCliente());
-            if(serv.getCliente().equals(serv.ipPermitidos[0])){
+            if(serv.getCliente().equals(serv.ipPermitidos[1])){
                 break;
             }else{
                  serv.cerrarCliente();
@@ -390,8 +390,8 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
     private void hora3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora3MouseClicked
 
-        while (!(serv.getCliente().equals(serv.ipPermitidos[1]))) {
-            if(serv.getCliente().equals(serv.ipPermitidos[1])){
+        while (!(serv.getCliente().equals(serv.ipPermitidos[2]))) {
+            if(serv.getCliente().equals(serv.ipPermitidos[2])){
                 break;
             }else{
                  serv.cerrarCliente();
@@ -418,8 +418,8 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
     private void hora1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora1MouseClicked
 
-        while (!serv.ipPermitidos[1].equals(serv.getCliente())) {
-            if(serv.getCliente().equals(serv.ipPermitidos[1])){
+        while (!serv.ipPermitidos[0].equals(serv.getCliente())) {
+            if(serv.getCliente().equals(serv.ipPermitidos[0])){
                 break;
             }else{
                  serv.cerrarCliente();
