@@ -68,7 +68,6 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         hora1.setText(r1.imprimeHora());
         hora2.setText(r2.imprimeHora());
         hora3.setText(r3.imprimeHora());
-        hora4.setText(r4.imprimeHora());
     }
 
     @Override
@@ -110,15 +109,7 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
 
                 }
             }
-            while (hiloActual == h4 && !h4.isInterrupted()) {
-                r4.pasarTiempo();
-                hora4.setText(r4.imprimeHora());
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-
-                }
-            }
+            
 
             while (hiloActual == h5 && !h5.isInterrupted()) {
                 serv.startServer();
@@ -163,9 +154,6 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         jPanelReloj3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         hora3 = new javax.swing.JLabel();
-        jPanelReloj4 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        hora4 = new javax.swing.JLabel();
         jPanelReloj1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         hora1 = new javax.swing.JLabel();
@@ -247,43 +235,6 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
                     .addContainerGap(80, Short.MAX_VALUE)))
         );
 
-        jLabel4.setText("Reloj 4");
-
-        hora4.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        hora4.setText("jLabel5");
-        hora4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                hora4MouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanelReloj4Layout = new javax.swing.GroupLayout(jPanelReloj4);
-        jPanelReloj4.setLayout(jPanelReloj4Layout);
-        jPanelReloj4Layout.setHorizontalGroup(
-            jPanelReloj4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelReloj4Layout.createSequentialGroup()
-                .addGap(149, 149, 149)
-                .addComponent(jLabel4)
-                .addContainerGap(166, Short.MAX_VALUE))
-            .addGroup(jPanelReloj4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanelReloj4Layout.createSequentialGroup()
-                    .addGap(124, 124, 124)
-                    .addComponent(hora4)
-                    .addContainerGap(125, Short.MAX_VALUE)))
-        );
-        jPanelReloj4Layout.setVerticalGroup(
-            jPanelReloj4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelReloj4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(170, Short.MAX_VALUE))
-            .addGroup(jPanelReloj4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanelReloj4Layout.createSequentialGroup()
-                    .addGap(80, 80, 80)
-                    .addComponent(hora4)
-                    .addContainerGap(80, Short.MAX_VALUE)))
-        );
-
         jLabel1.setText("Reloj 1");
 
         hora1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -306,7 +257,7 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
                     .addGroup(jPanelReloj1Layout.createSequentialGroup()
                         .addGap(122, 122, 122)
                         .addComponent(hora1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
         jPanelReloj1Layout.setVerticalGroup(
             jPanelReloj1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -330,18 +281,20 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanelReloj3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelReloj1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelReloj2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelReloj4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanelReloj1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanelReloj2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(273, 273, 273)
+                        .addComponent(jBtnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(273, 273, 273)
-                .addComponent(jBtnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(161, 161, 161)
+                .addComponent(jPanelReloj3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -351,11 +304,9 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanelReloj2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanelReloj1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelReloj3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelReloj4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
+                .addComponent(jPanelReloj3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jBtnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -404,17 +355,6 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
         VistaModificacion modificar = new VistaModificacion(serv.getCliente());
         modificar.setVisible(true);
     }//GEN-LAST:event_hora3MouseClicked
-
-    private void hora4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora4MouseClicked
-
-        stoph[3] = true;
-        h4.interrupt();
-        numHilo = 4;
-        h4 = new Thread(this);
-
-        // VistaModificacion modificar = new VistaModificacion();
-        //modificar.setVisible(true);
-    }//GEN-LAST:event_hora4MouseClicked
 
     private void hora1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hora1MouseClicked
 
@@ -483,16 +423,13 @@ public class VistaReloj extends javax.swing.JFrame implements Runnable {
     protected javax.swing.JLabel hora1;
     private javax.swing.JLabel hora2;
     private javax.swing.JLabel hora3;
-    private javax.swing.JLabel hora4;
     private javax.swing.JButton jBtnModificar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanelReloj1;
     private javax.swing.JPanel jPanelReloj2;
     private javax.swing.JPanel jPanelReloj3;
-    private javax.swing.JPanel jPanelReloj4;
     // End of variables declaration//GEN-END:variables
 
 }

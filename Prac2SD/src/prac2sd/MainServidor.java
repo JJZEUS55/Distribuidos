@@ -11,7 +11,7 @@ public class MainServidor {
 
         System.out.println("Iniciando servidor\n");
        
-            serv.startServer(); //Se inicia el servidor
+            //serv.startServer(); //Se inicia el servidor
         
     }
 }

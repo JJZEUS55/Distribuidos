@@ -16,6 +16,8 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
     private byte[] mensaje;
     public static InetAddress[] ipPermitidos;
     private int conexiones;
+    public static InetAddress ipRequerida;
+
 
     public Servidor() throws IOException {
         super("servidor");
@@ -29,6 +31,7 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
     {
 
         try {
+            
 
             System.out.println("Esperando..."); //Esperando conexión
 
@@ -41,9 +44,9 @@ public class Servidor extends Conexion //Se hereda de conexión para hacer uso d
             if (cs.getInetAddress().equals(ipPermitidos[0])) {
                 System.out.println("soy pc alienware mv1");
             } else if (cs.getInetAddress().equals(ipPermitidos[2])) {
-                System.out.println("Soy pc samsung");
+                System.out.println("Soy pc samsung mv1");
             }else if (cs.getInetAddress().equals(ipPermitidos[1])){
-                System.out.println("soy pc samsung mv1");
+                System.out.println("soy pc samsung");
             }
 
 //            System.out.println("Cliente en línea ");
