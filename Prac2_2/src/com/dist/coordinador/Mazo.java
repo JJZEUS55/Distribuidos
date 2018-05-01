@@ -28,4 +28,8 @@ public class Mazo implements Serializable{
         return this.cincoCartas;
     }
     
+    public int getTamano(){
+        return cincoCartas.size();
+    }
+    
 }

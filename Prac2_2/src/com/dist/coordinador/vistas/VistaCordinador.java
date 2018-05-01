@@ -29,6 +29,7 @@ public class VistaCordinador extends javax.swing.JFrame {
     Cartas c1, c2, c3;
     Mazo j1, j2, j3;
     int numCartas;
+    int clientes = 0;
 
     public VistaCordinador() {
         initComponents();
@@ -105,13 +106,23 @@ public class VistaCordinador extends javax.swing.JFrame {
     
     public void enviarCartas(){
         ExecutorService es = Executors.newCachedThreadPool();
+        clientes++;
         try {
-            es.execute(new Servidor(j1));
+            if(clientes == 1){
+                es.execute(new Servidor(j1));
+                es.shutdown();
+            }else if(clientes == 2){
+                es.execute(new Servidor(j2));
+                es.shutdown();
+            }else{
+                es.execute(new Servidor(j3));
+                es.shutdown();
+            }
+            
             //serv.startServer(j1);
         } catch (IOException ex) {
             System.out.println("Problema " + ex.getMessage());
         }
-        es.shutdown();
     }
 
     /**
@@ -173,6 +184,7 @@ public class VistaCordinador extends javax.swing.JFrame {
         jLabel28 = new javax.swing.JLabel();
         jtfAtaque1 = new javax.swing.JTextField();
         jbtnSelecCartas = new javax.swing.JButton();
+        jbtnReporte = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -266,7 +278,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                             .addComponent(jtfAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfHP2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfTipo2_2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanelCarta2Layout.setVerticalGroup(
             jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,7 +311,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                 .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jtfDefensa2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(224, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
 
         jPanelCarta3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -385,7 +397,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                             .addComponent(jtfAtaque3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfHP3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfTipo2_3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
         jPanelCarta3Layout.setVerticalGroup(
             jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -547,26 +559,34 @@ public class VistaCordinador extends javax.swing.JFrame {
             }
         });
 
+        jbtnReporte.setText("Reporte");
+        jbtnReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnReporteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jPanelCarta4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanelCarta2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, Short.MAX_VALUE))
+                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addComponent(jPanelCarta3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jbtnReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jbtnTomarCartas, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 64, 64)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelCarta3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbtnSelecCartas, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(64, 64, 64)
+                        .addComponent(jbtnSelecCartas, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -579,7 +599,8 @@ public class VistaCordinador extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jbtnTomarCartas, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                    .addComponent(jbtnSelecCartas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jbtnSelecCartas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbtnReporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(41, 41, 41))
         );
 
@@ -599,6 +620,12 @@ public class VistaCordinador extends javax.swing.JFrame {
         enviarCartas();
         
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
+
+    private void jbtnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnReporteActionPerformed
+        ReporteCordinador rc = new ReporteCordinador(j1, j2, j3);
+        rc.setVisible(true);
+        
+    }//GEN-LAST:event_jbtnReporteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -666,6 +693,7 @@ public class VistaCordinador extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelCarta2;
     private javax.swing.JPanel jPanelCarta3;
     private javax.swing.JPanel jPanelCarta4;
+    private javax.swing.JButton jbtnReporte;
     private javax.swing.JButton jbtnSelecCartas;
     private javax.swing.JButton jbtnTomarCartas;
     private javax.swing.JTextField jtfAtaque1;

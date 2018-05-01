@@ -28,7 +28,9 @@ public class Cliente extends Conexion implements Runnable{
             System.out.println(c.getCincoCartas().get(2));
             System.out.println(c.getCincoCartas().get(3));
             System.out.println(c.getCincoCartas().get(4));
-            cs.close();
+            System.out.println("Cerrando conexion...");
+            
+            cs.close();           
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Problema " + e.getMessage());

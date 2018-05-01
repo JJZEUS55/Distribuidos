@@ -57,13 +57,11 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             
             numCli++;
 
-            //NO SE PORQUE PERO SI LO LEO EN EL SERVIDOR SI SIRVE DESPUES EN EL CLIENTE NO SE A QUE SE DEBA
-            //NO BORRAR
-            ObjectInputStream ob1 = new ObjectInputStream(cs.getInputStream());
-            Mazo a = (Mazo) ob1.readObject();
-            System.out.println(a);
+            //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
+            ss.close();
+            cs.close();
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException  e) {
             System.out.println("Problema en: " + e.getMessage());
 
         }

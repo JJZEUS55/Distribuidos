@@ -3,29 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.dist.cliente.vistas;
+package com.dist.coordinador.vistas;
 
-import com.dist.cliente.Jugador;
 import com.dist.coordinador.Mazo;
-import com.dist.sockets.Cliente;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author geoge
  */
-public class VistaJugador extends javax.swing.JFrame {
+public class ReporteCordinador extends javax.swing.JFrame {
 
-    Mazo cartasJugador;
-    Jugador j;
+    /**
+     * Creates new form ReporteCordinador
+     */
+    Mazo j1, j2, j3;
     
-    public VistaJugador() {
+    public ReporteCordinador(Mazo j1, Mazo j2, Mazo j3) {
         initComponents();
-        j = new Jugador();
-       // jbtnPeticion.setEnabled(false);
+        this.j1 = j1;
+        this.j2 = j2;
+        this.j3 = j3;
+    }
+    
+    public ReporteCordinador(){
+        initComponents();
     }
 
     /**
@@ -38,13 +40,24 @@ public class VistaJugador extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jcomboJugadores = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePokemon = new javax.swing.JTable();
-        jbtnPeticion = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jLabel1.setText("Jugador");
+
+        jcomboJugadores.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Jugador 1", "Jugador 2", "Jugador 3" }));
+        jcomboJugadores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcomboJugadoresActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel2.setText("Reporte Coordinador");
 
         jTablePokemon.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -60,54 +73,47 @@ public class VistaJugador extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTablePokemon);
 
-        jbtnPeticion.setText("Peticion");
-        jbtnPeticion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbtnPeticionActionPerformed(evt);
-            }
-        });
-
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel1.setText("Cartas Obtenidas");
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel3.setText("Cartas Repartidas");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(226, 226, 226)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(56, 56, 56)
-                        .addComponent(jbtnPeticion, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addGap(0, 206, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(41, 41, 41)
+                                .addComponent(jcomboJugadores, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel2))
+                        .addGap(213, 213, 213))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbtnPeticion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(96, 96, 96))
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jcomboJugadores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(39, 39, 39)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -123,38 +129,39 @@ public class VistaJugador extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jbtnPeticionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPeticionActionPerformed
-        try {
-            Cliente cli = new Cliente();
-            cartasJugador = cli.startClient();
-        } catch (IOException ex) {
-            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jbtnPeticionActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jcomboJugadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcomboJugadoresActionPerformed
         limpiarTabla();
-        for (int i = 0; i < cartasJugador.getCincoCartas().size(); i++) {
-             addValoresTablaJugador(i);
+        Mazo aux = null;
+        switch(jcomboJugadores.getSelectedIndex()){
+            case 0:
+                aux = j1;
+                break;
+            case 1:
+                aux = j2;
+                break;
+            case 2:
+                aux = j3;
+                break;
         }
-         j.setMazoCartas(cartasJugador);
-         j.guardarMazoBD();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        
+        for (int i = 0; i < aux.getCincoCartas().size(); i++) {
+             addValoresTablaJugador(i, aux);
+        }      
+    }//GEN-LAST:event_jcomboJugadoresActionPerformed
 
-    public void addValoresTablaJugador(int i){
+    public void addValoresTablaJugador(int i, Mazo m){
         DefaultTableModel modelo = (DefaultTableModel) jTablePokemon.getModel();
         Object[] filas = new Object[4];
-        filas[0] = cartasJugador.getCincoCartas().get(i).getNombre();
-        filas[1] = cartasJugador.getCincoCartas().get(i).getAtaque();
-        filas[2] = cartasJugador.getCincoCartas().get(i).getDefensa();
-        filas[3] = cartasJugador.getCincoCartas().get(i).getHp();
+        filas[0] = m.getCincoCartas().get(i).getNombre();
+        filas[1] = m.getCincoCartas().get(i).getAtaque();
+        filas[2] = m.getCincoCartas().get(i).getDefensa();
+        filas[3] = m.getCincoCartas().get(i).getHp();
         
         modelo.addRow(filas);
         jTablePokemon.setModel(modelo);
@@ -182,30 +189,31 @@ public class VistaJugador extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VistaJugador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReporteCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VistaJugador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReporteCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VistaJugador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReporteCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VistaJugador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReporteCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VistaJugador().setVisible(true);
+                new ReporteCordinador().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePokemon;
-    private javax.swing.JButton jbtnPeticion;
+    private javax.swing.JComboBox<String> jcomboJugadores;
     // End of variables declaration//GEN-END:variables
 }

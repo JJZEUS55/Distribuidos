@@ -93,6 +93,7 @@ public class Cartas implements Serializable{
     public ImageIcon getImagenPokemon(){
         return this.icono;
     }
+    
 
     @Override
     public String toString() {
