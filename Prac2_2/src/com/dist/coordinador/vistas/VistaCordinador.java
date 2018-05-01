@@ -12,6 +12,9 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -101,13 +104,14 @@ public class VistaCordinador extends javax.swing.JFrame {
     }
     
     public void enviarCartas(){
+        ExecutorService es = Executors.newCachedThreadPool();
         try {
-            Servidor serv = new Servidor();
-            serv.startServer(j1);
+            es.execute(new Servidor(j1));
+            //serv.startServer(j1);
         } catch (IOException ex) {
             System.out.println("Problema " + ex.getMessage());
         }
-        
+        es.shutdown();
     }
 
     /**
@@ -172,7 +176,7 @@ public class VistaCordinador extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jbtnTomarCartas.setText("Tomar Cartas");
+        jbtnTomarCartas.setText("Repartir Mazo");
         jbtnTomarCartas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnTomarCartasActionPerformed(evt);
@@ -262,7 +266,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                             .addComponent(jtfAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfHP2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfTipo2_2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanelCarta2Layout.setVerticalGroup(
             jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,7 +299,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                 .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jtfDefensa2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(198, Short.MAX_VALUE))
+                .addContainerGap(224, Short.MAX_VALUE))
         );
 
         jPanelCarta3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -381,7 +385,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                             .addComponent(jtfAtaque3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfHP3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfTipo2_3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         jPanelCarta3Layout.setVerticalGroup(
             jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -500,7 +504,7 @@ public class VistaCordinador extends javax.swing.JFrame {
                             .addComponent(jtfAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfHP1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtfTipo2_1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
         jPanelCarta4Layout.setVerticalGroup(
             jPanelCarta4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

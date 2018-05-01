@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Scanner;
 
-public class Cliente extends Conexion {
+public class Cliente extends Conexion implements Runnable{
 
     private Scanner entrada;
     private String mensaje;
@@ -35,5 +35,10 @@ public class Cliente extends Conexion {
         }
         
         return c;
+    }
+
+    @Override
+    public void run() {
+        startClient();
     }
 }

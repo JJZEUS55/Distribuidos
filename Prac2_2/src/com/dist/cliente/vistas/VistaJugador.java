@@ -22,6 +22,7 @@ public class VistaJugador extends javax.swing.JFrame {
     
     public VistaJugador() {
         initComponents();
+        jbtnPeticion.setEnabled(false);
     }
 
     /**
@@ -140,8 +141,6 @@ public class VistaJugador extends javax.swing.JFrame {
         for (int i = 0; i < cartasJugador.getCincoCartas().size(); i++) {
              addValoresTabla(i);
         }
-       
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void addValoresTabla(int i){

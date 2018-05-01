@@ -15,5 +15,16 @@ import java.util.List;
  */
 public class Jugador {
     private Mazo mazoCartas;
+    int token = 0;
+    
+    public void setMazoCartas(Mazo m){
+        this.mazoCartas = m;
+    }
+    
+    public Mazo getMazoCartas(){
+        return this.mazoCartas;
+    }
+    
+    
     
 }
