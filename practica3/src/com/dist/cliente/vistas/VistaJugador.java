@@ -27,6 +27,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     Mazo cartasJugador;
     Jugador j;
     Cliente cli;
+    Cliente cliC;
     boolean activar;
     Thread h1, h2;
     Thread CC;
@@ -42,6 +43,12 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         h1.start();
         h2.start();
         jbtnPeticion.setEnabled(false);
+        try {
+            System.out.println("CC");
+            cliC = new Cliente(10001);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void clienteEsperaActivarse() {
