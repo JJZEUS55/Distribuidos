@@ -30,6 +30,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     boolean activar;
     Thread h1, h2;
     int numeroJugador;
+    int juadorAIniciar;
 
     public VistaJugador() {
         initComponents();

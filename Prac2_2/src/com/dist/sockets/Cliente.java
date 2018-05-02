@@ -54,8 +54,8 @@ public class Cliente extends Conexion implements Runnable {
 
             System.out.println("Activar = " + activar);
             salidaCliente = new DataOutputStream(cs.getOutputStream());
-            salidaCliente.writeUTF("Holo 2");
-            System.out.println("Enviando un 2");
+            salidaCliente.writeInt(clienteNumero + 1);
+            System.out.println("Enviando un " + (clienteNumero + 1));
 
             cs.close();
 
@@ -72,10 +72,12 @@ public class Cliente extends Conexion implements Runnable {
             while (activar == false) {
                 dis = new DataInputStream(cs.getInputStream());
                 activar = dis.readBoolean();
+                System.out.println("Activar " + activar);
                 System.out.println("Cliente Esperando Activarse");
             }
             System.out.println("Cerrando conexion...");
             clienteNumero = dis.readInt();
+            System.out.println("Se ha recibido un " + clienteNumero);
             System.out.println("Activar = " + activar);
 
             
@@ -86,7 +88,6 @@ public class Cliente extends Conexion implements Runnable {
             System.out.println("Problema " + e.getMessage());
         }
 
-//        return m;
     }
 
     public void saludar(int numeroJugador) {
