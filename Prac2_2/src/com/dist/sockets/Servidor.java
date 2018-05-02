@@ -33,14 +33,14 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         conexiones = 0;
         car = c;
     }
-    
+
     public Servidor() throws IOException {
         super("servidor");
         mensaje = new byte[3];
         ipPermitidos = new InetAddress[3];
         conexiones = 0;
     }
-    
+
     public Servidor(int puerto) throws IOException {
         super("servidor", puerto);
         mensaje = new byte[3];
@@ -66,22 +66,19 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
 
             ObjectOutputStream ob = new ObjectOutputStream(cs.getOutputStream());
             DataOutputStream dos = new DataOutputStream(cs.getOutputStream());
-            
+
             ob.writeObject(car);
-            System.out.println("Se escribio el objeto");
+
             dos.writeBoolean(true);
+            System.out.println("Se escribio el objeto");
 
             numCli++;
-//            dis = new DataInputStream(cs.getInputStream());
-//            siguiente = dis.readBoolean();
-//            
-//            System.out.println("Cliente ha mandado un " + siguiente);
-
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
+            dis = new DataInputStream(cs.getInputStream());
+            System.out.println(dis.readUTF());
             System.out.println("Cerrando conexion");
-            ss.close();
-            cs.close();
 
+            //ss.close();
         } catch (IOException e) {
             System.out.println("Problema en: " + e.getMessage());
 
@@ -94,14 +91,15 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             cs = ss.accept();
             dos = new DataOutputStream(cs.getOutputStream());
 //            if(numCliente == 1){
-                dos.writeBoolean(true);
+            dos.writeBoolean(true);
 //            }else{
 //                dos.writeBoolean(false);
 //            }            
             dos.writeInt(numCliente);
             System.out.println("Se ha mandado activacion del cliente");
-            ss.close();
-            cs.close();
+
+//            cs.close();
+            //ss.close();
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -33,6 +33,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numclientes = 0;
     int numClientesActivar = 0;
     Thread h1;
+    Servidor ser;
 
     public VistaCordinador() {
         initComponents();
@@ -40,6 +41,11 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         j2 = new Mazo();
         j3 = new Mazo();
         numCartas = 0;
+        try {
+            ser = new Servidor(10000);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+        }
         h1 = new Thread(this);
         h1.start();
 
@@ -48,25 +54,19 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
+
         while (h1 == hiloActual) {
             try {
-                activarJugador();
+//                ser = new Servidor(10000);
+                numClientesActivar++;
+                //activarJugador( );
+                ser.startServerActivaCliente(numclientes);
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
 
-    public void activarJugador() {
-        numClientesActivar++;
-        Servidor ser;
-        try {
-            ser = new Servidor(10000);
-            ser.startServerActivaCliente(numClientesActivar);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public void get3Cartas() {

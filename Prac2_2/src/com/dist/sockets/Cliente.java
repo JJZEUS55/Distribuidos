@@ -6,7 +6,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.PrintStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +53,9 @@ public class Cliente extends Conexion implements Runnable {
             activar = dis.readBoolean();
 
             System.out.println("Activar = " + activar);
+            salidaCliente = new DataOutputStream(cs.getOutputStream());
+            salidaCliente.writeUTF("Holo 2");
+            System.out.println("Enviando un 2");
 
             cs.close();
 
@@ -71,9 +77,8 @@ public class Cliente extends Conexion implements Runnable {
             System.out.println("Cerrando conexion...");
             clienteNumero = dis.readInt();
             System.out.println("Activar = " + activar);
+
             
-            salidaCliente = new DataOutputStream(cs.getOutputStream());
-            salidaCliente.writeBoolean(true);
 
             cs.close();
 
@@ -82,6 +87,28 @@ public class Cliente extends Conexion implements Runnable {
         }
 
 //        return m;
+    }
+
+    public void saludar(int numeroJugador) {
+        try {            
+            salidaCliente = new DataOutputStream(cs.getOutputStream());
+            salidaCliente.writeUTF("Hola cliente 2, soy el jugador " + numeroJugador );
+            System.out.println("Escribi Hola cliente 2, soy el jugador " + numeroJugador);
+            cs.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void recibirSaludo(){
+        try {
+            SocketAddress sockaddr = new InetSocketAddress("localhost", 10201);
+            cs.connect(sockaddr);
+            dis = new DataInputStream(cs.getInputStream());
+            System.out.println("Recibi " + dis.readUTF());
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     Jugador j;
     Cliente cli;
     boolean activar;
-    Thread h1;
+    Thread h1, h2;
     int numeroJugador;
 
     public VistaJugador() {
@@ -36,7 +36,9 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         activar = false;
         j = new Jugador();
         h1 = new Thread(this);
+        h2 = new Thread(this);
         h1.start();
+        h2.start();
         jbtnPeticion.setEnabled(false);
     }
 
@@ -239,12 +241,35 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     private javax.swing.JButton jbtnPeticion;
     // End of variables declaration//GEN-END:variables
 
+    public void mensajeClientes(){
+        try {
+            cli = new Cliente(10002);
+            cli.saludar(numeroJugador);
+            cli.recibirSaludo();
+            
+            System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
         while (h1 == hiloActual) {
             try {
                 clienteEsperaActivarse();
+                if (activar == true) {
+                    break;
+                }
+                Thread.sleep(50000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        while (h2 == hiloActual) {
+            try {
+                //clienteEsperaActivarse();
                 if (activar == true) {
                     break;
                 }
