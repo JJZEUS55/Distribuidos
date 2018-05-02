@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class Conexion
 {
-    private final int PUERTO = 1234; //Puerto para la conexión
+    private final int PUERTO = 8989; //Puerto para la conexión
     private final String HOST = "localhost"; //Host para la conexión
     protected String mensajeServidor; //Mensajes entrantes (recibidos) en el servidor
     protected ServerSocket ss; //Socket del servidor
@@ -26,6 +26,19 @@ public class Conexion
         else
         {
             cs = new Socket(HOST, PUERTO); //Socket para el cliente en localhost en puerto 1234
+        }
+    }
+    
+    public Conexion(String tipo, int puerto) throws IOException //Constructor
+    {
+        if(tipo.equalsIgnoreCase("servidor"))
+        {
+            ss = new ServerSocket(puerto);//Se crea el socket para el servidor en puerto 1234
+            cs = new Socket(); //Socket para el cliente
+        }
+        else
+        {
+            cs = new Socket(HOST, puerto); //Socket para el cliente en localhost en puerto 1234
         }
     }
 }

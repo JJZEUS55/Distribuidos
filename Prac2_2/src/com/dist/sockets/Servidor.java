@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,20 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         conexiones = 0;
         car = c;
     }
+    
+    public Servidor() throws IOException {
+        super("servidor");
+        mensaje = new byte[3];
+        ipPermitidos = new InetAddress[3];
+        conexiones = 0;
+    }
+    
+    public Servidor(int puerto) throws IOException {
+        super("servidor", puerto);
+        mensaje = new byte[3];
+        ipPermitidos = new InetAddress[3];
+        conexiones = 0;
+    }
 
     public Mazo getMazo() {
         return car;
@@ -39,35 +54,53 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     public void setMazo(Mazo car) {
         this.car = car;
     }
-    
-    
 
     public void startServer()//M√©todo para iniciar el servidor
     {
 
         try {
-
             System.out.println("Esperando..."); //Esperando conexi√≥n
 
             cs = ss.accept();
 
             ObjectOutputStream ob = new ObjectOutputStream(cs.getOutputStream());
+            DataOutputStream dos = new DataOutputStream(cs.getOutputStream());
             ob.writeObject(car);
             System.out.println("Se escribio el objeto");
-            
+            dos.writeBoolean(true);
+
             numCli++;
 
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
             ss.close();
             cs.close();
 
-        } catch (IOException  e) {
+        } catch (IOException e) {
             System.out.println("Problema en: " + e.getMessage());
 
         }
     }
-    
-    public int getNumCli(){
+
+    public void startServerActivaCliente(int numCliente) {
+        DataOutputStream dos;
+        try {
+            cs = ss.accept();
+            dos = new DataOutputStream(cs.getOutputStream());
+            if(numCliente == 1){
+                dos.writeBoolean(true);
+            }else{
+                dos.writeBoolean(false);
+            }            
+            dos.writeInt(numCliente);
+            System.out.println("Se ha mandado activacion del cliente");
+            ss.close();
+            cs.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public int getNumCli() {
         return this.numCli;
     }
 

@@ -9,6 +9,8 @@ import com.dist.cliente.Jugador;
 import com.dist.coordinador.Mazo;
 import com.dist.sockets.Cliente;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -17,15 +19,52 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author geoge
  */
-public class VistaJugador extends javax.swing.JFrame {
+public class VistaJugador extends javax.swing.JFrame implements Runnable {
+    
+    //AUN NO DETECTA CUANDO ENTRA OTRO JUGADOR :'v
+    //QUE CLIENTE MANDE MENSAJE A SERVIDOR DE QUE YA PUEDE ENTRAR OTRO JUGADOR ESO SERVIRIA
 
     Mazo cartasJugador;
     Jugador j;
-    
+    Cliente cli;
+    boolean activar;
+    Thread h1;
+    int numeroJugador;
+
     public VistaJugador() {
         initComponents();
+        activar = false;
         j = new Jugador();
-       // jbtnPeticion.setEnabled(false);
+        h1 = new Thread(this);
+        h1.start();
+        jbtnPeticion.setEnabled(false);
+    }
+
+    public void clienteEsperaActivarse() {
+        try {
+            cli = new Cliente(10000);
+            cli.startClientActivar();
+            activar = cli.getActivar();
+            numeroJugador = cli.getClienteNumero();
+            if (activar == true) {
+                jbtnPeticion.setEnabled(true);
+            }
+            System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void clientePedirCartas() throws IOException {
+        cli = new Cliente();
+        cartasJugador = cli.startClient();
+
+//        ExecutorService es = Executors.newCachedThreadPool();
+//        es.execute(cli);
+        activar = cli.getActivar();
+//        cartasJugador = cli.getMazoCliente();
+        System.out.println("Activar del jugador es : " + activar);
+//        es.shutdown();
     }
 
     /**
@@ -41,7 +80,6 @@ public class VistaJugador extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePokemon = new javax.swing.JTable();
         jbtnPeticion = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -67,13 +105,6 @@ public class VistaJugador extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setText("Cartas Obtenidas");
 
@@ -91,8 +122,6 @@ public class VistaJugador extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(56, 56, 56)
                         .addComponent(jbtnPeticion, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -104,9 +133,7 @@ public class VistaJugador extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbtnPeticion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addComponent(jbtnPeticion, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(96, 96, 96))
         );
 
@@ -131,40 +158,44 @@ public class VistaJugador extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnPeticionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPeticionActionPerformed
+
         try {
-            Cliente cli = new Cliente();
-            cartasJugador = cli.startClient();
-        } catch (IOException ex) {
+            //clienteEsperaActivarse();
+            clientePedirCartas();
+            jbtnPeticion.setEnabled(false);
+            mostrarMazo();
+        } catch (Exception ex) {
             Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jbtnPeticionActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    public void mostrarMazo() {
         limpiarTabla();
         for (int i = 0; i < cartasJugador.getCincoCartas().size(); i++) {
-             addValoresTablaJugador(i);
+            addValoresTablaJugador(i);
         }
-         j.setMazoCartas(cartasJugador);
-         j.guardarMazoBD();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        j.setMazoCartas(cartasJugador);
+        j.guardarMazoBD();
+    }
 
-    public void addValoresTablaJugador(int i){
+    public void addValoresTablaJugador(int i) {
         DefaultTableModel modelo = (DefaultTableModel) jTablePokemon.getModel();
         Object[] filas = new Object[4];
         filas[0] = cartasJugador.getCincoCartas().get(i).getNombre();
         filas[1] = cartasJugador.getCincoCartas().get(i).getAtaque();
         filas[2] = cartasJugador.getCincoCartas().get(i).getDefensa();
         filas[3] = cartasJugador.getCincoCartas().get(i).getHp();
-        
+
         modelo.addRow(filas);
         jTablePokemon.setModel(modelo);
     }
-    
-    public void limpiarTabla(){
+
+    public void limpiarTabla() {
         DefaultTableModel modelo = (DefaultTableModel) jTablePokemon.getModel();
         modelo.setRowCount(0);
         jTablePokemon.setModel(modelo);
     }
+
     /**
      * @param args the command line arguments
      */
@@ -201,11 +232,26 @@ public class VistaJugador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePokemon;
     private javax.swing.JButton jbtnPeticion;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        Thread hiloActual = Thread.currentThread();
+        while (h1 == hiloActual) {
+            try {
+                clienteEsperaActivarse();
+                if (activar == true) {
+                    break;
+                }
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

@@ -24,12 +24,16 @@ import javax.swing.JOptionPane;
  *
  * @author geoge
  */
-public class VistaCordinador extends javax.swing.JFrame {
+public class VistaCordinador extends javax.swing.JFrame implements Runnable{
+    //CORREJIR PORQUE SALE COMO SI ESTUVIERA USANDO LOS SOCKETS DISPOBLES ESO NO DEBERIA PASAR
+    
 
     Cartas c1, c2, c3;
     Mazo j1, j2, j3;
     int numCartas;
-    int clientes = 0;
+    int numclientes = 0;
+    int numClientesActivar = 0;
+    Thread h1;
 
     public VistaCordinador() {
         initComponents();
@@ -37,8 +41,35 @@ public class VistaCordinador extends javax.swing.JFrame {
         j2 = new Mazo();
         j3 = new Mazo();
         numCartas = 0;
+        h1 = new Thread(this);
+        h1.start();
+        
     }
 
+     @Override
+    public void run() {
+        Thread hiloActual = Thread.currentThread();
+        while(h1 == hiloActual){
+            try {
+                activarJugador();
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void activarJugador(){
+        numClientesActivar++;
+        Servidor ser;
+        try {
+            ser = new Servidor(10000);
+            ser.startServerActivaCliente(numClientesActivar);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
+    
     public void get3Cartas() {
         c1 = new Cartas();
         c2 = new Cartas();
@@ -105,19 +136,20 @@ public class VistaCordinador extends javax.swing.JFrame {
     }
     
     public void enviarCartas(){
+        numclientes++;
         ExecutorService es = Executors.newCachedThreadPool();
-        clientes++;
         try {
-            if(clientes == 1){
+            if(numclientes == 1){
                 es.execute(new Servidor(j1));
                 es.shutdown();
-            }else if(clientes == 2){
+            }else if(numclientes == 2){
                 es.execute(new Servidor(j2));
                 es.shutdown();
             }else{
                 es.execute(new Servidor(j3));
                 es.shutdown();
             }
+            activarJugador();
             
             //serv.startServer(j1);
         } catch (IOException ex) {
@@ -611,14 +643,20 @@ public class VistaCordinador extends javax.swing.JFrame {
         if (numCartas <= 4) {
             get3Cartas();
         }else{
-            jbtnSelecCartas.setEnabled(false);
-            JOptionPane.showMessageDialog(this, "Solo se pueden tener 5 cartas en cada mazo");
+            try {
+                jbtnSelecCartas.setEnabled(false);
+                JOptionPane.showMessageDialog(this, "Solo se pueden tener 5 cartas en cada mazo");
+//                Servidor ser = new Servidor();
+//                ser.startServerActivaCliente();
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
         enviarCartas();
-        
+        h1.interrupt();
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
 
     private void jbtnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnReporteActionPerformed
@@ -715,4 +753,6 @@ public class VistaCordinador extends javax.swing.JFrame {
     private javax.swing.JTextField jtfTipo2_2;
     private javax.swing.JTextField jtfTipo2_3;
     // End of variables declaration//GEN-END:variables
+
+   
 }
