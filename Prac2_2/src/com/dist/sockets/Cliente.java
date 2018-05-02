@@ -67,11 +67,13 @@ public class Cliente extends Conexion implements Runnable {
                 dis = new DataInputStream(cs.getInputStream());
                 activar = dis.readBoolean();
                 System.out.println("Cliente Esperando Activarse");
-
             }
             System.out.println("Cerrando conexion...");
             clienteNumero = dis.readInt();
             System.out.println("Activar = " + activar);
+            
+            salidaCliente = new DataOutputStream(cs.getOutputStream());
+            salidaCliente.writeBoolean(true);
 
             cs.close();
 

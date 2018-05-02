@@ -24,9 +24,8 @@ import javax.swing.JOptionPane;
  *
  * @author geoge
  */
-public class VistaCordinador extends javax.swing.JFrame implements Runnable{
+public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     //CORREJIR PORQUE SALE COMO SI ESTUVIERA USANDO LOS SOCKETS DISPOBLES ESO NO DEBERIA PASAR
-    
 
     Cartas c1, c2, c3;
     Mazo j1, j2, j3;
@@ -43,23 +42,23 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable{
         numCartas = 0;
         h1 = new Thread(this);
         h1.start();
-        
+
     }
 
-     @Override
+    @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
-        while(h1 == hiloActual){
+        while (h1 == hiloActual) {
             try {
                 activarJugador();
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
+                Thread.sleep(1000);
+            } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    
-    public void activarJugador(){
+
+    public void activarJugador() {
         numClientesActivar++;
         Servidor ser;
         try {
@@ -67,9 +66,9 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable{
             ser.startServerActivaCliente(numClientesActivar);
         } catch (IOException ex) {
             Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
     }
-    
+
     public void get3Cartas() {
         c1 = new Cartas();
         c2 = new Cartas();
@@ -134,23 +133,21 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable{
         jtfDefensa3.setText("" + c3.getDefensa());
 
     }
-    
-    public void enviarCartas(){
+
+    public void enviarCartas() {
         numclientes++;
         ExecutorService es = Executors.newCachedThreadPool();
         try {
-            if(numclientes == 1){
+            if (numclientes == 1) {
                 es.execute(new Servidor(j1));
                 es.shutdown();
-            }else if(numclientes == 2){
+            } else if (numclientes == 2) {
                 es.execute(new Servidor(j2));
                 es.shutdown();
-            }else{
+            } else {
                 es.execute(new Servidor(j3));
                 es.shutdown();
             }
-            activarJugador();
-            
             //serv.startServer(j1);
         } catch (IOException ex) {
             System.out.println("Problema " + ex.getMessage());
@@ -642,12 +639,10 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable{
     private void jbtnSelecCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSelecCartasActionPerformed
         if (numCartas <= 4) {
             get3Cartas();
-        }else{
+        } else {
             try {
                 jbtnSelecCartas.setEnabled(false);
                 JOptionPane.showMessageDialog(this, "Solo se pueden tener 5 cartas en cada mazo");
-//                Servidor ser = new Servidor();
-//                ser.startServerActivaCliente();
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -655,14 +650,15 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
-        enviarCartas();
         h1.interrupt();
+        enviarCartas();
+
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
 
     private void jbtnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnReporteActionPerformed
         ReporteCordinador rc = new ReporteCordinador(j1, j2, j3);
         rc.setVisible(true);
-        
+
     }//GEN-LAST:event_jbtnReporteActionPerformed
 
     /**
@@ -754,5 +750,4 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable{
     private javax.swing.JTextField jtfTipo2_3;
     // End of variables declaration//GEN-END:variables
 
-   
 }

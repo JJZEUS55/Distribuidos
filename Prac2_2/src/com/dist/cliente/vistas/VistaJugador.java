@@ -248,7 +248,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                 if (activar == true) {
                     break;
                 }
-                Thread.sleep(5000);
+                Thread.sleep(50000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
             }

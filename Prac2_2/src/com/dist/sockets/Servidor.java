@@ -24,6 +24,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     public static InetAddress ipRequerida;
     private Mazo car;
     private static int numCli = 0;
+    private boolean siguiente = false;
 
     public Servidor(Mazo c) throws IOException {
         super("servidor");
@@ -65,13 +66,19 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
 
             ObjectOutputStream ob = new ObjectOutputStream(cs.getOutputStream());
             DataOutputStream dos = new DataOutputStream(cs.getOutputStream());
+            
             ob.writeObject(car);
             System.out.println("Se escribio el objeto");
             dos.writeBoolean(true);
 
             numCli++;
+//            dis = new DataInputStream(cs.getInputStream());
+//            siguiente = dis.readBoolean();
+//            
+//            System.out.println("Cliente ha mandado un " + siguiente);
 
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
+            System.out.println("Cerrando conexion");
             ss.close();
             cs.close();
 
@@ -86,11 +93,11 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         try {
             cs = ss.accept();
             dos = new DataOutputStream(cs.getOutputStream());
-            if(numCliente == 1){
+//            if(numCliente == 1){
                 dos.writeBoolean(true);
-            }else{
-                dos.writeBoolean(false);
-            }            
+//            }else{
+//                dos.writeBoolean(false);
+//            }            
             dos.writeInt(numCliente);
             System.out.println("Se ha mandado activacion del cliente");
             ss.close();
