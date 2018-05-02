@@ -25,7 +25,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     private Mazo car;
     private static int numCli = 0;
     private boolean siguiente = false;
-    private int jugadorAIniciar;
+    private int jugadorAIniciar = 0;
 
     public Servidor(Mazo c) throws IOException {
         super("servidor");
@@ -101,6 +101,21 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             dos.writeInt(numCliente);
             System.out.println("Se ha mandado activacion del cliente");
 
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void mandarSiguienteJugador(){
+        DataOutputStream dos;
+        try {
+            cs = ss.accept();
+            dos = new DataOutputStream(cs.getOutputStream());
+            
+            dos.writeInt(jugadorAIniciar);
+                     
+            System.out.println("Se ha mandado un " + jugadorAIniciar);
+            System.out.println("El jugador " + jugadorAIniciar + "puede pedir");
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }

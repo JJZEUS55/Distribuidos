@@ -33,8 +33,8 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numclientes = 0;
     int numClientesActivar = 0;
     int siguienteJugador;
-    Thread h1, h2;
-    Servidor ser, ser2;
+    Thread h1, h2, h3;
+    Servidor ser, ser2, ser3;
 
     public VistaCordinador() {
         initComponents();
@@ -45,6 +45,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         try {
             ser = new Servidor(10000);
             ser2 = new Servidor();
+            ser3 = new Servidor(10202);
         } catch (IOException ex) {
             Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -52,6 +53,9 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         h1.start();
 
         h2 = new Thread(this);
+
+        h3 = new Thread(this);
+       // h3.start();
 //        h2.start();
     }
 
@@ -82,12 +86,19 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
 //                    es.shutdown();
                     ser2.startServer(j1);
                 } else if (numclientes == 2) {
-//                    es.execute(new Servidor(j2));
-//                    es.shutdown();
                     ser2.startServer(j2);
                 } else {
                     ser2.startServer(j3);
                 }
+                Thread.sleep(1000);
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        while (h3 == hiloActual) {
+            try {
+                ser3.mandarSiguienteJugador();                
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
@@ -163,8 +174,8 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
 
     public void enviarCartas() {
         h2.start();
-        
-       // h2.interrupt();
+
+        // h2.interrupt();
 //        numclientes++;
 //        ExecutorService es = Executors.newCachedThreadPool();
 //        try {

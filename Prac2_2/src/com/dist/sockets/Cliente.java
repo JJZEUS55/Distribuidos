@@ -34,7 +34,7 @@ public class Cliente extends Conexion implements Runnable {
         super("cliente", puerto);
     } //Se usa el constructor para cliente de Conexion
 
-    public Mazo startClient() //Método para iniciar el cliente
+    public Mazo startClient(int cliNum) //Método para iniciar el cliente
     {
         try (ObjectInputStream ob = new ObjectInputStream(cs.getInputStream())) {
 
@@ -54,8 +54,8 @@ public class Cliente extends Conexion implements Runnable {
 
             System.out.println("Activar = " + activar);
             salidaCliente = new DataOutputStream(cs.getOutputStream());
-            salidaCliente.writeInt(clienteNumero + 1);
-            System.out.println("Enviando un " + (clienteNumero + 1));
+            salidaCliente.writeInt(cliNum + 1);
+            System.out.println("Enviando un " + (cliNum + 1));
 
             cs.close();
 
@@ -89,24 +89,17 @@ public class Cliente extends Conexion implements Runnable {
         }
 
     }
-
-    public void saludar(int numeroJugador) {
-        try {            
-            salidaCliente = new DataOutputStream(cs.getOutputStream());
-            salidaCliente.writeUTF("Hola cliente 2, soy el jugador " + numeroJugador );
-            System.out.println("Escribi Hola cliente 2, soy el jugador " + numeroJugador);
-            cs.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
-    public void recibirSaludo(){
+    public void esperarJugadorAnterior(int numJugador){
+        System.out.println("Esperando jugadores");
         try {
-            SocketAddress sockaddr = new InetSocketAddress("localhost", 10201);
-            cs.connect(sockaddr);
+            int aux;
             dis = new DataInputStream(cs.getInputStream());
-            System.out.println("Recibi " + dis.readUTF());
+            aux = dis.readInt();
+            if(aux == numJugador){
+                System.out.println("Porfin puedo iniciar soy el cliente numero " + clienteNumero);
+            }
+                cs.close();
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -114,7 +107,7 @@ public class Cliente extends Conexion implements Runnable {
 
     @Override
     public void run() {
-        startClient();
+//        startClient();
     }
 
     public boolean getActivar() {

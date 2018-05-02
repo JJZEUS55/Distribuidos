@@ -20,15 +20,14 @@ import javax.swing.table.DefaultTableModel;
  * @author geoge
  */
 public class VistaJugador extends javax.swing.JFrame implements Runnable {
-    
+
     //AUN NO DETECTA CUANDO ENTRA OTRO JUGADOR :'v
     //QUE CLIENTE MANDE MENSAJE A SERVIDOR DE QUE YA PUEDE ENTRAR OTRO JUGADOR ESO SERVIRIA
-
     Mazo cartasJugador;
     Jugador j;
-    Cliente cli;
+    Cliente cli, cli2, cli3;
     boolean activar;
-    Thread h1, h2;
+    Thread h1, h2, h3;
     int numeroJugador;
     int juadorAIniciar;
 
@@ -36,38 +35,44 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         initComponents();
         activar = false;
         j = new Jugador();
+        try {
+            cli = new Cliente(10000);
+            cli2 = new Cliente();
+            cli3 = new Cliente(10202);
+        } catch (Exception e) {
+        }
+
         h1 = new Thread(this);
         h2 = new Thread(this);
+        h3 = new Thread(this);
         h1.start();
         h2.start();
+        h3.start();
         jbtnPeticion.setEnabled(false);
     }
 
     public void clienteEsperaActivarse() {
-        try {
-            cli = new Cliente(10000);
-            cli.startClientActivar();
-            activar = cli.getActivar();
-            numeroJugador = cli.getClienteNumero();
-            if (activar == true) {
-                jbtnPeticion.setEnabled(true);
-            }
-            System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+
+        cli.startClientActivar();
+        activar = cli.getActivar();
+        numeroJugador = cli.getClienteNumero();
+
+        if (numeroJugador == 1) {
+            jbtnPeticion.setEnabled(true);
+        } else {
+            h3.start();
         }
+        System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
+
     }
 
-    public void clientePedirCartas() throws IOException {
-        cli = new Cliente();
-        cartasJugador = cli.startClient();
+    public void clientePedirCartas() {
 
-//        ExecutorService es = Executors.newCachedThreadPool();
-//        es.execute(cli);
-        activar = cli.getActivar();
-//        cartasJugador = cli.getMazoCliente();
+        cartasJugador = cli2.startClient(numeroJugador);
+
+        activar = cli2.getActivar();
         System.out.println("Activar del jugador es : " + activar);
-//        es.shutdown();
+
     }
 
     /**
@@ -242,18 +247,6 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     private javax.swing.JButton jbtnPeticion;
     // End of variables declaration//GEN-END:variables
 
-    public void mensajeClientes(){
-        try {
-            cli = new Cliente(10002);
-            cli.saludar(numeroJugador);
-            cli.recibirSaludo();
-            
-            System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
@@ -273,6 +266,19 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                 //clienteEsperaActivarse();
                 if (activar == true) {
                     break;
+                }
+                Thread.sleep(50000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        while (h3 == hiloActual) {
+            try {
+                if (numeroJugador == 1) {
+                    
+                } else {
+                    cli3.esperarJugadorAnterior(numeroJugador);
                 }
                 Thread.sleep(50000);
             } catch (InterruptedException ex) {
