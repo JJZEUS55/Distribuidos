@@ -25,6 +25,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     private Mazo car;
     private static int numCli = 0;
     private boolean siguiente = false;
+    private int jugadorAIniciar;
 
     public Servidor(Mazo c) throws IOException {
         super("servidor");
@@ -56,7 +57,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         this.car = car;
     }
 
-    public void startServer()//M√©todo para iniciar el servidor
+    public void startServer(Mazo car)//M√©todo para iniciar el servidor
     {
 
         try {
@@ -75,10 +76,11 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             numCli++;
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
             dis = new DataInputStream(cs.getInputStream());
-            System.out.println(dis.readUTF());
+            jugadorAIniciar = dis.readInt();
+            System.out.println("Puede iniciar el jugador " + jugadorAIniciar);
             System.out.println("Cerrando conexion");
-
-            //ss.close();
+            
+//            ss.close();
         } catch (IOException e) {
             System.out.println("Problema en: " + e.getMessage());
 
@@ -90,16 +92,15 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         try {
             cs = ss.accept();
             dos = new DataOutputStream(cs.getOutputStream());
-//            if(numCliente == 1){
+            if(numCliente == 1){
             dos.writeBoolean(true);
-//            }else{
-//                dos.writeBoolean(false);
-//            }            
+            }else{
+                dos.writeBoolean(true);
+            }            
+            System.out.println("Se ha mandado un " + numCliente);
             dos.writeInt(numCliente);
             System.out.println("Se ha mandado activacion del cliente");
 
-//            cs.close();
-            //ss.close();
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -108,10 +109,14 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     public int getNumCli() {
         return this.numCli;
     }
+    
+    public int getJugadorAIniciar(){
+        return this.jugadorAIniciar;
+    }
 
     @Override
     public void run() {
-        startServer();
+//        startServer();
     }
 
 }

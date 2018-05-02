@@ -32,8 +32,9 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numCartas;
     int numclientes = 0;
     int numClientesActivar = 0;
-    Thread h1;
-    Servidor ser;
+    int siguienteJugador;
+    Thread h1, h2;
+    Servidor ser, ser2;
 
     public VistaCordinador() {
         initComponents();
@@ -43,12 +44,15 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         numCartas = 0;
         try {
             ser = new Servidor(10000);
+            ser2 = new Servidor();
         } catch (IOException ex) {
             Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
         }
         h1 = new Thread(this);
         h1.start();
 
+        h2 = new Thread(this);
+//        h2.start();
     }
 
     @Override
@@ -59,8 +63,31 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
             try {
 //                ser = new Servidor(10000);
                 numClientesActivar++;
+
                 //activarJugador( );
-                ser.startServerActivaCliente(numclientes);
+                ser.startServerActivaCliente(numClientesActivar);
+                siguienteJugador = ser.getJugadorAIniciar();
+                Thread.sleep(1000);
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        while (h2 == hiloActual) {
+            try {
+                numclientes++;
+
+                if (numclientes == 1) {
+//                    es.execute(new Servidor(j1));
+//                    es.shutdown();
+                    ser2.startServer(j1);
+                } else if (numclientes == 2) {
+//                    es.execute(new Servidor(j2));
+//                    es.shutdown();
+                    ser2.startServer(j2);
+                } else {
+                    ser2.startServer(j3);
+                }
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,23 +162,26 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     }
 
     public void enviarCartas() {
-        numclientes++;
-        ExecutorService es = Executors.newCachedThreadPool();
-        try {
-            if (numclientes == 1) {
-                es.execute(new Servidor(j1));
-                es.shutdown();
-            } else if (numclientes == 2) {
-                es.execute(new Servidor(j2));
-                es.shutdown();
-            } else {
-                es.execute(new Servidor(j3));
-                es.shutdown();
-            }
-            //serv.startServer(j1);
-        } catch (IOException ex) {
-            System.out.println("Problema " + ex.getMessage());
-        }
+        h2.start();
+        
+       // h2.interrupt();
+//        numclientes++;
+//        ExecutorService es = Executors.newCachedThreadPool();
+//        try {
+//            if (numclientes == 1) {
+//                es.execute(new Servidor(j1));
+//                es.shutdown();
+//            } else if (numclientes == 2) {
+//                es.execute(new Servidor(j2));
+//                es.shutdown();
+//            } else {
+//                es.execute(new Servidor(j3));
+//                es.shutdown();
+//            }
+//            //serv.startServer(j1);
+//        } catch (IOException ex) {
+//            System.out.println("Problema " + ex.getMessage());
+//        }
     }
 
     /**
@@ -650,7 +680,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
-        h1.interrupt();
+        //h1.interrupt();
         enviarCartas();
 
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
