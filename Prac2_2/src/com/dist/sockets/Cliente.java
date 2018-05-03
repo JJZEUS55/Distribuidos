@@ -57,8 +57,7 @@ public class Cliente extends Conexion implements Runnable {
             salidaCliente.writeInt(cliNum + 1);
             System.out.println("Enviando un " + (cliNum + 1));
 
-            cs.close();
-
+//            cs.close();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Problema " + e.getMessage());
         }
@@ -80,29 +79,36 @@ public class Cliente extends Conexion implements Runnable {
             System.out.println("Se ha recibido un " + clienteNumero);
             System.out.println("Activar = " + activar);
 
-            
-
-            cs.close();
-
+//            cs.close();
         } catch (IOException e) {
             System.out.println("Problema " + e.getMessage());
         }
 
     }
-    
-    public void esperarJugadorAnterior(int numJugador){
+
+    public boolean esperarJugadorAnterior(int numJugador) {
         System.out.println("Esperando jugadores");
+        System.out.println("soy el numero de jugador " + numJugador);
+        boolean act = false;
         try {
             int aux;
+
             dis = new DataInputStream(cs.getInputStream());
             aux = dis.readInt();
-            if(aux == numJugador){
-                System.out.println("Porfin puedo iniciar soy el cliente numero " + clienteNumero);
+            System.out.println("Se recibio el dato: " + aux);
+            if (aux == numJugador) {
+                System.out.println("Porfin puedo iniciar soy el cliente numero " + numJugador);
+                act = true;
             }
-                cs.close();
+            else{
+                act = false;
+            }
+            return act;
+            //cs.close();
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return act;
     }
 
     @Override

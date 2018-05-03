@@ -47,7 +47,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         h3 = new Thread(this);
         h1.start();
         h2.start();
-        h3.start();
+        //h3.start();
         jbtnPeticion.setEnabled(false);
     }
 
@@ -273,12 +273,18 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
             }
         }
 
+        boolean botonAct;
         while (h3 == hiloActual) {
             try {
                 if (numeroJugador == 1) {
                     
                 } else {
-                    cli3.esperarJugadorAnterior(numeroJugador);
+                    System.out.println("Entrando a cli esperar jugador  ");
+                    botonAct = cli3.esperarJugadorAnterior(numeroJugador);
+                    while(botonAct == false){
+                        botonAct = cli3.esperarJugadorAnterior(numeroJugador);
+                    }
+                    jbtnPeticion.setEnabled(botonAct);
                 }
                 Thread.sleep(50000);
             } catch (InterruptedException ex) {

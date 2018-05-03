@@ -77,9 +77,12 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
             dis = new DataInputStream(cs.getInputStream());
             jugadorAIniciar = dis.readInt();
-            System.out.println("Puede iniciar el jugador " + jugadorAIniciar);
+            System.out.println("-------------------------------------------");
+            System.out.println("SERVIDOR: Puede iniciar el jugador " + jugadorAIniciar);
+            System.out.println("-------------------------------------------");
+
             System.out.println("Cerrando conexion");
-            
+
 //            ss.close();
         } catch (IOException e) {
             System.out.println("Problema en: " + e.getMessage());
@@ -92,11 +95,11 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         try {
             cs = ss.accept();
             dos = new DataOutputStream(cs.getOutputStream());
-            if(numCliente == 1){
-            dos.writeBoolean(true);
-            }else{
+            if (numCliente == 1) {
                 dos.writeBoolean(true);
-            }            
+            } else {
+                dos.writeBoolean(true);
+            }
             System.out.println("Se ha mandado un " + numCliente);
             dos.writeInt(numCliente);
             System.out.println("Se ha mandado activacion del cliente");
@@ -105,17 +108,23 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void mandarSiguienteJugador(){
+
+    public void mandarSiguienteJugador(int numj) {
         DataOutputStream dos;
         try {
             cs = ss.accept();
             dos = new DataOutputStream(cs.getOutputStream());
+
+            dos.writeInt(numj);
+           // System.out.println("-------------------------------------------");
+            System.out.println("Se ha mandado un " + numj);
+            System.out.println("El jugador " + numj + "puede pedir");
+
+            dis = new DataInputStream(cs.getInputStream());
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             
-            dos.writeInt(jugadorAIniciar);
-                     
-            System.out.println("Se ha mandado un " + jugadorAIniciar);
-            System.out.println("El jugador " + jugadorAIniciar + "puede pedir");
+            //System.out.println("-------------------------------------------");
+
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -124,8 +133,8 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     public int getNumCli() {
         return this.numCli;
     }
-    
-    public int getJugadorAIniciar(){
+
+    public int getJugadorAIniciar() {
         return this.jugadorAIniciar;
     }
 
