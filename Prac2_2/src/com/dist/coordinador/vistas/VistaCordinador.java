@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -32,7 +33,9 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numCartas;
     int numclientes = 0;
     int numClientesActivar = 0;
-    int siguienteJugador, sig;
+    int siguienteJugador;
+    static int sig = 1;
+    AtomicInteger s = new AtomicInteger(1);
     int clicks = 0;
     Thread h1, h2, h3;
     Servidor ser, ser2, ser3;
@@ -62,7 +65,6 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
-
         while (h1 == hiloActual) {
             try {
                 numClientesActivar++;
@@ -92,11 +94,10 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         }
 
         while (h3 == hiloActual) {
-            sig = sig + 1;
             try {
 
-                ser3.mandarSiguienteJugador(ser2.getJugadorAIniciar());
-                System.out.println("siguiente jugador es " + (ser2.getJugadorAIniciar()));
+                ser3.mandarSiguienteJugador(sig);
+                System.out.println("siguiente jugador es " + sig);
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
@@ -676,7 +677,9 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
         //h1.interrupt();
+        this.sig += sig;
         enviarCartas();
+
 
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
 

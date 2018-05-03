@@ -76,7 +76,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             numCli++;
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
             dis = new DataInputStream(cs.getInputStream());
-            jugadorAIniciar = dis.readInt();
+            this.jugadorAIniciar = dis.readInt();
             System.out.println("-------------------------------------------");
             System.out.println("SERVIDOR: Puede iniciar el jugador " + jugadorAIniciar);
             System.out.println("-------------------------------------------");
