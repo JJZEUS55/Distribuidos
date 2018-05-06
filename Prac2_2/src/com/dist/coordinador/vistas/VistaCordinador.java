@@ -34,8 +34,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numclientes = 0;
     int numClientesActivar = 0;
     int siguienteJugador;
-    static int sig = 1;
-    AtomicInteger s = new AtomicInteger(1);
+    AtomicInteger atomics = new AtomicInteger(1);
     int clicks = 0;
     Thread h1, h2, h3;
     Servidor ser, ser2, ser3;
@@ -62,14 +61,19 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
 
     }
 
+    /*NOTA LA PARTE mandarSiguienteJugador GENERA UN PROBLEMA DEBIDO A QUE SE MANDA 
+    AL MISMO TIEMPO QUE startServerActivaCliente
+     */
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
         while (h1 == hiloActual) {
             try {
                 numClientesActivar++;
+                System.out.println("---------- HILO 1  -------------");
+                System.out.println("El cliente a activar es el num " + numClientesActivar);
                 ser.startServerActivaCliente(numClientesActivar);
-                siguienteJugador = ser.getJugadorAIniciar();
+
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
@@ -79,12 +83,18 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         while (h2 == hiloActual) {
             try {
                 this.numclientes++;
-                sig = this.numclientes;
+                System.out.println("--------- HILO 2 -------------");
                 if (numclientes == 1) {
+                    System.out.println("Mandando mazo a " + numclientes);
                     ser2.startServer(j1);
+                    h3.start();
+                    //ser2.mandarSiguienteJugador(ser2.getJugadorAIniciar());
                 } else if (numclientes == 2) {
+                    System.out.println("Mandando mazo a " + numclientes);
                     ser2.startServer(j2);
-                } else {
+                    // ser2.mandarSiguienteJugador(ser2.getJugadorAIniciar());
+                } else if (numclientes == 3) {
+                    System.out.println("Mandando mazo a " + numclientes);
                     ser2.startServer(j3);
                 }
                 Thread.sleep(1000);
@@ -92,18 +102,18 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         while (h3 == hiloActual) {
+            System.out.println("--------------- HILO 3 --------------");
             try {
+                if (numclientes > 0) {
+                    ser3.mandarSiguienteJugador(ser2.getJugadorAIniciar());
+                }
 
-                ser3.mandarSiguienteJugador(sig);
-                System.out.println("siguiente jugador es " + sig);
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
     }
 
     public void get3Cartas() {
@@ -172,10 +182,15 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     }
 
     public void enviarCartas() {
+//        h2 = new Thread(this);
+//        h3 = new Thread(this);
+//        h2.start();
+//        h3.start();
         if (clicks == 0) {
             h2.start();
-            h3.start();
+            //h3.start();
         }
+
         clicks++;
 
     }
@@ -676,8 +691,8 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
-        //h1.interrupt();
-        this.sig += sig;
+
+        atomics.addAndGet(1);
         enviarCartas();
 
 

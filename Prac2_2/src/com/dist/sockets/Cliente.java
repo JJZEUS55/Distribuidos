@@ -57,7 +57,7 @@ public class Cliente extends Conexion implements Runnable {
             salidaCliente.writeInt(cliNum + 1);
             System.out.println("Enviando un " + (cliNum + 1));
 
-//            cs.close();
+            //cs.close();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Problema " + e.getMessage());
         }
@@ -68,18 +68,17 @@ public class Cliente extends Conexion implements Runnable {
     public void startClientActivar() //Método para iniciar el cliente
     {
         try {
-            while (activar == false) {
-                dis = new DataInputStream(cs.getInputStream());
-                activar = dis.readBoolean();
-                System.out.println("Activar " + activar);
-                System.out.println("Cliente Esperando Activarse");
-            }
+
+            dis = new DataInputStream(cs.getInputStream());
+            activar = dis.readBoolean();
+            System.out.println("Activar " + activar);
+            System.out.println("Cliente Esperando Activarse");
+
             System.out.println("Cerrando conexion...");
             clienteNumero = dis.readInt();
             System.out.println("Se ha recibido un " + clienteNumero);
             System.out.println("Activar = " + activar);
 
-//            cs.close();
         } catch (IOException e) {
             System.out.println("Problema " + e.getMessage());
         }
@@ -91,24 +90,29 @@ public class Cliente extends Conexion implements Runnable {
         System.out.println("soy el numero de jugador " + numJugador);
         boolean act = false;
         try {
-            int aux;
+            int aux = 0;
 
             dis = new DataInputStream(cs.getInputStream());
             aux = dis.readInt();
+
             System.out.println("Se recibio el dato: " + aux);
             if (aux == numJugador) {
                 System.out.println("Porfin puedo iniciar soy el cliente numero " + numJugador);
                 act = true;
-            }
-            else{
+            } else {
                 act = false;
             }
-            return act;
+            
+//            cs.close();
             //cs.close();
+
+            return act;
+
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
         return act;
+
     }
 
     @Override

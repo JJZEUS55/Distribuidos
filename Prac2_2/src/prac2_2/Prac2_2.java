@@ -5,6 +5,7 @@
  */
 package prac2_2;
 
+import com.dist.cliente.vistas.VistaJugador;
 import com.dist.sockets.Servidor;
 import com.dist.coordinador.Cartas;
 import java.io.IOException;
@@ -29,11 +30,14 @@ public class Prac2_2 implements Serializable{
      * @param args the command line arguments
      */
     public static void main(String[] args) throws UnknownHostException {
-        Cartas c1 = new Cartas();
-        c1.getCartaAleatoria();
-        System.out.println(c1.toString());
         
-        Prac2_2 p2 = new Prac2_2();
+        VistaJugador v1 = new VistaJugador();
+        VistaJugador v2 = new VistaJugador();
+        VistaJugador v3 = new VistaJugador();
+        
+        v1.setVisible(true);
+        v2.setVisible(true);
+        v3.setVisible(true);
         
         //System.out.println(InetAddress.getLocalHost().getHostAddress());
 
