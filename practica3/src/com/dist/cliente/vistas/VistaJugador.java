@@ -30,7 +30,8 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     Jugador j;
     Cliente cli, cli2, cli3;
     clase_cliente CheckClient; // chequeo constante si esta activo el server
-    clase_server conexionBully;
+    clase_server conexionBully; // solo se activa si es necesario
+    clase_cliente temporal1, temporal2; // se activan al instante de notar la caida del servidor
     boolean activar;
     Thread h1, h2, h3;
     Thread HiloCheck;
@@ -324,9 +325,11 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         {
             if(CheckClient.check() == false){
                 System.out.println("Fallo del servidor cerrando conexion");
-                conexionBully = new clase_server(4000);
-                conexionBully.iniciar();
-                System.out.println("Iniciando bully");
+//                conexionBully = new clase_server(4000);
+//                conexionBully.iniciar();
+                System.out.println("Iniciando proceso de bully");
+                temporal1 = new clase_cliente("localhost", 4000);
+                temporal2 = new clase_cliente("localhost", 4000);
                 HiloCheck.stop();
                 
             }
