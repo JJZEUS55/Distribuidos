@@ -16,7 +16,6 @@ public class clase_cliente
 {
     private Socket sock;
     private static String HOST = "localhost";
-    private static int PUERTO = 3080;
     private String IP;
     private int jugador;
     private int Intervalo = 500;
@@ -24,7 +23,7 @@ public class clase_cliente
     private DataInputStream Entrada; //recibir mensajes
     private boolean servidorOK = true;
     
-    public clase_cliente(String host, int puerto) {
+    public clase_cliente(String host, int puerto) { // puerto 3080 para funcionamiento normal, 4000 modo bully
         try {
             sock = new Socket(host, puerto);
             Entrada = new DataInputStream(sock.getInputStream());

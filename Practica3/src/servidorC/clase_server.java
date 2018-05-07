@@ -16,15 +16,10 @@ public class clase_server {
     String Tem [][] = new String [3][];
     private int JugadorAtendido;
 
-    public clase_server() {
-        PUERTO = 3080;
+    public clase_server(int port) {
+        PUERTO = port;
     }
     
-    public clase_server(int val)
-    {
-        
-    }        
-
     public void iniciar() 
     {      
         try 

@@ -46,7 +46,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
 
     public VistaCordinador() {
         initComponents();
-        CheckServidor = new clase_server();
+        CheckServidor = new clase_server(3080);
         CheckServidor.iniciar();
         j1 = new Mazo();
         j2 = new Mazo();
