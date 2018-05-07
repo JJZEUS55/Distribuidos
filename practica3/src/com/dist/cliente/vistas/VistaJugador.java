@@ -20,62 +20,60 @@ import javax.swing.table.DefaultTableModel;
  * @author geoge
  */
 public class VistaJugador extends javax.swing.JFrame implements Runnable {
-    
+
     //AUN NO DETECTA CUANDO ENTRA OTRO JUGADOR :'v
     //QUE CLIENTE MANDE MENSAJE A SERVIDOR DE QUE YA PUEDE ENTRAR OTRO JUGADOR ESO SERVIRIA
-
     Mazo cartasJugador;
     Jugador j;
-    Cliente cli;
-    Cliente cliC;
+    Cliente cli, cli2, cli3;
     boolean activar;
-    Thread h1, h2;
-    Thread CC;
+    Thread h1, h2, h3;
     int numeroJugador;
+    int juadorAIniciar;
 
     public VistaJugador() {
         initComponents();
         activar = false;
         j = new Jugador();
+        try {
+            cli = new Cliente(10000);
+            cli2 = new Cliente();
+            cli3 = new Cliente(10202);
+        } catch (Exception e) {
+        }
+
         h1 = new Thread(this);
         h2 = new Thread(this);
-        CC = new Thread(this);
+        h3 = new Thread(this);
         h1.start();
-        h2.start();
+        //h2.start();
+        //h3.start();
         jbtnPeticion.setEnabled(false);
-        try {
-            System.out.println("CC");
-            cliC = new Cliente(10001);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public void clienteEsperaActivarse() {
-        try {
-            cli = new Cliente(10000);
-            cli.startClientActivar();
-            activar = cli.getActivar();
-            numeroJugador = cli.getClienteNumero();
-            if (activar == true) {
-                jbtnPeticion.setEnabled(true);
-            }
-            System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+
+        cli.startClientActivar();
+        activar = cli.getActivar();
+        numeroJugador = cli.getClienteNumero();
+
+        if (numeroJugador == 1) {
+            jbtnPeticion.setEnabled(true);
+        } else {
+            h3.start();
         }
+        System.out.println("Este Solo se ha activado y es el numero " + numeroJugador);
+        jlblNumJugador.setText("Jugador: " + numeroJugador);
     }
 
-    public void clientePedirCartas() throws IOException {
-        cli = new Cliente();
-        cartasJugador = cli.startClient();
+    public void clientePedirCartas() {
 
-//        ExecutorService es = Executors.newCachedThreadPool();
-//        es.execute(cli);
-        activar = cli.getActivar();
-//        cartasJugador = cli.getMazoCliente();
+        System.out.println("Soy el jugador #" + numeroJugador + " y estoy pidiendo");
+        cartasJugador = cli2.startClient(numeroJugador);
+
+        activar = cli2.getActivar();
         System.out.println("Activar del jugador es : " + activar);
-//        es.shutdown();
+
     }
 
     /**
@@ -92,6 +90,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         jTablePokemon = new javax.swing.JTable();
         jbtnPeticion = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jlblNumJugador = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -119,6 +118,8 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setText("Cartas Obtenidas");
 
+        jlblNumJugador.setText("Jugador: ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -135,11 +136,17 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jbtnPeticion, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jlblNumJugador)
+                .addGap(41, 41, 41))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addContainerGap()
+                .addComponent(jlblNumJugador)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -171,10 +178,12 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     private void jbtnPeticionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPeticionActionPerformed
 
         try {
-            //clienteEsperaActivarse();
-            clientePedirCartas();
-            jbtnPeticion.setEnabled(false);
-            mostrarMazo();
+            //clienteEsperaActivarse();            
+            h2.start();
+            h3 = new Thread(this);
+            h3.start();
+            //clientePedirCartas();
+
         } catch (Exception ex) {
             Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -248,41 +257,57 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePokemon;
     private javax.swing.JButton jbtnPeticion;
+    private javax.swing.JLabel jlblNumJugador;
     // End of variables declaration//GEN-END:variables
 
-    public void mensajeClientes(){
-        try {
-            cli = new Cliente(10002);
-            cli.saludar(numeroJugador);
-            cli.recibirSaludo();
-            
-            System.out.println("Este jugador puede pedir cartas y es el numero " + numeroJugador);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
+        boolean botonAct = false;
         while (h1 == hiloActual) {
             try {
                 clienteEsperaActivarse();
                 if (activar == true) {
+                    System.out.println("Ha acabado el HILO 1");
                     break;
                 }
-                Thread.sleep(50000);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        while (h2 == hiloActual) {
+        boolean stoph2 = false; 
+        while (h2 == hiloActual && stoph2 == false) {
             try {
-                //clienteEsperaActivarse();
-                if (activar == true) {
-                    break;
+                clientePedirCartas();
+                jbtnPeticion.setEnabled(false);
+                mostrarMazo();
+                stoph2 = true;
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        while (h3 == hiloActual) {
+            try {
+                if (numeroJugador != 1) {
+                    System.out.println("Entrando a cli esperar jugador  ");
+
+                    botonAct = cli3.esperarJugadorAnterior(numeroJugador);
+                    if(numeroJugador == 3){
+                        //botonAct = cli3.esperarJugadorAnterior(numeroJugador);
+                        System.out.println("El valor de boton ACT es " + botonAct);
+                    }
+
+                    if (botonAct == true) {
+                        System.out.println("POR FIN BOTON ACTIVADO");
+                        jbtnPeticion.setEnabled(botonAct);
+                        break;
+                    }
+
                 }
-                Thread.sleep(50000);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
             }
