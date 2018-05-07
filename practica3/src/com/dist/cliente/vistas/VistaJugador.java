@@ -5,6 +5,8 @@
  */
 package com.dist.cliente.vistas;
 
+import clienteC.clase_cliente;
+import servidorC.clase_server;
 import com.dist.cliente.Jugador;
 import com.dist.coordinador.Mazo;
 import com.dist.sockets.Cliente;
@@ -14,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -26,8 +29,10 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     Mazo cartasJugador;
     Jugador j;
     Cliente cli, cli2, cli3;
+    clase_cliente CheckClient;
     boolean activar;
     Thread h1, h2, h3;
+    Thread HiloCheck;
     int numeroJugador;
     int juadorAIniciar;
 
@@ -39,13 +44,15 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
             cli = new Cliente(10000);
             cli2 = new Cliente();
             cli3 = new Cliente(10202);
-        } catch (Exception e) {
-        }
-
+        } catch (Exception e) {}
+        CheckClient = new clase_cliente("localhost", 3080); // cambiar ip segun el caso
         h1 = new Thread(this);
         h2 = new Thread(this);
         h3 = new Thread(this);
+        HiloCheck = new Thread(this);
+        
         h1.start();
+        HiloCheck.start();
         //h2.start();
         //h3.start();
         jbtnPeticion.setEnabled(false);
@@ -310,6 +317,15 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        while (HiloCheck == hiloActual)
+        {
+            if(CheckClient.check() == false){
+                System.out.println("Fallo del servidor cerrando conexion");
+                
+                HiloCheck.stop();
+                
             }
         }
     }

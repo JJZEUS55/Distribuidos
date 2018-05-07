@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import servidorC.*;
 
 /**
  *
@@ -34,13 +35,19 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numclientes = 0;
     int numClientesActivar = 0;
     int siguienteJugador;
+    int contadorClientes = 0;
     AtomicInteger atomics = new AtomicInteger(1);
     int clicks = 0;
     Thread h1, h2, h3;
+    Thread HiloCheck, HiloAcceptC;
     Servidor ser, ser2, ser3;
+    clase_server CheckServidor;
+    InfoPC equipos[] = new InfoPC[5];
 
     public VistaCordinador() {
         initComponents();
+        CheckServidor = new clase_server();
+        CheckServidor.iniciar();
         j1 = new Mazo();
         j2 = new Mazo();
         j3 = new Mazo();
@@ -52,13 +59,16 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         h1 = new Thread(this);
-        h1.start();
-
         h2 = new Thread(this);
-
         h3 = new Thread(this);
-
+        HiloCheck = new Thread(this);
+        HiloAcceptC = new Thread(this);
+        h1.start();
+        HiloCheck.start();
+        HiloAcceptC.start();
+    
     }
 
     /*NOTA LA PARTE mandarSiguienteJugador GENERA UN PROBLEMA DEBIDO A QUE SE MANDA 
@@ -110,6 +120,20 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
                 }
 
                 Thread.sleep(1000);
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } 
+        while(HiloAcceptC == hiloActual)
+        { 
+            equipos[contadorClientes] = CheckServidor.aceptar(contadorClientes);
+            contadorClientes++;
+        }
+        while(HiloCheck == hiloActual)
+        { 
+            try {
+                Thread.sleep(5000);
+                CheckServidor.check(equipos, contadorClientes);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
