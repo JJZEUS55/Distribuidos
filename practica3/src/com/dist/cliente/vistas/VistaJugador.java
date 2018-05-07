@@ -325,11 +325,19 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         {
             if(CheckClient.check() == false){
                 System.out.println("Fallo del servidor cerrando conexion");
+                System.out.println("Iniciando proceso de bully");
+                try {
+                    for (int i = 0; i < 3; i++) {
+                        temporal1 = new clase_cliente("localhost", 4000);
+                        temporal2 = new clase_cliente("localhost", 4000);
+                        Thread.sleep(1000);
+                    }                                  
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
 //                conexionBully = new clase_server(4000);
 //                conexionBully.iniciar();
-                System.out.println("Iniciando proceso de bully");
-                temporal1 = new clase_cliente("localhost", 4000);
-                temporal2 = new clase_cliente("localhost", 4000);
                 HiloCheck.stop();
                 
             }
