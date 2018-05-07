@@ -324,20 +324,31 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         while (HiloCheck == hiloActual)
         {
             if(CheckClient.check() == false){
+                h1.stop();
+                h2.stop();
+                h3.stop();
                 System.out.println("Fallo del servidor cerrando conexion");
                 System.out.println("Iniciando proceso de bully");
                 try {
-                    for (int i = 0; i < 3; i++) {
-                        temporal1 = new clase_cliente("localhost", 4000);
-                        temporal2 = new clase_cliente("localhost", 4000);
-                        Thread.sleep(1000);
+                    for (int i = 0; i < 3 + numeroJugador; i++) {
+                        System.out.println("tratando de conectarse");
+                        temporal1 = new clase_cliente("localhost", 4000); // diferentes ip
+                        temporal2 = new clase_cliente("localhost", 4000); // diferentes ip
+                        if(temporal1.isStatusCliente() == true || temporal2.isStatusCliente() == true) {
+                            System.out.println("---------Un cliente esta conectado-----------");
+                            break;
+                        }
+                        Thread.sleep(numeroJugador *1000);
                     }                                  
                 } catch (InterruptedException ex) {
                     Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
-               
-//                conexionBully = new clase_server(4000);
-//                conexionBully.iniciar();
+                if(temporal1.isStatusCliente() == false || temporal2.isStatusCliente() == false)
+                {
+                    System.out.println("Iniciando servidor bully");
+                    conexionBully = new clase_server(4000);
+                    conexionBully.iniciar();
+                }
                 HiloCheck.stop();
                 
             }

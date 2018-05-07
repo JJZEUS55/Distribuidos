@@ -11,10 +11,9 @@ public class clase_server {
     private String HOST; //Host para la conexión
     protected ServerSocket ss; //Socket del servidor
     protected Socket sock;
-    DataInputStream entrada;
-    DataOutputStream salida;
-    String Tem [][] = new String [3][];
-    private int JugadorAtendido;
+    private DataInputStream entrada;
+    private DataOutputStream salida;
+    private int prioridad;
 
     public clase_server(int port) {
         PUERTO = port;
@@ -42,7 +41,7 @@ public class clase_server {
         } catch (IOException e) {
             System.out.println("Error de entrada/salida.");
         }
-        System.out.println(recibirMSJ());
+        //System.out.println(recibirMSJ());
         JugadorNuevo.setNumero(jugador);
         JugadorNuevo.setEntrada(entrada);
         JugadorNuevo.setSalida(salida);
