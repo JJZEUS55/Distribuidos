@@ -28,10 +28,12 @@ public class Cliente extends Conexion implements Runnable {
 
     public Cliente() throws IOException {
         super("cliente");
+        System.out.println("Cliente s/n");
     } //Se usa el constructor para cliente de Conexion
 
     public Cliente(int puerto) throws IOException {
         super("cliente", puerto);
+        System.out.println("Cliente: "+puerto);
     } //Se usa el constructor para cliente de Conexion
 
     public Mazo startClient(int cliNum) //Método para iniciar el cliente

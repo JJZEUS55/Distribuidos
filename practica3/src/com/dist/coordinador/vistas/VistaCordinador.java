@@ -44,6 +44,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     clase_server CheckServidor;
     InfoPC equipos[] = new InfoPC[5];
     InfoPC equiposBully[] = new InfoPC[5];
+    int prioridad;
 
     public VistaCordinador() {
         initComponents();
@@ -70,6 +71,35 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         HiloCheck.start();
         HiloAcceptC.start();
     
+    }
+
+    public VistaCordinador(int prioridad) {
+        initComponents();
+        this.prioridad = prioridad;
+        CheckServidor = new clase_server(3080);
+        CheckServidor.iniciar();
+        j1 = new Mazo();
+        j2 = new Mazo();
+        j3 = new Mazo();
+        numCartas = 0;
+        try {
+            ser = new Servidor(10000);
+            ser2 = new Servidor();
+            ser3 = new Servidor(10202);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        h1 = new Thread(this);
+        h2 = new Thread(this);
+        h3 = new Thread(this);
+        HiloCheck = new Thread(this);
+        HiloAcceptC = new Thread(this);
+        h1.start();
+//        HiloCheck.start();
+//       HiloAcceptC.start();
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     /*NOTA LA PARTE mandarSiguienteJugador GENERA UN PROBLEMA DEBIDO A QUE SE MANDA 

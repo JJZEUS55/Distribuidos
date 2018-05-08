@@ -42,6 +42,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     boolean ServidorBully = false;
     InfoPC equiposBully[] = new InfoPC[5];
     int contadorBully = 0;
+    int prioridad;
 
     public VistaJugador() {
         initComponents();
@@ -350,7 +351,11 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                             }
                             else
                             {
-                                System.out.println("Iiniciando comunicacion con el nuevo servidor");
+                                System.out.println("Iniciando comunicacion con el nuevo servidor");
+                                try { temporal1.finalizar(); }
+                                catch (Throwable ex) {
+                                    Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
                             break;
                         }
@@ -358,6 +363,14 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
 //                            System.out.println("---------Un cliente esta conectado-----------");
 //                            temporal2.ProcesoSeleccion();
 //                            break;
+//                            else
+//                            {
+//                                System.out.println("Iniciando comunicacion con el nuevo servidor");
+//                                try { temporal1.finalizar(); }
+//                                catch (Throwable ex) {
+//                                    Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+//                                }
+//                             }
 //                        }
                         Thread.sleep(numeroJugador *1000);
                     }                                  
@@ -385,13 +398,30 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                 System.out.println("Iniciando seleccion llamando a funcion");
                 if(conexionBully.ProcesoSeleccion(equiposBully, contadorBully))
                 {
-                    VistaCordinador nuevo = new VistaCordinador();
+                    
+                    VistaCordinador nuevo = new VistaCordinador(prioridad);
                     nuevo.setVisible(true);
                     this.setVisible(false);
+                    try {
+                        this.finalize();
+                    } catch (Throwable ex) {
+                        Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
                 }
                 else
                 {
-                    System.out.println("Iiniciando comunicacion con el nuevo servidor");
+                    System.out.println("Iniciando comunicacion con el nuevo servidor");                      
+                    try {
+                       Thread.sleep(numeroJugador*1000);
+                        cli = new Cliente(10000);
+                        cli2 = new Cliente();
+                        cli3 = new Cliente(10202);
+                        h1 = new Thread(this);
+                        h2 = new Thread(this);
+                        h3 = new Thread(this);
+                        h1.start();
+                    } catch (Exception e) {}
                 }
                 HiloAccept.stop();
             }

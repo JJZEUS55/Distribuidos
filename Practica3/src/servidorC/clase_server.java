@@ -142,6 +142,13 @@ public class clase_server {
         return buffer;
     }
     
+    public void finalizar() throws Throwable
+    {
+        try {
+            this.finalize();
+        } catch (Exception e) {}
+    }
+    
         
     public int getPUERTO() {
         return PUERTO;

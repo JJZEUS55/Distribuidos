@@ -112,6 +112,11 @@ public class clase_cliente
         return buffer;
     }
     
+    public void finalizar() throws Throwable
+    {
+        this.finalize();
+    }
+    
     public int getJugador() {
         return jugador;
     }
