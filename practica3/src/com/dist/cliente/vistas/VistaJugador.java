@@ -9,6 +9,7 @@ import clienteC.clase_cliente;
 import servidorC.clase_server;
 import com.dist.cliente.Jugador;
 import com.dist.coordinador.Mazo;
+import com.dist.coordinador.vistas.VistaCordinador;
 import com.dist.sockets.Cliente;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -341,7 +342,16 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                         //temporal2 = new clase_cliente("localhost", 4000); // diferentes ip
                         if(temporal1.isStatusCliente() == true){
                             System.out.println("---------Un cliente esta conectado-----------");
-                            temporal1.ProcesoSeleccion();
+                            if(temporal1.ProcesoSeleccion())
+                            {
+                                VistaCordinador nuevo = new VistaCordinador();
+                                nuevo.setVisible(true);
+                                this.setVisible(false);
+                            }
+                            else
+                            {
+                                System.out.println("Iiniciando comunicacion con el nuevo servidor");
+                            }
                             break;
                         }
 //                        if(temporal2.isStatusCliente() == true){
@@ -373,7 +383,16 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
             
             if(contadorBully  > 1){
                 System.out.println("Iniciando seleccion llamando a funcion");
-                conexionBully.ProcesoSeleccion(equiposBully, contadorBully);
+                if(conexionBully.ProcesoSeleccion(equiposBully, contadorBully))
+                {
+                    VistaCordinador nuevo = new VistaCordinador();
+                    nuevo.setVisible(true);
+                    this.setVisible(false);
+                }
+                else
+                {
+                    System.out.println("Iiniciando comunicacion con el nuevo servidor");
+                }
                 HiloAccept.stop();
             }
         }

@@ -53,7 +53,7 @@ public class clase_cliente
         return servidorOK;
     }
     
-    public void ProcesoSeleccion() // solo para el algoritmo de bully
+    public boolean ProcesoSeleccion() // solo para el algoritmo de bully
     { 
         String buffer;
         prioridad = ((int) (Math.random() * 100) + 1);
@@ -61,7 +61,7 @@ public class clase_cliente
         buffer = recibirMSJ(); // recibe prioridad del servidor
         System.out.println("Prioridad del servidor propuesto:" +buffer);
         if (Integer.valueOf(buffer) > prioridad) {
-            System.out.println("cliente de menor prioridad");
+            System.out.println("cliente de menor prioridad, descartado para servidor");
             enviarMSJ("ok");
         }
         else
@@ -71,15 +71,15 @@ public class clase_cliente
             if(recibirMSJ().equals("Elegido"))
             {
                 System.out.println("Elegido, iniciando nuevo servidor principal");
+                return true;
             }
             else
             {
                 System.out.println("Descartado para servidor");
+                return false;
             }
         }
-        
-            
-//enviarMSJ(String.valueOf(prioridad)); // primer paso envia su prioridad
+        return false;
     }
     
 

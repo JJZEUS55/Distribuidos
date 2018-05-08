@@ -61,7 +61,7 @@ public class clase_server {
         }
     }
     
-    public void ProcesoSeleccion(InfoPC ob[], int Cbully)
+    public boolean ProcesoSeleccion(InfoPC ob[], int Cbully)
     {
         boolean Elegido = true;
         String buffer;
@@ -70,7 +70,7 @@ public class clase_server {
         
         System.out.println("cantidad de equipos" + Cbully);
         prioridad = ((int) (Math.random() * 100) + 1);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) { // solicitando las prioridades de cada equipo
             System.out.println("ronda:"+i);
             entrada = ob[i].getEntrada();
             salida = ob[i].getSalida();
@@ -84,10 +84,16 @@ public class clase_server {
                 Elegido = false;
             }
         }
-        if(Elegido == true)
+        if(Elegido == true) // si ningun cliente se propuso, el servidor sera el elegido
         {
             System.out.println("Prioridad:"+prioridad);
             System.out.println("Elegido, iniciando nuevo servidor principal");
+            for (int i = 0; i < 2; i++) { // enviando respuestas 
+                entrada = ob[i].getEntrada();
+                salida = ob[i].getSalida();
+                enviarMSJ("No");
+            }
+            return true;
         }
         else
         {
@@ -100,6 +106,16 @@ public class clase_server {
             }
             System.out.println("Servidor propuesto jugador:"+ ChoseenOne + "con prioridad de:"+ ob[ChoseenOne].getPrioridad());
         }
+        for (int i = 0; i < 2; i++) { // enviando respuestas 
+            entrada = ob[i].getEntrada();
+            salida = ob[i].getSalida();
+            if(i==ChoseenOne)
+                enviarMSJ("Elegido");
+            else
+                enviarMSJ("No");
+        }
+        System.out.println("Termino de funcion");
+        return false;
     }
        
     private void enviarMSJ(String buffer)
