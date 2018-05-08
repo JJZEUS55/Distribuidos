@@ -93,7 +93,7 @@ public class Cliente extends Conexion implements Runnable {
             int aux = 0;
 
             dis = new DataInputStream(cs.getInputStream());
-            aux = dis.readInt();
+               aux = dis.readInt();
 
             System.out.println("Se recibio el dato: " + aux);
             if (aux == numJugador) {

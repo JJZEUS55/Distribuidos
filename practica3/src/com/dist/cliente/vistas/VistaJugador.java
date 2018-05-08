@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import servidorC.InfoPC;
 
 
 /**
@@ -34,9 +35,12 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     clase_cliente temporal1, temporal2; // se activan al instante de notar la caida del servidor
     boolean activar;
     Thread h1, h2, h3;
-    Thread HiloCheck;
+    Thread HiloCheck, HiloAccept;
     int numeroJugador;
     int juadorAIniciar;
+    boolean ServidorBully = false;
+    InfoPC equiposBully[] = new InfoPC[5];
+    int contadorBully = 0;
 
     public VistaJugador() {
         initComponents();
@@ -52,6 +56,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
         h2 = new Thread(this);
         h3 = new Thread(this);
         HiloCheck = new Thread(this);
+        HiloAccept = new Thread(this);
         
         h1.start();
         HiloCheck.start();
@@ -333,25 +338,45 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
                     for (int i = 0; i < 3 + numeroJugador; i++) {
                         System.out.println("tratando de conectarse");
                         temporal1 = new clase_cliente("localhost", 4000); // diferentes ip
-                        temporal2 = new clase_cliente("localhost", 4000); // diferentes ip
-                        if(temporal1.isStatusCliente() == true || temporal2.isStatusCliente() == true) {
+                        //temporal2 = new clase_cliente("localhost", 4000); // diferentes ip
+                        if(temporal1.isStatusCliente() == true){
                             System.out.println("---------Un cliente esta conectado-----------");
+                            temporal1.ProcesoSeleccion();
                             break;
                         }
+//                        if(temporal2.isStatusCliente() == true){
+//                            System.out.println("---------Un cliente esta conectado-----------");
+//                            temporal2.ProcesoSeleccion();
+//                            break;
+//                        }
                         Thread.sleep(numeroJugador *1000);
                     }                                  
                 } catch (InterruptedException ex) {
                     Logger.getLogger(VistaJugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if(temporal1.isStatusCliente() == false || temporal2.isStatusCliente() == false)
+                if(temporal1.isStatusCliente() == false)  // || temporal2.isStatusCliente() == false)
                 {
                     System.out.println("Iniciando servidor bully");
                     conexionBully = new clase_server(4000);
                     conexionBully.iniciar();
+                    ServidorBully = true;
+                    HiloAccept.start();
                 }
-                HiloCheck.stop();
-                
+                HiloCheck.stop();                
+            }            
+        }
+        while(HiloAccept == hiloActual)
+        {
+            equiposBully[contadorBully] = conexionBully.aceptar(contadorBully);
+            System.out.println("contador bully" +contadorBully);
+            contadorBully++;
+            
+            if(contadorBully  > 1){
+                System.out.println("Iniciando seleccion llamando a funcion");
+                conexionBully.ProcesoSeleccion(equiposBully, contadorBully);
+                HiloAccept.stop();
             }
         }
+        
     }
 }

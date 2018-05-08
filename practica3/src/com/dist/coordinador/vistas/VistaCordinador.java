@@ -43,6 +43,7 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     Servidor ser, ser2, ser3;
     clase_server CheckServidor;
     InfoPC equipos[] = new InfoPC[5];
+    InfoPC equiposBully[] = new InfoPC[5];
 
     public VistaCordinador() {
         initComponents();

@@ -8,7 +8,16 @@ public class InfoPC {
     private DataInputStream Entrada;
     private DataOutputStream Salida;
     private int numero;
+    private int prioridad;
 
+    public int getPrioridad() {
+        return prioridad;
+    }
+
+    public void setPrioridad(int prioridad) {
+        this.prioridad = prioridad;
+    }
+    
     public int getNumero() {
         return numero;
     }

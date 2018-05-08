@@ -14,6 +14,7 @@ public class clase_server {
     private DataInputStream entrada;
     private DataOutputStream salida;
     private int prioridad;
+    private boolean iniciarSeleccion = false;
 
     public clase_server(int port) {
         PUERTO = port;
@@ -45,7 +46,7 @@ public class clase_server {
         JugadorNuevo.setNumero(jugador);
         JugadorNuevo.setEntrada(entrada);
         JugadorNuevo.setSalida(salida);
-        System.out.println("accept check");
+        System.out.println("accept check || accept bully");
         return JugadorNuevo;
     }
     
@@ -57,6 +58,47 @@ public class clase_server {
             entrada = ob[i].getEntrada();
             salida = ob[i].getSalida();
             enviarMSJ("ok5seg");
+        }
+    }
+    
+    public void ProcesoSeleccion(InfoPC ob[], int Cbully)
+    {
+        boolean Elegido = true;
+        String buffer;
+        int comparador = 0;
+        int ChoseenOne = 0;
+        
+        System.out.println("cantidad de equipos" + Cbully);
+        prioridad = ((int) (Math.random() * 100) + 1);
+        for (int i = 0; i < 2; i++) {
+            System.out.println("ronda:"+i);
+            entrada = ob[i].getEntrada();
+            salida = ob[i].getSalida();
+            enviarMSJ(String.valueOf(prioridad)); // envia prioridad del servidor
+            buffer = recibirMSJ(); // recibe la del cliente
+            if(buffer.equals("ok"))
+                ob[i].setPrioridad(0);
+            else
+            {
+                ob[i].setPrioridad(Integer.valueOf(buffer));
+                Elegido = false;
+            }
+        }
+        if(Elegido == true)
+        {
+            System.out.println("Prioridad:"+prioridad);
+            System.out.println("Elegido, iniciando nuevo servidor principal");
+        }
+        else
+        {
+            System.out.println("Descartado para ser servidor, checanco propuestas");
+            for (int i = 0; i < Cbully; i++) {
+                if (ob[i].getPrioridad() > comparador) {
+                    comparador = ob[i].getPrioridad();
+                    ChoseenOne = i;
+                }
+            }
+            System.out.println("Servidor propuesto jugador:"+ ChoseenOne + "con prioridad de:"+ ob[ChoseenOne].getPrioridad());
         }
     }
        
@@ -100,4 +142,13 @@ public class clase_server {
     public void setHOST(String HOST) {
         this.HOST = HOST;
     }
+    
+    public boolean isIniciarSeleccion() {
+        return iniciarSeleccion;
+    }
+
+    public void setIniciarSeleccion(boolean iniciarSeleccion) {
+        this.iniciarSeleccion = iniciarSeleccion;
+    }
+    
 }
