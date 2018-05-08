@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import servidorC.*;
 
 /**
  *
@@ -32,58 +34,110 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     int numCartas;
     int numclientes = 0;
     int numClientesActivar = 0;
-    Thread h1;
-    Thread SC;
-    Servidor ser;
-    Servidor ServidorChido;
-    //InfoPC Equipos;
+    int siguienteJugador;
+    int contadorClientes = 0;
+    AtomicInteger atomics = new AtomicInteger(1);
+    int clicks = 0;
+    Thread h1, h2, h3;
+    Thread HiloCheck, HiloAcceptC;
+    Servidor ser, ser2, ser3;
+    clase_server CheckServidor;
+    InfoPC equipos[] = new InfoPC[5];
 
     public VistaCordinador() {
         initComponents();
+        CheckServidor = new clase_server(3080);
+        CheckServidor.iniciar();
         j1 = new Mazo();
         j2 = new Mazo();
         j3 = new Mazo();
         numCartas = 0;
         try {
             ser = new Servidor(10000);
-        } catch (IOException ex) {
-            Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            ServidorChido = new Servidor(10001);
-            ServidorChido.servidorChidoInciar();
+            ser2 = new Servidor();
+            ser3 = new Servidor(10202);
         } catch (IOException ex) {
             Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         h1 = new Thread(this);
-        SC = new Thread(this);
+        h2 = new Thread(this);
+        h3 = new Thread(this);
+        HiloCheck = new Thread(this);
+        HiloAcceptC = new Thread(this);
         h1.start();
-        //SC.start();
-        
-
+        HiloCheck.start();
+        HiloAcceptC.start();
+    
     }
 
+    /*NOTA LA PARTE mandarSiguienteJugador GENERA UN PROBLEMA DEBIDO A QUE SE MANDA 
+    AL MISMO TIEMPO QUE startServerActivaCliente
+     */
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
-
         while (h1 == hiloActual) {
             try {
-//                ser = new Servidor(10000);
                 numClientesActivar++;
-                //activarJugador( );
-                ser.startServerActivaCliente(numclientes);
+                System.out.println("---------- HILO 1  -------------");
+                System.out.println("El cliente a activar es el num " + numClientesActivar);
+                ser.startServerActivaCliente(numClientesActivar);
+
                 Thread.sleep(1000);
             } catch (Exception ex) {
                 Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        while(SC == hiloActual)
-        {
-            
-        }
 
+        while (h2 == hiloActual) {
+            try {
+                this.numclientes++;
+                System.out.println("--------- HILO 2 -------------");
+                if (numclientes == 1) {
+                    System.out.println("Mandando mazo a " + numclientes);
+                    ser2.startServer(j1);
+                    h3.start();
+                    //ser2.mandarSiguienteJugador(ser2.getJugadorAIniciar());
+                } else if (numclientes == 2) {
+                    System.out.println("Mandando mazo a " + numclientes);
+                    ser2.startServer(j2);
+                    // ser2.mandarSiguienteJugador(ser2.getJugadorAIniciar());
+                } else if (numclientes == 3) {
+                    System.out.println("Mandando mazo a " + numclientes);
+                    ser2.startServer(j3);
+                }
+                Thread.sleep(1000);
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        while (h3 == hiloActual) {
+            System.out.println("--------------- HILO 3 --------------");
+            try {
+                if (numclientes > 0) {
+                    ser3.mandarSiguienteJugador(ser2.getJugadorAIniciar());
+                }
+
+                Thread.sleep(1000);
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } 
+        while(HiloAcceptC == hiloActual)
+        { 
+            equipos[contadorClientes] = CheckServidor.aceptar(contadorClientes);
+            contadorClientes++;
+        }
+        while(HiloCheck == hiloActual)
+        { 
+            try {
+                Thread.sleep(5000);
+                CheckServidor.check(equipos, contadorClientes);
+            } catch (Exception ex) {
+                Logger.getLogger(VistaCordinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     public void get3Cartas() {
@@ -152,23 +206,17 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     }
 
     public void enviarCartas() {
-        numclientes++;
-        ExecutorService es = Executors.newCachedThreadPool();
-        try {
-            if (numclientes == 1) {
-                es.execute(new Servidor(j1));
-                es.shutdown();
-            } else if (numclientes == 2) {
-                es.execute(new Servidor(j2));
-                es.shutdown();
-            } else {
-                es.execute(new Servidor(j3));
-                es.shutdown();
-            }
-            //serv.startServer(j1);
-        } catch (IOException ex) {
-            System.out.println("Problema " + ex.getMessage());
+//        h2 = new Thread(this);
+//        h3 = new Thread(this);
+//        h2.start();
+//        h3.start();
+        if (clicks == 0) {
+            h2.start();
+            //h3.start();
         }
+
+        clicks++;
+
     }
 
     /**
@@ -667,8 +715,10 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
-        h1.interrupt();
+
+        atomics.addAndGet(1);
         enviarCartas();
+
 
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
 
@@ -709,7 +759,6 @@ public class VistaCordinador extends javax.swing.JFrame implements Runnable {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new VistaCordinador().setVisible(true);
-                
             }
         });
     }

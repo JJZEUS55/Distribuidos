@@ -25,9 +25,7 @@ public class Cliente extends Conexion implements Runnable {
     private Mazo m;
     private int clienteNumero;
     private boolean siguiente = false;
-    DataOutputStream salida; // enviar mensajes
-    DataInputStream Entrada; //recibir mensajes
-    
+
     public Cliente() throws IOException {
         super("cliente");
     } //Se usa el constructor para cliente de Conexion
@@ -36,7 +34,7 @@ public class Cliente extends Conexion implements Runnable {
         super("cliente", puerto);
     } //Se usa el constructor para cliente de Conexion
 
-    public Mazo startClient() //Método para iniciar el cliente
+    public Mazo startClient(int cliNum) //Método para iniciar el cliente
     {
         try (ObjectInputStream ob = new ObjectInputStream(cs.getInputStream())) {
 
@@ -56,11 +54,10 @@ public class Cliente extends Conexion implements Runnable {
 
             System.out.println("Activar = " + activar);
             salidaCliente = new DataOutputStream(cs.getOutputStream());
-            salidaCliente.writeUTF("Holo 2");
-            System.out.println("Enviando un 2");
+            salidaCliente.writeInt(cliNum + 1);
+            System.out.println("Enviando un " + (cliNum + 1));
 
-            cs.close();
-
+            //cs.close();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Problema " + e.getMessage());
         }
@@ -71,65 +68,56 @@ public class Cliente extends Conexion implements Runnable {
     public void startClientActivar() //Método para iniciar el cliente
     {
         try {
-            while (activar == false) {
-                dis = new DataInputStream(cs.getInputStream());
-                activar = dis.readBoolean();
-                System.out.println("Cliente Esperando Activarse");
-            }
+
+            dis = new DataInputStream(cs.getInputStream());
+            activar = dis.readBoolean();
+            System.out.println("Activar " + activar);
+            System.out.println("Cliente Esperando Activarse");
+
             System.out.println("Cerrando conexion...");
             clienteNumero = dis.readInt();
+            System.out.println("Se ha recibido un " + clienteNumero);
             System.out.println("Activar = " + activar);
-
-            
-
-            cs.close();
 
         } catch (IOException e) {
             System.out.println("Problema " + e.getMessage());
         }
 
-//        return m;
     }
 
-    public void saludar(int numeroJugador) {
-        try {            
-            salidaCliente = new DataOutputStream(cs.getOutputStream());
-            salidaCliente.writeUTF("Hola cliente 2, soy el jugador " + numeroJugador );
-            System.out.println("Escribi Hola cliente 2, soy el jugador " + numeroJugador);
-            cs.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public void recibirSaludo(){
+    public boolean esperarJugadorAnterior(int numJugador) {
+        System.out.println("Esperando jugadores");
+        System.out.println("soy el numero de jugador " + numJugador);
+        boolean act = false;
         try {
-            SocketAddress sockaddr = new InetSocketAddress("localhost", 10201);
-            cs.connect(sockaddr);
+            int aux = 0;
+
             dis = new DataInputStream(cs.getInputStream());
-            System.out.println("Recibi " + dis.readUTF());
+            aux = dis.readInt();
+
+            System.out.println("Se recibio el dato: " + aux);
+            if (aux == numJugador) {
+                System.out.println("Porfin puedo iniciar soy el cliente numero " + numJugador);
+                act = true;
+            } else {
+                act = false;
+            }
+            
+//            cs.close();
+            //cs.close();
+
+            return act;
+
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    public void clienteChidoIniciar()
-    {
-        System.out.println("IniciandoClienteChido..."); //Esperando conexión
-        try 
-        {
-            Entrada = new DataInputStream(cs.getInputStream());
-            salida = new DataOutputStream(cs.getOutputStream());
-            salida.writeUTF("Hola");
-            
-        } catch (IOException e) {
-            System.out.println("Problema en: " + e.getMessage());
-        }
-        
+        return act;
+
     }
 
     @Override
     public void run() {
-        startClient();
+//        startClient();
     }
 
     public boolean getActivar() {

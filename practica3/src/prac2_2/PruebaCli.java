@@ -20,7 +20,7 @@ public class PruebaCli {
     public static void main(String[] args) {
         try {
             Cliente c = new Cliente();
-            c.startClient();
+            //.startClient();
         } catch (IOException ex) {
             Logger.getLogger(PruebaCli.class.getName()).log(Level.SEVERE, null, ex);
         }

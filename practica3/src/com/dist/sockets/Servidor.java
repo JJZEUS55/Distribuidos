@@ -1,7 +1,6 @@
 package com.dist.sockets;
 
 import com.dist.coordinador.Cartas;
-import com.dist.coordinador.InfoPC;
 import com.dist.coordinador.Mazo;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -26,10 +25,8 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
     private Mazo car;
     private static int numCli = 0;
     private boolean siguiente = false;
-    InfoPC Equipos[] = new InfoPC[5];
-    DataOutputStream salida; // enviar mensajes
-    DataInputStream Entrada; //recibir mensajes
-    
+    private int jugadorAIniciar = 0;
+
     public Servidor(Mazo c) throws IOException {
         super("servidor");
         mensaje = new byte[3];
@@ -60,7 +57,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         this.car = car;
     }
 
-    public void startServer()//M√©todo para iniciar el servidor
+    public void startServer(Mazo car)//M√©todo para iniciar el servidor
     {
 
         try {
@@ -68,6 +65,7 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
 
             cs = ss.accept();
 
+            System.out.println("Se ha conectado el cliente");
             ObjectOutputStream ob = new ObjectOutputStream(cs.getOutputStream());
             DataOutputStream dos = new DataOutputStream(cs.getOutputStream());
 
@@ -79,10 +77,11 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
             numCli++;
             //Necesario cerrar los 2 si no erro JVM address already in use jvm_bind 
             dis = new DataInputStream(cs.getInputStream());
-            System.out.println(dis.readUTF());
-            System.out.println("Cerrando conexion");
+            this.jugadorAIniciar = dis.readInt();
+            System.out.println("SERVIDOR: Puede iniciar el jugador " + jugadorAIniciar);
 
-            //ss.close();
+            
+
         } catch (IOException e) {
             System.out.println("Problema en: " + e.getMessage());
 
@@ -94,44 +93,53 @@ public class Servidor extends Conexion implements Runnable//Se hereda de conexi√
         try {
             cs = ss.accept();
             dos = new DataOutputStream(cs.getOutputStream());
-//            if(numCliente == 1){
+
             dos.writeBoolean(true);
-//            }else{
-//                dos.writeBoolean(false);
-//            }            
+
+            System.out.println("Se ha mandado un " + numCliente);
             dos.writeInt(numCliente);
             System.out.println("Se ha mandado activacion del cliente");
 
-//            cs.close();
-            //ss.close();
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void servidorChidoInciar()
-    {
-        System.out.println("Esperando...ServidorChido"); //Esperando conexi√≥n
-        try 
-        {
-            cs = ss.accept();
-            Entrada = new DataInputStream(cs.getInputStream());
-            salida = new DataOutputStream(cs.getOutputStream());
-            System.out.println(Entrada.readUTF());
-            
-        } catch (IOException e) {
-            System.out.println("Problema en: " + e.getMessage());
-            
 
-        }
+    public void mandarSiguienteJugador(int numj) {
+        DataOutputStream dos;
+            try {
+
+                cs = ss.accept();
+                dos = new DataOutputStream(cs.getOutputStream());
+
+                dos.writeInt(numj);
+
+                // System.out.println("-------------------------------------------");
+                System.out.println("!!!!!!! MANDAR SIGUIENTE !!!!!!!!!");
+                System.out.println("Se ha mandado un " + numj);
+                System.out.println("El jugador " + numj + " puede pedir");
+
+                //dis = new DataInputStream(cs.getInputStream());
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");           
+                //System.out.println("-------------------------------------------");
+            } catch (IOException ex) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+
     }
-    
+
     public int getNumCli() {
         return this.numCli;
     }
 
+    public int getJugadorAIniciar() {
+        return this.jugadorAIniciar;
+    }
+
     @Override
     public void run() {
-        startServer();
+//        startServer();
     }
 
 }
