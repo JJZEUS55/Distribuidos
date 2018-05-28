@@ -18,7 +18,6 @@ public class ServerJuego {
     private boolean token;   
     private DataInputStream entrada;
     private DataOutputStream salida;
-    private String buffer;
     private int Num_Jugadores;
     private ArrayList<Jugadores> ConjuntoJugadores;
     
@@ -45,7 +44,7 @@ public class ServerJuego {
     {
         System.out.println("acceptar: esperando");
         String IP_puerto[];
-        Jugadores temporal = new Jugadores(); // solo para agregar de manera temporal un jugador para despues pasarlo al arreglo
+        Jugadores JugadorActual = new Jugadores(); // solo para agregar de manera temporal un jugador para despues pasarlo al arreglo
         try 
         {
             sock = ss.accept();
@@ -56,19 +55,44 @@ public class ServerJuego {
             System.out.println("Error de entrada/salida.");
         }
         IP_puerto = recibirMSJ().split(":"); // recibe IP y puerto del juegador  
-        System.out.println("acceptar: " +buffer);
+        System.out.println("acceptar: IP puerto " +IP_puerto[0]+ "-" + IP_puerto[1]);
         Num_Jugadores++;
-        temporal.setEntrada(entrada);
-        temporal.setSalida(salida);
-        temporal.setJugador(Num_Jugadores);
-        temporal.setIp(IP_puerto[0]);
-        temporal.setPuerto(Integer.valueOf(IP_puerto[1]));        
-        ConjuntoJugadores.add(temporal);
-        System.out.println("acceptar: Enviando numero de jugador" );
+        JugadorActual.setEntrada(entrada);
+        JugadorActual.setSalida(salida);
+        JugadorActual.setJugador(Num_Jugadores);
+        JugadorActual.setIp(IP_puerto[0]);
+        JugadorActual.setPuerto(Integer.valueOf(IP_puerto[1]));        
+        ConjuntoJugadores.add(JugadorActual);
         System.out.println("acceptar: Cantidad de jugadores:"+ ConjuntoJugadores.size());
-        enviarMSJ(String.valueOf(Num_Jugadores)); // le regresa su numero de jugador
-        //Enviar IP y puerto del siguiente
-        
+        for (int i = 0; i < ConjuntoJugadores.size(); i++) 
+        {           
+            if(i == ConjuntoJugadores.size()-2) //penultimo
+            {
+                System.out.println("acceptar: penultimo i="+i);
+                entrada = ConjuntoJugadores.get(i).getEntrada();
+                salida = ConjuntoJugadores.get(i).getSalida();
+                enviarMSJ("info");
+                enviarMSJ(String.valueOf(ConjuntoJugadores.get(i).getJugador()));
+                enviarMSJ(JugadorActual.getIp());
+                enviarMSJ(String.valueOf(JugadorActual.getPuerto()));
+                
+            } 
+//            if (i == 0) {
+//                System.out.println("Sin enviar");
+//            }
+            else if(i == ConjuntoJugadores.size()-1 && (i != 0) ) // ultimo
+            {
+                System.out.println("acceptar: ultimo i="+i);
+                entrada = ConjuntoJugadores.get(i).getEntrada();
+                salida = ConjuntoJugadores.get(i).getSalida();
+                enviarMSJ("info");
+                enviarMSJ(String.valueOf(JugadorActual.getJugador())); 
+                enviarMSJ(ConjuntoJugadores.get(0).getIp());
+                enviarMSJ(String.valueOf(ConjuntoJugadores.get(0).getPuerto()));
+            }
+            
+        }
+        System.out.println("-------------");
     }
     
     public void iniciarJuego() // para enviar informacion sobre el siguiente jugador
@@ -79,24 +103,22 @@ public class ServerJuego {
             x = ConjuntoJugadores.get(i);
             entrada = x.getEntrada();
             salida = x.getSalida();
+            enviarMSJ("info");
             if (i < ConjuntoJugadores.size()-1) 
-            {
-                System.out.println("Puerto:"+ ConjuntoJugadores.get(i+1).getPuerto());
+            { 
+                enviarMSJ(String.valueOf(x.getJugador()));
                 enviarMSJ(ConjuntoJugadores.get(i+1).getIp());
                 enviarMSJ(String.valueOf(ConjuntoJugadores.get(i+1).getPuerto()));
             }
             else
             {
-                System.out.println("Puerto:"+ ConjuntoJugadores.get(0).getPuerto());
+                enviarMSJ(String.valueOf(x.getJugador()));
                 enviarMSJ(ConjuntoJugadores.get(0).getIp());
                 enviarMSJ(String.valueOf(ConjuntoJugadores.get(0).getPuerto()));            
-            }
-            
+            }            
         }
     }
-    
-    
-    
+          
     private void enviarMSJ(String buffer)
     {
         try 

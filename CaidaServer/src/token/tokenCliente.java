@@ -22,6 +22,7 @@ public class tokenCliente
     private int prioridad;
     private DataOutputStream salida; // enviar mensajes
     private DataInputStream Entrada; //recibir mensajes
+    private boolean CancelarReenvio = false;
     
     public tokenCliente(String host, int puerto) 
     {
@@ -44,19 +45,24 @@ public class tokenCliente
     }
     
     public void accion(String cadena)
-    {
-        
-        switch(cadena)
+    {       
+        System.out.println("accion: ->" +cadena);
+        if(cadena.startsWith("fin") && CancelarReenvio == true)
         {
-            case "fin":
-                enviarMSJ(cadena);
-                break;
-            case "acaba":
-                System.out.println("End");
-                break;
-            default:
-                enviarMSJ(cadena);
+            System.out.println("accion: end");
         }
+        else if(cadena.startsWith("fin"))
+        {
+            CancelarReenvio = true;
+            System.out.println("accion: reenviar y cancelando reenvio "+cadena);        
+            enviarMSJ(cadena);            
+        }
+        else
+        {
+            System.out.println("accion reenviar: "+cadena);
+            enviarMSJ(cadena);
+        }
+
     }
     
     public void enviarMSJ(String buffer)

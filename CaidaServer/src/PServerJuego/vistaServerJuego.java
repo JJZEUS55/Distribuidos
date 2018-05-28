@@ -8,6 +8,7 @@ package PServerJuego;
 public class vistaServerJuego extends javax.swing.JFrame implements Runnable
 {
     Thread ServidorAcceptar;
+    Thread Check;
     ServerJuego Servidor_Principal;
     
     public vistaServerJuego() 
@@ -16,6 +17,7 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Servidor_Principal = new ServerJuego(3000);
         Servidor_Principal.iniciar();
         ServidorAcceptar = new Thread(this);
+        Check = new Thread(this);
         ServidorAcceptar.start();
     }
 

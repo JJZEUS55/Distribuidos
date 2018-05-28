@@ -54,13 +54,35 @@ public class ClienteJuego {
         tem1.append(IP);
         tem1.append(":");
         tem1.append(Puerto_Token);
-        System.out.println("iniciar: "+ tem1);
+        System.out.println("iniciar: "+ tem1.toString());
         enviarMSJ(tem1.toString());
-        jugador =  Integer.valueOf(recibirMSJ()); // recibe su numero de jugador
-        System.out.println("iniciar: jugador "+ jugador);
-        IP_siguiente = recibirMSJ(); //IP del siguiente
-        puerto_siguiente = Integer.valueOf(recibirMSJ()); // puerto del siguiente       
+                
     }
+    
+    public int IterprestarMensaje()
+    {
+        //System.out.println("InterpretarMensaje");
+        String buffer; 
+        buffer = recibirMSJ();
+        System.out.println(buffer);
+        switch(buffer)
+        {
+            case "info":
+                jugador =  Integer.valueOf(recibirMSJ()); // recibe su numero de jugador
+                IP_siguiente = recibirMSJ(); //IP del siguiente
+                puerto_siguiente = Integer.valueOf(recibirMSJ()); // puerto del siguiente
+                System.out.println("InterpretarMensaje: jugador "+ jugador);
+                System.out.println("InterpretarMensaje: recibiendo informacion del siguiente Jugador["+IP_siguiente+"]["+puerto_siguiente+"]");               
+                return 1;
+            case "check":
+                System.out.println("InterpretarMensaje: check");
+                break;
+            default:
+                return 0;
+        }
+        return 0;
+    }
+    
     
     public void enviarMSJ(String buffer)
     {
@@ -79,7 +101,7 @@ public class ClienteJuego {
         try {
             buffer = Entrada.readUTF();
         } catch (UnknownHostException e) {
-            System.out.println("El host no existe o no está activo.");
+            System.out.println("El host no existe o no está activo.");    
         } catch (IOException e) {
             System.out.println("Error de entrada/salida.");
         }
@@ -108,9 +130,10 @@ public class ClienteJuego {
 
     public void setPuerto_siguiente(int puerto_siguiente) {
         this.puerto_siguiente = puerto_siguiente;
+    }   
+
+    public String getIP() {
+        return IP;
     }
-    
-    
-    
     
 }

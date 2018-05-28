@@ -1,7 +1,6 @@
 
 package token;
 
-import NuevoServer.AlgoritmoNS;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,6 +21,7 @@ public class tokenServer
     private DataInputStream entrada;
     private DataOutputStream salida;
     private int prioridad; 
+    private String IP;
 
 
     private boolean inicioF; 
@@ -44,7 +44,7 @@ public class tokenServer
         System.out.println("Servidor en funcionamiento");            
     }
     
-    public void acceptar() 
+    public int acceptar() 
     {
         try 
         {
@@ -54,7 +54,8 @@ public class tokenServer
             System.out.println("Canales listos");
         } catch (IOException e) {
             System.out.println("Error de entrada/salida.");
-        }      
+        }    
+        return 1;
     }
            
    public String EsperarMensaje() //puede ser el roken o los mensajes para seleccionar el nuevo servidor
@@ -62,6 +63,7 @@ public class tokenServer
        int comparador;
        String buffer;   
        buffer = recibirMSJ();
+       System.out.println(buffer);
        if(buffer.equals("Token"))
        {         
            System.out.println("Tengo el poder");
@@ -69,18 +71,13 @@ public class tokenServer
            return "Token";
        }       
        else
-       {
+       {           
            System.out.println("Mi prioridad: " + prioridad);
-           if(buffer.equals("fin")) // reenvia fin al siguiente
-            {      
-                System.out.println("Iniciando fin");
-                if(inicioF == true)// significa que fin llego al jugador que lo inicio, y ya no es necesario reenviar fin
-                {
-                    System.out.println("Finalizado");
-                    return "acaba";
-                }
-                return("fin");                
-            }
+           if(buffer.startsWith("fin")) // reenvia fin al siguiente
+            {               
+                System.out.println("Iniciando "+buffer);                
+                return(buffer);                
+            }            
             comparador = Integer.valueOf(buffer);
             if(prioridad > comparador) //Enviar su prioridad
             {
@@ -90,14 +87,13 @@ public class tokenServer
             else if(comparador == prioridad) // seleccionado como servidor, enviar fin
             {
                 System.out.println("Soy el nuevo servidor");
-                inicioF = true;
-                return("fin");                    
+                return("fin:"+IP);                    
             }
             else
             {
                 System.out.println("No puedo ser servidor");
                 return (buffer);//reenvia la prioridad del jugador anterior
-            }
+            }            
        }
    }
       
@@ -136,6 +132,15 @@ public class tokenServer
     public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
     }
+
+    public String getIP() {
+        return IP;
+    }
+
+    public void setIP(String IP) {
+        this.IP = IP;
+    }
+    
     
 
 }
