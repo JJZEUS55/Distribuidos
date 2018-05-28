@@ -67,7 +67,7 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
 
     private void jButton_IniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciarActionPerformed
         // TODO add your handling code here:
-        Servidor_Principal.iniciarJuego();
+        
     }//GEN-LAST:event_jButton_IniciarActionPerformed
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {

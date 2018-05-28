@@ -22,9 +22,9 @@ public class tokenServer
     private DataOutputStream salida;
     private int prioridad; 
     private String IP;
+    private String IPNuevoServer;
+    private boolean reenvioFinal = false;
 
-
-    private boolean inicioF; 
     
     public tokenServer(int puerto) 
     {
@@ -58,11 +58,12 @@ public class tokenServer
         return 1;
     }
            
-   public String EsperarMensaje() //puede ser el roken o los mensajes para seleccionar el nuevo servidor
+   public String EsperarMensaje() //puede ser el token o los mensajes para seleccionar el nuevo servidor
    {
        int comparador;
        String buffer;   
        buffer = recibirMSJ();
+       
        System.out.println(buffer);
        if(buffer.equals("Token"))
        {         
@@ -72,24 +73,27 @@ public class tokenServer
        }       
        else
        {           
-           System.out.println("Mi prioridad: " + prioridad);
            if(buffer.startsWith("fin")) // reenvia fin al siguiente
             {               
-                System.out.println("Iniciando "+buffer);                
+                IPNuevoServer = buffer.substring(4);
+                System.out.println("IP del nuevo server: "+IPNuevoServer);                
                 return(buffer);                
             }            
             comparador = Integer.valueOf(buffer);
             if(prioridad > comparador) //Enviar su prioridad
             {
-                System.out.println("Me propongo("+prioridad+" > "+comparador+")");
+                System.out.println("Me propongo(propia:"+prioridad+" > otro:"+comparador+")");
                 return(""+prioridad);
             }
             else if(comparador == prioridad) // seleccionado como servidor, enviar fin
             {
-                System.out.println("Soy el nuevo servidor");
+                System.out.println("Soy el nuevo servidor");               
+                if (reenvioFinal) 
+                    return "nada";        
+                reenvioFinal = true;
                 return("fin:"+IP);                    
             }
-            else
+            else 
             {
                 System.out.println("No puedo ser servidor");
                 return (buffer);//reenvia la prioridad del jugador anterior

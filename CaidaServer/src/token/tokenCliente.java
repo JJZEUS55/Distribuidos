@@ -49,7 +49,7 @@ public class tokenCliente
         System.out.println("accion: ->" +cadena);
         if(cadena.startsWith("fin") && CancelarReenvio == true)
         {
-            System.out.println("accion: end");
+            System.out.println("accion: end");           
         }
         else if(cadena.startsWith("fin"))
         {
@@ -57,6 +57,8 @@ public class tokenCliente
             System.out.println("accion: reenviar y cancelando reenvio "+cadena);        
             enviarMSJ(cadena);            
         }
+        else if(cadena.equals("nada"))
+            System.out.println("--");
         else
         {
             System.out.println("accion reenviar: "+cadena);

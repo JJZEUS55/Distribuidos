@@ -59,9 +59,8 @@ public class ClienteJuego {
                 
     }
     
-    public int IterprestarMensaje()
-    {
-        //System.out.println("InterpretarMensaje");
+    public int IterprestarMensaje() //aqui se puede saber si el servidor principal murio
+    {                               //al caerse el buffer tendra basura y caera en el caso de defaul 0
         String buffer; 
         buffer = recibirMSJ();
         System.out.println(buffer);

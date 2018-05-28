@@ -40,7 +40,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             
             if(bandera == false)
             {
-                //try {Thread.sleep(10000);} catch(Exception e){}           
                 System.out.println("Iniciando Hilo");
                 HiloEsperaToken.start();      
                 bandera = true;
@@ -56,7 +55,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         }
         while(hilo == HiloEsperaToken) // este hilo es para recibir los mensajes que se mandan entre los jugadores
         {
-            System.out.println("dkhnfdkslifughsdklfighsdlfg");
             buffer = Servidor.EsperarMensaje();           
             jButton_token.setEnabled(Servidor.isToken());
             if(!buffer.equals("Token"))
@@ -78,11 +76,10 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             {
                 System.out.println("El servidor murio");
                 Cliente.enviarMSJ(jTextField_prioridad.getText());
-                HiloesperarMensajeSP.stop();
+                HiloesperarMensajeSP.stop(); // con interrupt se cicla y no muere el hilo
+                HiloesperarMensajeSP.interrupt();
             }
-
-        }
-        
+        }        
     }
     
     @SuppressWarnings("unchecked") 
@@ -100,7 +97,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jTextField_prioridad = new javax.swing.JTextField();
-        jButton_pruebaNS = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -133,13 +129,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         jLabel5.setText("Jugador");
 
         jLabel6.setText("Prioridad");
-
-        jButton_pruebaNS.setText("Iniciar Busqueda");
-        jButton_pruebaNS.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_pruebaNSActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -177,10 +166,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                                     .addComponent(jLabel2))
                                 .addGap(61, 61, 61)))))
                 .addGap(33, 33, 33))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(99, 99, 99)
-                .addComponent(jButton_pruebaNS)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,9 +195,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 .addComponent(jButtonIniciar)
                 .addGap(13, 13, 13)
                 .addComponent(jButton_token)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton_pruebaNS)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -236,11 +219,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         jButton_token.setEnabled(false);
     }//GEN-LAST:event_jButton_tokenActionPerformed
 
-    private void jButton_pruebaNSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_pruebaNSActionPerformed
-        System.out.println("Nuevoserver");
-        Cliente.enviarMSJ(jTextField_prioridad.getText());
-    }//GEN-LAST:event_jButton_pruebaNSActionPerformed
-
     
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
@@ -251,7 +229,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField PuertoPropio;
     private javax.swing.JButton jButtonIniciar;
-    private javax.swing.JButton jButton_pruebaNS;
     private javax.swing.JButton jButton_token;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

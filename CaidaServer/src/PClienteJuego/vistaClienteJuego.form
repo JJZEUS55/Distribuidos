@@ -68,11 +68,6 @@
               </Group>
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
           </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="99" max="-2" attributes="0"/>
-              <Component id="jButton_pruebaNS" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -109,9 +104,7 @@
               <Component id="jButtonIniciar" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
               <Component id="jButton_token" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jButton_pruebaNS" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -174,14 +167,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField_prioridad">
-    </Component>
-    <Component class="javax.swing.JButton" name="jButton_pruebaNS">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Iniciar Busqueda"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_pruebaNSActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

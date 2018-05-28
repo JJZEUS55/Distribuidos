@@ -95,27 +95,16 @@ public class ServerJuego {
         System.out.println("-------------");
     }
     
-    public void iniciarJuego() // para enviar informacion sobre el siguiente jugador
-    {
+    public void iniciarJuego() // sin uso de momento pero
+    {                          //se puede adaptar para enviar las cartas
         Jugadores x; // solo para almacenar de manera temporal el jugador que se esta usando en el ciclo
         for (int i = 0; i < ConjuntoJugadores.size(); i++) 
         {
             x = ConjuntoJugadores.get(i);
             entrada = x.getEntrada();
             salida = x.getSalida();
-            enviarMSJ("info");
-            if (i < ConjuntoJugadores.size()-1) 
-            { 
-                enviarMSJ(String.valueOf(x.getJugador()));
-                enviarMSJ(ConjuntoJugadores.get(i+1).getIp());
-                enviarMSJ(String.valueOf(ConjuntoJugadores.get(i+1).getPuerto()));
-            }
-            else
-            {
-                enviarMSJ(String.valueOf(x.getJugador()));
-                enviarMSJ(ConjuntoJugadores.get(0).getIp());
-                enviarMSJ(String.valueOf(ConjuntoJugadores.get(0).getPuerto()));            
-            }            
+            enviarMSJ("mazo");
+                        
         }
     }
           
