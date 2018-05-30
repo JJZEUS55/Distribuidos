@@ -24,12 +24,14 @@ public class tokenServer
     private String IP;
     private String IPNuevoServer;
     private boolean reenvioFinal = false;
+    private boolean elegido; // true si se vuelve el nuevo servidor
 
     
     public tokenServer(int puerto) 
     {
         this.PUERTO = puerto;   
         this.token = false;
+        this.elegido = false;
     }
     
     public void iniciar() // inicializa el servidor y comienza el accept
@@ -88,8 +90,10 @@ public class tokenServer
             else if(comparador == prioridad) // seleccionado como servidor, enviar fin
             {
                 System.out.println("Soy el nuevo servidor");               
-                if (reenvioFinal) 
-                    return "nada";        
+                if (reenvioFinal){
+                    elegido = true;
+                    return "nada";
+                } 
                 reenvioFinal = true;
                 return("fin:"+IP);                    
             }
@@ -143,6 +147,18 @@ public class tokenServer
 
     public void setIP(String IP) {
         this.IP = IP;
+    }
+
+    public boolean isElegido() {
+        return elegido;
+    }
+
+    public void setElegido(boolean elegido) {
+        this.elegido = elegido;
+    }
+
+    public String getIPNuevoServer() {
+        return IPNuevoServer;
     }
     
     

@@ -59,6 +59,16 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             jButton_token.setEnabled(Servidor.isToken());
             if(!buffer.equals("Token"))
                 Cliente.accion(buffer);           
+            if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
+            {
+                HiloEsperaToken.interrupt();
+                System.out.println("Iniciando nuevo servidor......");
+            }
+            else if (Cliente.isCancelarReenvio()) 
+            {
+                HiloEsperaToken.interrupt();
+                System.out.println("Conectando al nuevo servidor("+Servidor.getIPNuevoServer()+")...");
+            }
         }
         while(hilo == HiloesperarMensajeSP)
         {

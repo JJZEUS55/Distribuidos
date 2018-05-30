@@ -94,4 +94,11 @@ public class tokenCliente
     public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
     }
+
+    public boolean isCancelarReenvio() {
+        return CancelarReenvio;
+    }
+    
+    
+    
 }
