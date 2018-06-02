@@ -9,6 +9,7 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
 {
     Thread ServidorAcceptar;
     Thread Check;
+    boolean estado;
     ServerJuego Servidor_Principal;
     
     public vistaServerJuego() 
@@ -19,6 +20,18 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         ServidorAcceptar = new Thread(this);
         Check = new Thread(this);
         ServidorAcceptar.start();
+        estado = false;               
+    }
+    
+    public vistaServerJuego(boolean tokenAnterior) 
+    {
+        initComponents();
+        Servidor_Principal = new ServerJuego(3000);
+        Servidor_Principal.iniciar();
+        ServidorAcceptar = new Thread(this);
+        Check = new Thread(this);
+        ServidorAcceptar.start();
+        estado = tokenAnterior;
     }
 
     @Override

@@ -12,6 +12,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
     Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
     Boolean token = false;
+    Boolean funcionamiento = false;
     int prioridad;
 
     public vistaClienteJuego() 
@@ -58,7 +59,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             jButton_token.setEnabled(Servidor.isToken());
             if(!buffer.equals("Token"))
                 Cliente.accion(buffer);   
-            System.out.println("Ser:" + Servidor.isElegido());
+            System.out.println("token////:" + token);
             if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {  
                 System.out.println("Iniciando nuevo servidor......");
@@ -68,14 +69,12 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 HiloEsperaToken.interrupt();
             }
             else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
-            {
-                
+            {               
                 System.out.println("Conectando al nuevo servidor("+Servidor.getIPNuevoServer()+")...");
                 Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000);
                 Cliente_Principal.iniciar(PuertoPropio.getText());  
                 HiloesperarMensajeSP = new Thread(this);
                 HiloesperarMensajeSP.start();
-                //HiloEsperaToken.interrupt();
             }
         }
         while(hilo == HiloesperarMensajeSP && !hilo.isInterrupted())
@@ -86,10 +85,10 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 Cliente = new tokenCliente(Cliente_Principal.getIP_siguiente(), Cliente_Principal.getPuerto_siguiente());                     
                 Cliente.setPrioridad(prioridad);
                 Servidor.setPrioridad(prioridad);
-                if(Cliente_Principal.getJugador() == 1)
-                    token = true;
+                if(Cliente_Principal.getJugador() == 1){
+                    token = true;                    
+                }
                 jButton_token.setEnabled(token);
-                System.out.println(token);
             }
             else if(estado_mensajes == 0)
             {

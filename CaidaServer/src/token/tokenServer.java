@@ -65,7 +65,6 @@ public class tokenServer
        int comparador;
        String buffer;   
        buffer = recibirMSJ();
-       
        System.out.println(buffer);
        if(buffer.equals("Token"))
        {         
