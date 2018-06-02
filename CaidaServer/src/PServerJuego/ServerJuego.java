@@ -92,16 +92,12 @@ public class ServerJuego {
         System.out.println("-------------");
     }
     
-    public void iniciarJuego() // sin uso de momento pero
-    {                          //se puede adaptar para enviar las cartas
-        Jugadores x; // solo para almacenar de manera temporal el jugador que se esta usando en el ciclo
-        for (int i = 0; i < ConjuntoJugadores.size(); i++) 
+    public void Mensajes() // 
+    {               
+        String buffer = recibirMSJ();
+        switch(buffer)
         {
-            x = ConjuntoJugadores.get(i);
-            entrada = x.getEntrada();
-            salida = x.getSalida();
-            enviarMSJ("mazo");
-                        
+            
         }
     }
           

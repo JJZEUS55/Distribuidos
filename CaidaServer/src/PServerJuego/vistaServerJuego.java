@@ -42,7 +42,7 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         {
             try {
                 Servidor_Principal.acceptar();
-                Thread.sleep(500);
+                Thread.sleep(500); //el sleep esta ya que en el momento de la reconexion todos los clientes se conectan de golpe y causan problemas al momento de responderles a donde conectarse
             } catch (Exception e) {System.out.println(e);}
         }
     }

@@ -185,6 +185,11 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         });
 
         jButton_PedirCartas.setText("Pedir Cartas");
+        jButton_PedirCartas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_PedirCartasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -251,6 +256,10 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         Servidor.setToken(false);
         jButton_token.setEnabled(false);
     }//GEN-LAST:event_jButton_tokenActionPerformed
+
+    private void jButton_PedirCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PedirCartasActionPerformed
+        Cliente_Principal.enviarMSJ("cartas");
+    }//GEN-LAST:event_jButton_PedirCartasActionPerformed
 
     
     public static void main(String args[]) {
