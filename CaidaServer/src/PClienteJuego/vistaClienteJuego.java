@@ -11,7 +11,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     Thread HiloEsperaToken; //Hilo del servidor para esperar el token
     Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
     Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
-    Boolean token = false;
     Boolean funcionamiento = false;
     int prioridad;
 
@@ -55,11 +54,10 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         }
         while(hilo == HiloEsperaToken && !hilo.isInterrupted()) // este hilo es para recibir los mensajes que se mandan entre los jugadores
         {
-            buffer = Servidor.EsperarMensaje();           
+            buffer = Servidor.EsperarMensaje(); 
             jButton_token.setEnabled(Servidor.isToken());
             if(!buffer.equals("Token"))
                 Cliente.accion(buffer);   
-            System.out.println("token////:" + token);
             if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {  
                 System.out.println("Iniciando nuevo servidor......");
@@ -85,10 +83,11 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 Cliente = new tokenCliente(Cliente_Principal.getIP_siguiente(), Cliente_Principal.getPuerto_siguiente());                     
                 Cliente.setPrioridad(prioridad);
                 Servidor.setPrioridad(prioridad);
-                if(Cliente_Principal.getJugador() == 1){
-                    token = true;                    
+                if(Cliente_Principal.getJugador() == 1 && funcionamiento == false){                            
+                    Servidor.setToken(true);
                 }
-                jButton_token.setEnabled(token);
+                jButton_token.setEnabled(Servidor.isToken());
+                funcionamiento = true;
             }
             else if(estado_mensajes == 0)
             {
@@ -249,6 +248,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
 
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
         Cliente.enviarToken();
+        Servidor.setToken(false);
         jButton_token.setEnabled(false);
     }//GEN-LAST:event_jButton_tokenActionPerformed
 

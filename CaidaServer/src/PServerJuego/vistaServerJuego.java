@@ -40,7 +40,10 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Thread hilo = Thread.currentThread();
         while(hilo == ServidorAcceptar)
         {
-            Servidor_Principal.acceptar();
+            try {
+                Servidor_Principal.acceptar();
+                Thread.sleep(500);
+            } catch (Exception e) {System.out.println(e);}
         }
     }
     @SuppressWarnings("unchecked")

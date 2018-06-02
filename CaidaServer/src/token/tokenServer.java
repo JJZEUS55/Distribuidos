@@ -132,6 +132,9 @@ public class tokenServer
     public boolean isToken() {
         return token;
     }
+    public void setToken(boolean token) {
+        this.token = token;
+    }
 
     public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
