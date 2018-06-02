@@ -2,6 +2,7 @@
 package PServerJuego;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.Socket;
 
 /**
  *
@@ -14,6 +15,7 @@ public class Jugadores
     private String ip;
     private DataInputStream entrada;
     private DataOutputStream salida;
+    private Socket sock;
 
     public int getJugador() {
         return jugador;
@@ -53,6 +55,14 @@ public class Jugadores
 
     public void setSalida(DataOutputStream salida) {
         this.salida = salida;
+    }
+
+    public Socket getSock() {
+        return sock;
+    }
+
+    public void setSock(Socket sock) {
+        this.sock = sock;
     }
     
     

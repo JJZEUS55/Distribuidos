@@ -7,20 +7,24 @@ package PServerJuego;
  */
 public class vistaServerJuego extends javax.swing.JFrame implements Runnable
 {
-    Thread ServidorAcceptar;
-    Thread Check;
+    Thread Hilo_ServidorAcceptar;
+    Thread Hilo_ServidorEsperarMensajes;    
     boolean estado;
-    ServerJuego Servidor_Principal;
+    boolean iniciar;
+    static ServerJuego Servidor_Principal;
+    
     
     public vistaServerJuego() 
     {
         initComponents();
         Servidor_Principal = new ServerJuego(3000);
         Servidor_Principal.iniciar();
-        ServidorAcceptar = new Thread(this);
-        Check = new Thread(this);
-        ServidorAcceptar.start();
-        estado = false;               
+        Hilo_ServidorAcceptar = new Thread(this);
+        Hilo_ServidorEsperarMensajes = new Thread(this);
+        Hilo_ServidorAcceptar.start();
+        
+        estado = false;   
+        iniciar = false;
     }
     
     public vistaServerJuego(boolean tokenAnterior) 
@@ -28,23 +32,30 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         initComponents();
         Servidor_Principal = new ServerJuego(3000);
         Servidor_Principal.iniciar();
-        ServidorAcceptar = new Thread(this);
-        Check = new Thread(this);
-        ServidorAcceptar.start();
+        Hilo_ServidorAcceptar = new Thread(this);
+        Hilo_ServidorEsperarMensajes = new Thread(this);
+        Hilo_ServidorAcceptar.start();
+        
         estado = tokenAnterior;
+        iniciar = false;
     }
 
     @Override
     public void run() 
     {
+        int cont = 0;
         Thread hilo = Thread.currentThread();
-        while(hilo == ServidorAcceptar)
+        while(hilo == Hilo_ServidorAcceptar && !hilo.isInterrupted())
         {
+            cont++;
             try {
                 Servidor_Principal.acceptar();
                 Thread.sleep(500); //el sleep esta ya que en el momento de la reconexion todos los clientes se conectan de golpe y causan problemas al momento de responderles a donde conectarse
             } catch (Exception e) {System.out.println(e);}
-        }
+            
+        }    
+
+        
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -82,7 +93,6 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_IniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciarActionPerformed
-        // TODO add your handling code here:
         
     }//GEN-LAST:event_jButton_IniciarActionPerformed
     public static void main(String args[]) {
