@@ -10,7 +10,6 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
     Thread Hilo_ServidorAcceptar;
     Thread Hilo_ServidorEsperarMensajes;    
     boolean estado;
-    boolean iniciar;
     static ServerJuego Servidor_Principal;
     
     
@@ -24,7 +23,7 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Hilo_ServidorAcceptar.start();
         
         estado = false;   
-        iniciar = false;
+
     }
     
     public vistaServerJuego(boolean tokenAnterior) 
@@ -35,19 +34,19 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Hilo_ServidorAcceptar = new Thread(this);
         Hilo_ServidorEsperarMensajes = new Thread(this);
         Hilo_ServidorAcceptar.start();
-        
         estado = tokenAnterior;
-        iniciar = false;
+
     }
 
     @Override
     public void run() 
     {
-        int cont = 0;
+        
         Thread hilo = Thread.currentThread();
+        if(estado == true)
+            System.out.println("Tengo el token");
         while(hilo == Hilo_ServidorAcceptar && !hilo.isInterrupted())
         {
-            cont++;
             try {
                 Servidor_Principal.acceptar();
                 Thread.sleep(500); //el sleep esta ya que en el momento de la reconexion todos los clientes se conectan de golpe y causan problemas al momento de responderles a donde conectarse
