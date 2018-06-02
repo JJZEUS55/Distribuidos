@@ -73,13 +73,10 @@ public class ClienteJuego {
                 System.out.println("InterpretarMensaje: jugador "+ jugador);
                 System.out.println("InterpretarMensaje: recibiendo informacion del siguiente Jugador["+IP_siguiente+"]["+puerto_siguiente+"]");               
                 return 1;
-            case "check":
-                System.out.println("InterpretarMensaje: check");
-                break;
             default:
                 return 0;
         }
-        return 0;
+
     }
     
     

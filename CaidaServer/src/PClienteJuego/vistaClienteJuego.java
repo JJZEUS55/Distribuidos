@@ -1,4 +1,5 @@
 package PClienteJuego;
+import PServerJuego.vistaServerJuego;
 import token.tokenCliente;
 import token.tokenServer;
 
@@ -36,8 +37,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         while(hilo == HiloEsperaConTok) // Este hilo se puede parar por completo tan pronto acepta ya que solo requiere la primer conexion
         {
             Servidor.acceptar();
-            System.out.println("...");
-            
+            System.out.println("...");         
             if(bandera == false)
             {
                 System.out.println("Iniciando Hilo");
@@ -51,26 +51,34 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 HiloEsperaToken.start();
                 System.out.println("Reiniciando hilo");
             }
-
         }
-        while(hilo == HiloEsperaToken) // este hilo es para recibir los mensajes que se mandan entre los jugadores
+        while(hilo == HiloEsperaToken && !hilo.isInterrupted()) // este hilo es para recibir los mensajes que se mandan entre los jugadores
         {
             buffer = Servidor.EsperarMensaje();           
             jButton_token.setEnabled(Servidor.isToken());
             if(!buffer.equals("Token"))
-                Cliente.accion(buffer);           
+                Cliente.accion(buffer);   
+            System.out.println("Ser:" + Servidor.isElegido());
             if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
-            {
-                HiloEsperaToken.interrupt();
+            {  
                 System.out.println("Iniciando nuevo servidor......");
-            }
-            else if (Cliente.isCancelarReenvio()) 
-            {
+                vistaServerJuego n = new vistaServerJuego();
+                n.setVisible(true);
+                this.setVisible(false);
                 HiloEsperaToken.interrupt();
+            }
+            else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
+            {
+                
                 System.out.println("Conectando al nuevo servidor("+Servidor.getIPNuevoServer()+")...");
+                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000);
+                Cliente_Principal.iniciar(PuertoPropio.getText());  
+                HiloesperarMensajeSP = new Thread(this);
+                HiloesperarMensajeSP.start();
+                //HiloEsperaToken.interrupt();
             }
         }
-        while(hilo == HiloesperarMensajeSP)
+        while(hilo == HiloesperarMensajeSP && !hilo.isInterrupted())
         {
             estado_mensajes = Cliente_Principal.IterprestarMensaje();
             if( estado_mensajes == 1 )
@@ -81,12 +89,12 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 if(Cliente_Principal.getJugador() == 1)
                     token = true;
                 jButton_token.setEnabled(token);
+                System.out.println(token);
             }
             else if(estado_mensajes == 0)
             {
                 System.out.println("El servidor murio");
                 Cliente.enviarMSJ(jTextField_prioridad.getText());
-                HiloesperarMensajeSP.stop(); // con interrupt se cicla y no muere el hilo
                 HiloesperarMensajeSP.interrupt();
             }
         }        
@@ -96,25 +104,21 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jPanel_inicio = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField_prioridad = new javax.swing.JTextField();
         PuertoPropio = new javax.swing.JTextField();
         jLabelinfo = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jButtonIniciar = new javax.swing.JButton();
-        jButton_token = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField_prioridad = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jButton_token = new javax.swing.JButton();
+        jButton_PedirCartas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("IP");
-
-        jLabel2.setText("Puerto");
-
-        jLabel3.setText("Info jugador siguiente");
+        jLabel6.setText("Prioridad");
 
         PuertoPropio.setText("300");
 
@@ -129,82 +133,103 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             }
         });
 
-        jButton_token.setText("Token");
+        jLabel5.setText("Jugador");
+
+        javax.swing.GroupLayout jPanel_inicioLayout = new javax.swing.GroupLayout(jPanel_inicio);
+        jPanel_inicio.setLayout(jPanel_inicioLayout);
+        jPanel_inicioLayout.setHorizontalGroup(
+            jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_inicioLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_inicioLayout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabelinfo))
+                    .addGroup(jPanel_inicioLayout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jButtonIniciar))
+                    .addGroup(jPanel_inicioLayout.createSequentialGroup()
+                        .addGroup(jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(PuertoPropio)
+                            .addComponent(jTextField_prioridad, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel_inicioLayout.setVerticalGroup(
+            jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_inicioLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelinfo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(PuertoPropio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(6, 6, 6)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel_inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTextField_prioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addComponent(jButtonIniciar)
+                .addGap(75, 75, 75))
+        );
+
+        jButton_token.setText("Seleccionar carta");
         jButton_token.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_tokenActionPerformed(evt);
             }
         });
 
-        jLabel5.setText("Jugador");
+        jButton_PedirCartas.setText("Pedir Cartas");
 
-        jLabel6.setText("Prioridad");
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton_token)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton_PedirCartas)
+                        .addGap(19, 19, 19))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jButton_PedirCartas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addComponent(jButton_token)
+                .addGap(33, 33, 33))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 35, Short.MAX_VALUE)
-                        .addComponent(jButton_token, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(61, 61, 61)
-                                .addComponent(jLabelinfo))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(62, 62, 62)
-                                .addComponent(jButtonIniciar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel6))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(PuertoPropio, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
-                                    .addComponent(jTextField_prioridad))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addGap(61, 61, 61)))))
-                .addGap(33, 33, 33))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel_inicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabelinfo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(PuertoPropio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(jTextField_prioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(7, 7, 7)))
-                .addComponent(jButtonIniciar)
-                .addGap(13, 13, 13)
-                .addComponent(jButton_token)
+                .addGap(22, 22, 22)
+                .addComponent(jPanel_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -212,7 +237,6 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
-        int t;
         Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server
         Cliente_Principal = new ClienteJuego("localhost", 3000); //Puerto para servidor y cliente principal 3000
         Servidor.iniciar();
@@ -221,7 +245,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         HiloEsperaConTok.start();
         HiloesperarMensajeSP.start();
         Servidor.setIP(Cliente_Principal.getIP());
-        jButtonIniciar.setEnabled(false);
+        jPanel_inicio.setVisible(false);
     }//GEN-LAST:event_jButtonIniciarActionPerformed
 
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
@@ -239,14 +263,14 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField PuertoPropio;
     private javax.swing.JButton jButtonIniciar;
+    private javax.swing.JButton jButton_PedirCartas;
     private javax.swing.JButton jButton_token;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabelinfo;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel_inicio;
     private javax.swing.JTextField jTextField_prioridad;
     // End of variables declaration//GEN-END:variables
 }

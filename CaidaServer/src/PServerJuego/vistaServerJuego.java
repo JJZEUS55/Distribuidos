@@ -50,16 +50,16 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(157, 157, 157)
+                .addGap(46, 46, 46)
                 .addComponent(jButton_Iniciar)
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(121, 121, 121)
+                .addGap(42, 42, 42)
                 .addComponent(jButton_Iniciar)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         pack();

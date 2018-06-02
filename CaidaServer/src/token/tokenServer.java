@@ -89,7 +89,8 @@ public class tokenServer
             }
             else if(comparador == prioridad) // seleccionado como servidor, enviar fin
             {
-                System.out.println("Soy el nuevo servidor");               
+                System.out.println("Soy el nuevo servidor");   
+                elegido = true;
                 if (reenvioFinal){
                     elegido = true;
                     return "nada";
@@ -131,10 +132,6 @@ public class tokenServer
     
     public boolean isToken() {
         return token;
-    }
-
-    public void setToken(boolean token) {
-        this.token = token;
     }
 
     public void setPrioridad(int prioridad) {

@@ -77,9 +77,6 @@ public class ServerJuego {
                 enviarMSJ(String.valueOf(JugadorActual.getPuerto()));
                 
             } 
-//            if (i == 0) {
-//                System.out.println("Sin enviar");
-//            }
             else if(i == ConjuntoJugadores.size()-1 && (i != 0) ) // ultimo
             {
                 System.out.println("acceptar: ultimo i="+i);
