@@ -18,7 +18,7 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
     public vistaServerJuego() 
     {
         initComponents();
-        Servidor_Principal = new ServerJuego(3000);
+        Servidor_Principal = new ServerJuego(3100);
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar = new Thread(this);
         HiloLamport = new Thread(this);
@@ -35,7 +35,6 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar = new Thread(this);
         Hilo_ServidorAcceptar.start();
-        HiloLamport.start();
         estado = tokenAnterior;
 
     }
