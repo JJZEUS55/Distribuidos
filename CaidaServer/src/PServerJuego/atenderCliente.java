@@ -36,6 +36,8 @@ public class atenderCliente extends Thread{
                     if (vistaServerJuego.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
                         System.out.println("Cambiar de ronda");
                     }
+                    enviarMSJ("hora");
+                    enviarMSJ(vistaServerJuego.rel.imprimeHora());
                     enviarMSJ("cartas"); 
                     
                     break;

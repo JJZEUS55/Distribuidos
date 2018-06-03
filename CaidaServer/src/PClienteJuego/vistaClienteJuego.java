@@ -1,5 +1,6 @@
 package PClienteJuego;
 import PServerJuego.vistaServerJuego;
+import Reloj.reloj;
 import token.tokenCliente;
 import token.tokenServer;
 
@@ -10,10 +11,11 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     ClienteJuego Cliente_Principal;
     Thread HiloEsperaToken; //Hilo del servidor para esperar el token
     Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
-    Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
+    Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego
+    Thread HiloLamport;
     Boolean funcionamiento = false;
     int prioridad;
-
+    static reloj rel = new reloj();
     public vistaClienteJuego() 
     {
         initComponents();
@@ -24,17 +26,21 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         HiloEsperaConTok = new Thread(this);
         HiloesperarMensajeSP = new Thread(this);
         HiloEsperaToken = new Thread(this);
+        HiloLamport = new Thread(this);
+        HiloLamport.start();
                 
     }
     
     @Override
     public void run() 
     {
+        
         String buffer;
         int estado_mensajes;
         boolean bandera = false;
+        
         Thread hilo = Thread.currentThread();
-        while(hilo == HiloEsperaConTok) // Este hilo se puede parar por completo tan pronto acepta ya que solo requiere la primer conexion
+        while(hilo == HiloEsperaConTok) 
         {
             Servidor.acceptar();
             System.out.println("...");         
@@ -97,7 +103,14 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 Cliente.enviarMSJ(jTextField_prioridad.getText());
                 HiloesperarMensajeSP.interrupt();
             }
-        }        
+        }
+        while (hilo == HiloLamport)
+        {
+            rel.pasarTiempo();
+            jLabel_Reloj.setText(rel.imprimeHora());
+            try {Thread.sleep(1000);}
+            catch (InterruptedException e){}
+        }
     }
     
     @SuppressWarnings("unchecked") 
@@ -115,6 +128,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
         jPanel2 = new javax.swing.JPanel();
         jButton_token = new javax.swing.JButton();
         jButton_PedirCartas = new javax.swing.JButton();
+        jLabel_Reloj = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -193,28 +207,33 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             }
         });
 
+        jLabel_Reloj.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel_Reloj.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel_Reloj.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel_Reloj, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton_token)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton_PedirCartas)
-                        .addGap(19, 19, 19))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton_token))
+                    .addComponent(jButton_PedirCartas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addGap(22, 22, 22)
                 .addComponent(jButton_PedirCartas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addComponent(jButton_token)
-                .addGap(33, 33, 33))
+                .addGap(28, 28, 28)
+                .addComponent(jLabel_Reloj, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -280,6 +299,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel_Reloj;
     private javax.swing.JLabel jLabelinfo;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel_inicio;

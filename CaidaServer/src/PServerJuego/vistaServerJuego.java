@@ -1,6 +1,8 @@
 
 package PServerJuego;
 
+import Reloj.reloj;
+
 /**
  *
  * @author Alan
@@ -8,10 +10,10 @@ package PServerJuego;
 public class vistaServerJuego extends javax.swing.JFrame implements Runnable
 {
     Thread Hilo_ServidorAcceptar;
-    Thread Hilo_ServidorEsperarMensajes;    
+    Thread HiloLamport;
     boolean estado;
     static ServerJuego Servidor_Principal;
-    
+    static reloj rel = new reloj();
     
     public vistaServerJuego() 
     {
@@ -19,8 +21,9 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Servidor_Principal = new ServerJuego(3000);
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar = new Thread(this);
-        Hilo_ServidorEsperarMensajes = new Thread(this);
-        Hilo_ServidorAcceptar.start();    
+        HiloLamport = new Thread(this);
+        Hilo_ServidorAcceptar.start(); 
+        HiloLamport.start();
         estado = false;   
 
     }
@@ -31,7 +34,6 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
         Servidor_Principal = new ServerJuego(3000);
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar = new Thread(this);
-        Hilo_ServidorEsperarMensajes = new Thread(this);
         Hilo_ServidorAcceptar.start();
         estado = tokenAnterior;
 
@@ -49,9 +51,15 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
             try {
                 Servidor_Principal.acceptar();
                 Thread.sleep(500); //el sleep esta ya que en el momento de la reconexion todos los clientes se conectan de golpe y causan problemas al momento de responderles a donde conectarse
-            } catch (InterruptedException e) {System.out.println(e);}
-            
+            } catch (InterruptedException e) {System.out.println(e);}            
         }    
+        while(hilo == HiloLamport)
+        {
+            rel.pasarTiempo();
+            jLabel_Reloj.setText(rel.imprimeHora());
+            try {Thread.sleep(1000);}
+            catch (InterruptedException e){}
+        }
 
         
     }
@@ -59,40 +67,37 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton_Iniciar = new javax.swing.JButton();
+        jLabel_Reloj = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton_Iniciar.setText("Iniciar Juego");
-        jButton_Iniciar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_IniciarActionPerformed(evt);
-            }
-        });
+        jLabel_Reloj.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel_Reloj.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel_Reloj.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addComponent(jButton_Iniciar)
-                .addContainerGap(45, Short.MAX_VALUE))
+            .addGap(0, 184, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(24, 24, 24)
+                    .addComponent(jLabel_Reloj, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(25, 25, 25)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(jButton_Iniciar)
-                .addContainerGap(45, Short.MAX_VALUE))
+            .addGap(0, 110, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(24, 24, 24)
+                    .addComponent(jLabel_Reloj, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                    .addGap(24, 24, 24)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton_IniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciarActionPerformed
-        
-    }//GEN-LAST:event_jButton_IniciarActionPerformed
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
             new vistaServerJuego().setVisible(true);
@@ -100,6 +105,6 @@ public class vistaServerJuego extends javax.swing.JFrame implements Runnable
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_Iniciar;
+    private javax.swing.JLabel jLabel_Reloj;
     // End of variables declaration//GEN-END:variables
 }

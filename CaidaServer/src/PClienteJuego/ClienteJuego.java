@@ -62,6 +62,7 @@ public class ClienteJuego {
     public int IterprestarMensaje() //aqui se puede saber si el servidor principal murio
     {                               //al caerse el buffer tendra basura y caera en el caso de defaul 0
         String buffer; 
+        
         buffer = recibirMSJ();
         System.out.println("Del server:"+buffer);
         switch(buffer)
@@ -80,7 +81,9 @@ public class ClienteJuego {
                 System.out.println("InterprentarMensje: cartas del servidor");
                 //System.out.println(recibirMSJ());
                 return 3;
-                
+            case "hora":
+                vistaClienteJuego.rel.modificarHora(recibirMSJ());
+                return 4;
             default:
                 return 0;
         }
