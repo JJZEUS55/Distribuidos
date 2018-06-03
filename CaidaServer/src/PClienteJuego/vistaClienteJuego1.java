@@ -1,10 +1,10 @@
 package PClienteJuego;
-import PServerJuego.vistaServerJuego;
+import PServerJuego.vistaServerJuego1;
 import token.tokenCliente;
 import token.tokenServer;
 
 
-public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
+public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     tokenServer Servidor; // tokenserver y cliente se encargan solamente de los procesos relacionados al token
     tokenCliente Cliente;
     ClienteJuego Cliente_Principal;
@@ -14,7 +14,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     Boolean funcionamiento = false;
     int prioridad;
 
-    public vistaClienteJuego() 
+    public vistaClienteJuego1() 
     {
         initComponents();
         setTitle("Jugador");
@@ -52,7 +52,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 System.out.println("Reiniciando hilo");
             }
         }
-        while(hilo == HiloEsperaToken && !hilo.isInterrupted()) // este hilo es para recibir los mensajes que se mandan entre los jugadores
+        while(hilo == HiloEsperaToken && !(HiloEsperaToken.isInterrupted())) // este hilo es para recibir los mensajes que se mandan entre los jugadores
         {
             buffer = Servidor.EsperarMensaje(); 
             jButton_token.setEnabled(Servidor.isToken());
@@ -61,7 +61,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {  
                 System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego n = new vistaServerJuego();
+                vistaServerJuego1 n = new vistaServerJuego1();
                 n.setVisible(true);
                 this.setVisible(false);
                 HiloEsperaToken.interrupt();
@@ -75,7 +75,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
                 HiloesperarMensajeSP.start();
             }
         }
-        while(hilo == HiloesperarMensajeSP && !hilo.isInterrupted())
+        while(hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted()))
         {
             estado_mensajes = Cliente_Principal.IterprestarMensaje();
             if( estado_mensajes == 1 )
@@ -264,7 +264,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
     
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
-            new vistaClienteJuego().setVisible(true);
+            new vistaClienteJuego1().setVisible(true);
         });
     }
 
