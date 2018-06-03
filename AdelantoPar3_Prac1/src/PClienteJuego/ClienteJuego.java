@@ -84,8 +84,7 @@ public class ClienteJuego {
     
     public void enviarMSJ(String buffer)
     {
-        in.Conexion();
-        try {
+         try {
             salida.writeUTF(buffer);
         } catch (UnknownHostException e) {
             System.out.println("El host no existe o no está activo.");
