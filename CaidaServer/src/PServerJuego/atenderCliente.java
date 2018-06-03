@@ -33,6 +33,9 @@ public class atenderCliente extends Thread{
             {
                 case "cartas":
                     System.out.println("pidio cartas");
+                    if (vistaServerJuego.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
+                        System.out.println("Cambiar de ronda");
+                    }
                     enviarMSJ("cartas"); 
                     
                     break;
