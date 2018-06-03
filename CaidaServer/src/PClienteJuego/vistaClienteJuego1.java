@@ -1,4 +1,5 @@
 package PClienteJuego;
+import PServerJuego.vistaServerJuego;
 import PServerJuego.vistaServerJuego1;
 import token.tokenCliente;
 import token.tokenServer;
@@ -56,12 +57,17 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         {
             buffer = Servidor.EsperarMensaje(); 
             jButton_token.setEnabled(Servidor.isToken());
+            jButton_PedirCartas.setEnabled(Servidor.isToken());
             if(!buffer.equals("Token"))
                 Cliente.accion(buffer);   
             if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {  
                 System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego1 n = new vistaServerJuego1();
+//<<<<<<< HEAD:CaidaServer/src/PClienteJuego/vistaClienteJuego1.java
+//                vistaServerJuego1 n = new vistaServerJuego1();
+//=======
+                vistaServerJuego n = new vistaServerJuego(Servidor.isToken());
+//>>>>>>> master:CaidaServer/src/PClienteJuego/vistaClienteJuego.java
                 n.setVisible(true);
                 this.setVisible(false);
                 HiloEsperaToken.interrupt();
@@ -87,6 +93,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                     Servidor.setToken(true);
                 }
                 jButton_token.setEnabled(Servidor.isToken());
+                jButton_PedirCartas.setEnabled(Servidor.isToken());
                 funcionamiento = true;
             }
             else if(estado_mensajes == 0)
@@ -255,10 +262,12 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         Cliente.enviarToken();
         Servidor.setToken(false);
         jButton_token.setEnabled(false);
+        jButton_PedirCartas.setEnabled(false);
     }//GEN-LAST:event_jButton_tokenActionPerformed
 
     private void jButton_PedirCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PedirCartasActionPerformed
         Cliente_Principal.enviarMSJ("cartas");
+        System.out.println("Pidiendo cartas");
     }//GEN-LAST:event_jButton_PedirCartasActionPerformed
 
     

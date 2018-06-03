@@ -63,7 +63,7 @@ public class ClienteJuego {
     {                               //al caerse el buffer tendra basura y caera en el caso de defaul 0
         String buffer; 
         buffer = recibirMSJ();
-        System.out.println(buffer);
+        System.out.println("Del server:"+buffer);
         switch(buffer)
         {
             case "info":
@@ -75,6 +75,12 @@ public class ClienteJuego {
                 return 1;
             case "token":
                 System.out.println("El servidor tenia el token asi que lo ha enviado :v ");
+                return 2;
+            case "cartas":
+                System.out.println("InterprentarMensje: cartas del servidor");
+                //System.out.println(recibirMSJ());
+                return 3;
+                
             default:
                 return 0;
         }
