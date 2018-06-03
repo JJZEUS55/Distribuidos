@@ -16,8 +16,8 @@ public class atenderCliente extends Thread {
     private DataOutputStream salida;
     protected Socket sock;
     private int jugador;
-    private Mazo m;
 
+   
     public atenderCliente(Jugadores j) {
         this.entrada = j.getEntrada();
         this.salida = j.getSalida();
@@ -36,22 +36,22 @@ public class atenderCliente extends Thread {
             switch (buffer) {
                 case "cartas":
                     System.out.println("pidio cartas");
-                    System.out.println("ATC Antes de enviar checando si hay datos: " + this.m.getCartas().get(0).getNombre());
-                    System.out.println("ATC Antes de enviar checando si hay datos: " + this.m.getCartas().get(1).getNombre());
+                    System.out.println("ATC Antes de enviar checando si hay datos: " + vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(0).getNombre());
+                    System.out.println("ATC Antes de enviar checando si hay datos: " + vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(1).getNombre());
                     enviarMSJ("cartas");
-                    enviarCarta(this.m);
+                    enviarCarta(vistaServerJuego1.Servidor_Principal.mazoEnviar);
                     break;
                 case "seleccion1":
                     System.out.println("Desactivando Carta 1");
-                    m.getCartas().get(0).setActiva(false);
+                    vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(0).setActiva(false);
                     break;
                 case "seleccion2":
                     System.out.println("Desactivando Carta 2");
-                    m.getCartas().get(1).setActiva(false);
+                    vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(1).setActiva(false);
                     break;
                 case "seleccion3":
                     System.out.println("Desactivando Carta 3");
-                    m.getCartas().get(2).setActiva(false);
+                    vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(2).setActiva(false);
                     break;
                 case "nuevo":
                     System.out.println("Generando Nuevas Cartas");
@@ -112,14 +112,6 @@ public class atenderCliente extends Thread {
             System.out.println("(REC)Error de entrada/salida.");
         }
         return buffer;
-    }
-
-    public void setMazotoCliente(Mazo m) {
-        System.out.println("------method: setMazoCliente--------\nRecibi el nuevo mazo");
-        this.m = new Mazo();
-        this.m = m;
-        System.out.println("SMC checando si hay datos: " + this.m.getCartas().get(0).getNombre());
-        System.out.println("SMC checando si hay datos: " + this.m.getCartas().get(1).getNombre());
     }
 
 }

@@ -26,7 +26,7 @@ public class ServerJuego {
     private int Num_Jugadores;
     private Jugadores JugadorActual;
     private static ArrayList<Jugadores> ConjuntoJugadores;
-    private Mazo mazoEnviar;
+    protected static Mazo mazoEnviar;
     Thread t;
     atenderCliente t1;
 
@@ -74,8 +74,6 @@ public class ServerJuego {
         JugadorActual.setSock(sock);
         ConjuntoJugadores.add(JugadorActual);
         t = new atenderCliente(JugadorActual);
-        atenderCliente t1 = (atenderCliente) t;
-        t1.setMazotoCliente(mazoEnviar);
         t.start();
         nuevo(buffer);
 
@@ -160,18 +158,9 @@ public class ServerJuego {
 
     public void setMazoServidor(Mazo m) {
         System.out.println("------- Method: setMazoServidor --------- ");
-        if (t == null) {
-            System.out.println("Entrando en null");
-            this.mazoEnviar = m;
-        } else {
-            this.mazoEnviar = m;
-            System.out.println("Entrando en else");
-            t = new atenderCliente(JugadorActual);
-            atenderCliente t1 = (atenderCliente) t;
-            t1.setMazotoCliente(mazoEnviar);
-            t.start();
-            //t1.setMazotoCliente(mazoEnviar);
-        }
+
+        System.out.println("Entrando en null");
+        this.mazoEnviar = m;
 
         System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(0).getNombre());
         System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(1).getNombre());
