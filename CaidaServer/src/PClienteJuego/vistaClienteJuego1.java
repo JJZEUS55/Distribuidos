@@ -817,7 +817,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
         String elegido = grupoRB.getSelection().getActionCommand();
         System.out.println("Boton elegido " + elegido);
-        switch(elegido){
+        switch (elegido) {
             case "seleccion1":
                 mazoCliente.addCartasMazo(mazoRecibido.getCartas().get(0));
                 break;
@@ -831,12 +831,15 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 System.out.println("Esa opcion no existe prro >:v");
                 break;
         }
-        
-        Cliente_Principal.enviarMSJ(elegido);        
-        if(Cliente_Principal.getJugador() == 2){
-           Cliente_Principal.enviarMSJ("nuevo");
-        }
+
+        jPanel3Cartas.setVisible(false);
+        grupoRB.clearSelection();
         Cliente.enviarToken();
+        if (Cliente_Principal.getJugador() == 3) {
+            Cliente_Principal.enviarMSJ("nuevo");
+        } else {
+            Cliente_Principal.enviarMSJ(elegido);
+        }
         Servidor.setToken(false);
         jButton_token.setEnabled(false);
         jButton_PedirCartas.setEnabled(false);

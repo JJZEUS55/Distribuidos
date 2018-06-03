@@ -667,8 +667,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         addImagenesCarta();//añade las imagenes de los pokemones a la pantalla
         addInformacionPokemon();//Imprime en pantalla estadisticas de cada carta
         crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
-        System.out.println("checando si hay datos: " + m1.getCartas().get(0).getNombre());
-        System.out.println("checando si hay datos: " + m1.getCartas().get(1).getNombre());
+        
         Servidor_Principal.setMazoServidor(m1);
     }
 
@@ -741,7 +740,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         mapcolorTipo.put("water", new Color(104, 144, 240));
     }
 
-    public void crearMazos() {
+    public void crearMazos() {       
         m1.addCartasMazo(c1);
         m1.addCartasMazo(c2);
         m1.addCartasMazo(c3);
