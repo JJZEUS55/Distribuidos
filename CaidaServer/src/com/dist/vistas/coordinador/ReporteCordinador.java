@@ -151,7 +151,7 @@ public class ReporteCordinador extends javax.swing.JFrame {
                 break;
         }
         
-        for (int i = 0; i < aux.getCincoCartas().size(); i++) {
+        for (int i = 0; i < aux.getCartas().size(); i++) {
              addValoresTablaJugador(i, aux);
         }      
     }//GEN-LAST:event_jcomboJugadoresActionPerformed
@@ -159,10 +159,10 @@ public class ReporteCordinador extends javax.swing.JFrame {
     public void addValoresTablaJugador(int i, Mazo m){
         DefaultTableModel modelo = (DefaultTableModel) jTablePokemon.getModel();
         Object[] filas = new Object[4];
-        filas[0] = m.getCincoCartas().get(i).getNombre();
-        filas[1] = m.getCincoCartas().get(i).getAtaque();
-        filas[2] = m.getCincoCartas().get(i).getDefensa();
-        filas[3] = m.getCincoCartas().get(i).getHp();
+        filas[0] = m.getCartas().get(i).getNombre();
+        filas[1] = m.getCartas().get(i).getAtaque();
+        filas[2] = m.getCartas().get(i).getDefensa();
+        filas[3] = m.getCartas().get(i).getHp();
         
         modelo.addRow(filas);
         jTablePokemon.setModel(modelo);

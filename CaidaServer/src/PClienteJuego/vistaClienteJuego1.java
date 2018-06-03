@@ -63,11 +63,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             if(Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {  
                 System.out.println("Iniciando nuevo servidor......");
-//<<<<<<< HEAD:CaidaServer/src/PClienteJuego/vistaClienteJuego1.java
-//                vistaServerJuego1 n = new vistaServerJuego1();
-//=======
                 vistaServerJuego n = new vistaServerJuego(Servidor.isToken());
-//>>>>>>> master:CaidaServer/src/PClienteJuego/vistaClienteJuego.java
                 n.setVisible(true);
                 this.setVisible(false);
                 HiloEsperaToken.interrupt();

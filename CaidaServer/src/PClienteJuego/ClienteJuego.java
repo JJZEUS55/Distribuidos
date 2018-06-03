@@ -1,11 +1,16 @@
 package PClienteJuego;
 
+import com.dist.juego.Carta;
+import com.dist.juego.Mazo;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,6 +28,7 @@ public class ClienteJuego {
     private int prioridad;
     private DataOutputStream salida; // enviar mensajes
     private DataInputStream Entrada; //recibir mensajes
+    private Mazo m;
     
     public ClienteJuego(String host, int puerto) 
     {
@@ -79,6 +85,10 @@ public class ClienteJuego {
             case "cartas":
                 System.out.println("InterprentarMensje: cartas del servidor");
                 //System.out.println(recibirMSJ());
+                m = recibirCarta();
+                System.out.println("Se ha recibido : " + m.getCartas().get(0).getNombre());
+                System.out.println("Se ha recibido : " + m.getCartas().get(1).getNombre());
+                System.out.println("Se ha recibido : " + m.getCartas().get(2).getNombre());
                 return 3;
                 
             default:
@@ -95,6 +105,7 @@ public class ClienteJuego {
         } catch (UnknownHostException e) {
             System.out.println("El host no existe o no está activo.");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Error de entrada/salida.");
         }
     }
@@ -107,9 +118,27 @@ public class ClienteJuego {
         } catch (UnknownHostException e) {
             System.out.println("El host no existe o no está activo.");    
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Error de entrada/salida.");
         }
         return buffer;
+    }
+    
+    public Mazo recibirCarta(){
+        System.out.println("---- Entrando a Recibir Carta -----");
+        Mazo m = null;
+        ObjectInputStream ob;
+        try {
+            ob = new ObjectInputStream(sock.getInputStream()); 
+            m = (Mazo) ob.readObject();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(ClienteJuego.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(ClienteJuego.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return m;
     }
 
     public int getJugador() {

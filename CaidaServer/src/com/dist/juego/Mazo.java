@@ -14,22 +14,22 @@ import java.util.List;
  * @author geoge
  */
 public class Mazo implements Serializable{
-    private List<Carta> cincoCartas;
+    private List<Carta> listCartas;
 
     public Mazo() {
-        this.cincoCartas = new ArrayList<Carta>();
+        this.listCartas = new ArrayList<Carta>();
     }
     
     public void addCartasMazo(Carta c){
-        cincoCartas.add(c);
+        listCartas.add(c);
     }
     
-    public List<Carta> getCincoCartas(){
-        return this.cincoCartas;
+    public List<Carta> getCartas(){
+        return this.listCartas;
     }
     
     public int getTamano(){
-        return cincoCartas.size();
+        return listCartas.size();
     }
     
 }

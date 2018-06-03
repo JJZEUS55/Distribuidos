@@ -190,7 +190,7 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
 
     public void mostrarMazo() {
         limpiarTabla();
-        for (int i = 0; i < mazoJugador.getCincoCartas().size(); i++) {
+        for (int i = 0; i < mazoJugador.getCartas().size(); i++) {
             addValoresTablaJugador(i);
         }
 //        j.setMazoCartas(mazoJugador);
@@ -200,10 +200,10 @@ public class VistaJugador extends javax.swing.JFrame implements Runnable {
     public void addValoresTablaJugador(int i) {
         DefaultTableModel modelo = (DefaultTableModel) jTablePokemon.getModel();
         Object[] filas = new Object[4];
-        filas[0] = mazoJugador.getCincoCartas().get(i).getNombre();
-        filas[1] = mazoJugador.getCincoCartas().get(i).getAtaque();
-        filas[2] = mazoJugador.getCincoCartas().get(i).getDefensa();
-        filas[3] = mazoJugador.getCincoCartas().get(i).getHp();
+        filas[0] = mazoJugador.getCartas().get(i).getNombre();
+        filas[1] = mazoJugador.getCartas().get(i).getAtaque();
+        filas[2] = mazoJugador.getCartas().get(i).getDefensa();
+        filas[3] = mazoJugador.getCartas().get(i).getHp();
 
         modelo.addRow(filas);
         jTablePokemon.setModel(modelo);
