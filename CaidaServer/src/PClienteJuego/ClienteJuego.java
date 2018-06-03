@@ -169,4 +169,8 @@ public class ClienteJuego {
         return IP;
     }
     
+    public Mazo getMazoCliente(){
+        return this.m;
+    }
+    
 }

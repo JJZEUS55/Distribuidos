@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
@@ -28,6 +29,7 @@ public class Carta implements Serializable{
     private int hp;
     private int ataque;
     private int defensa;
+    private boolean activa;
     private transient ConexionBD mysql;
     private transient ImageIcon icono;
     
@@ -46,7 +48,8 @@ public class Carta implements Serializable{
                 this.tipo2 = rs1.getObject(4).toString();
                 this.hp = Integer.parseInt(rs1.getObject(5).toString());
                 this.ataque = Integer.parseInt(rs1.getObject(6).toString());
-                this.defensa = Integer.parseInt(rs1.getObject(7).toString());                
+                this.defensa = Integer.parseInt(rs1.getObject(7).toString());
+                this.activa = true;
             }           
              
         } catch (SQLException e) {
@@ -60,6 +63,13 @@ public class Carta implements Serializable{
         Image imgEscalada = this.icono.getImage().getScaledInstance(75, 75, java.awt.Image.SCALE_AREA_AVERAGING);
         this.icono = new ImageIcon(imgEscalada);
         System.out.println("numero " + this.num);
+    }
+    
+    public ImageIcon getIconPokemon(){
+        ImageIcon icon = new ImageIcon("Imagenes\\" + this.num + ".png");
+        Image imgEscalada = icon.getImage().getScaledInstance(75, 75, java.awt.Image.SCALE_AREA_AVERAGING);
+        icon = new ImageIcon(imgEscalada);
+        return icon;
     }
     
     public int getNum(){
@@ -93,7 +103,14 @@ public class Carta implements Serializable{
     public ImageIcon getImagenPokemon(){
         return this.icono;
     }
-    
+
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
+    }
 
     @Override
     public String toString() {

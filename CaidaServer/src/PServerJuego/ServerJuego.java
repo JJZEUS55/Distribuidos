@@ -1,5 +1,6 @@
 package PServerJuego;
 
+import static PServerJuego.vistaServerJuego1.m1;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.io.DataInputStream;
@@ -26,6 +27,8 @@ public class ServerJuego {
     private Jugadores JugadorActual;
     private static ArrayList<Jugadores> ConjuntoJugadores;
     private Mazo mazoEnviar;
+    Thread t;
+    atenderCliente t1;
 
     public ServerJuego(int puerto) {
         this.PUERTO = puerto;
@@ -70,10 +73,10 @@ public class ServerJuego {
         JugadorActual.setPuerto(Integer.valueOf(IP_puerto[1]));
         JugadorActual.setSock(sock);
         ConjuntoJugadores.add(JugadorActual);
-        Thread t = new atenderCliente(JugadorActual);
+        t = new atenderCliente(JugadorActual);
         atenderCliente t1 = (atenderCliente) t;
         t1.setMazotoCliente(mazoEnviar);
-        t.start();        
+        t.start();
         nuevo(buffer);
 
     }
@@ -154,9 +157,24 @@ public class ServerJuego {
     public ArrayList<Jugadores> getConjuntoJugadores() {
         return ConjuntoJugadores;
     }
-    
-    public void setMazoServidor(Mazo m){
-        this.mazoEnviar = m;
+
+    public void setMazoServidor(Mazo m) {
+        System.out.println("------- Method: setMazoServidor --------- ");
+        if (t == null) {
+            System.out.println("Entrando en null");
+            this.mazoEnviar = m;
+        } else {
+            this.mazoEnviar = m;
+            System.out.println("Entrando en else");
+            t = new atenderCliente(JugadorActual);
+            atenderCliente t1 = (atenderCliente) t;
+            t1.setMazotoCliente(mazoEnviar);
+            t.start();
+            //t1.setMazotoCliente(mazoEnviar);
+        }
+
+        System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(0).getNombre());
+        System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(1).getNombre());
     }
 
 }

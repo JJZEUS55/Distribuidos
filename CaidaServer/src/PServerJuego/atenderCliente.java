@@ -1,4 +1,3 @@
-
 package PServerJuego;
 
 import com.dist.juego.Carta;
@@ -11,64 +10,80 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class atenderCliente extends Thread{
+public class atenderCliente extends Thread {
+
     private DataInputStream entrada;
     private DataOutputStream salida;
     protected Socket sock;
     private int jugador;
     private Mazo m;
-    
-    public atenderCliente(Jugadores j)
-    {
+
+    public atenderCliente(Jugadores j) {
         this.entrada = j.getEntrada();
         this.salida = j.getSalida();
         this.sock = j.getSock();
         this.jugador = j.getJugador();
     }
-    
+
     @Override
-    public void run()
-    {
+    public void run() {
         System.out.println("----- Class Atender Cliente -------");
         System.out.println("Nuevo Hilo atender cliente");
         String buffer;
-        while(true)
-        {
+        while (true) {
             buffer = recibirMSJ();
-            System.out.println("jugador "+jugador+": "+buffer);
-            switch(buffer)
-            {
+            System.out.println("jugador " + jugador + ": " + buffer);
+            switch (buffer) {
                 case "cartas":
                     System.out.println("pidio cartas");
-                    if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
-                        System.out.println("Cambiar de ronda");
-                    }
-                    System.out.println("Antes de enviar checando si hay datos: " + m.getCartas().get(0).getNombre());
-                    enviarMSJ("cartas"); 
-                    enviarCarta(m);
-                    
+                    System.out.println("ATC Antes de enviar checando si hay datos: " + this.m.getCartas().get(0).getNombre());
+                    System.out.println("ATC Antes de enviar checando si hay datos: " + this.m.getCartas().get(1).getNombre());
+                    enviarMSJ("cartas");
+                    enviarCarta(this.m);
+                    break;
+                case "seleccion1":
+                    System.out.println("Desactivando Carta 1");
+                    m.getCartas().get(0).setActiva(false);
+                    break;
+                case "seleccion2":
+                    System.out.println("Desactivando Carta 2");
+                    m.getCartas().get(1).setActiva(false);
+                    break;
+                case "seleccion3":
+                    System.out.println("Desactivando Carta 3");
+                    m.getCartas().get(2).setActiva(false);
+                    break;
+                case "nuevo":
+                    System.out.println("Generando Nuevas Cartas");
+                    vistaServerJuego1.jbtnSelecCartas.doClick();
+                    atenderCliente.currentThread().interrupt();
                     break;
                 case "fin":
-                    break; 
+                    break;
                 default:
                     System.out.println("Err");
-            }            
-            if(buffer.equals("fin"))
-                break;           
+                    break;
+            }
+//            if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
+//                System.out.println("Generando Nuevas Cartas");
+////                vistaServerJuego1.jbtnSelecCartas.doClick();
+//            }
+
+            if (buffer.equals("fin")) {
+                break;
+            }
         }
         System.out.println("Termino");
-        try
-        {
+        try {
             // closing resources
             this.entrada.close();
             this.salida.close();
-             
-        }catch(IOException e){
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-        
+
     private void enviarMSJ(String buffer) {
         try {
             salida.writeUTF(buffer);
@@ -76,8 +91,8 @@ public class atenderCliente extends Thread{
             System.out.println("(ENV)Error de entrada/salida.");
         }
     }
-    
-    private void enviarCarta(Mazo m){
+
+    private void enviarCarta(Mazo m) {
         ObjectOutputStream ob = null;
         try {
             ob = new ObjectOutputStream(sock.getOutputStream());
@@ -85,10 +100,9 @@ public class atenderCliente extends Thread{
         } catch (IOException ex) {
             ex.printStackTrace();
             Logger.getLogger(atenderCliente.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 
-    
     private String recibirMSJ() {
         String buffer = "";
         try {
@@ -99,9 +113,13 @@ public class atenderCliente extends Thread{
         }
         return buffer;
     }
-    
-    public void setMazotoCliente(Mazo m){
+
+    public void setMazotoCliente(Mazo m) {
+        System.out.println("------method: setMazoCliente--------\nRecibi el nuevo mazo");
+        this.m = new Mazo();
         this.m = m;
+        System.out.println("SMC checando si hay datos: " + this.m.getCartas().get(0).getNombre());
+        System.out.println("SMC checando si hay datos: " + this.m.getCartas().get(1).getNombre());
     }
-    
+
 }
