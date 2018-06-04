@@ -30,10 +30,15 @@ public class Cartas implements Serializable{
     private int defensa;
     private transient ConexionBD mysql;
     private transient ImageIcon icono;
+    private static int[] cartasSeleccionadas = new int[200];
+    private static int cont = 0;
     
     public void getCartaAleatoria(){
         Random r = new Random();
-        num = r.nextInt(151)+1;
+        do {
+            num = r.nextInt(151) + 1;            
+        } while (verificarDisponibilidadCarta(num) == false);
+//        num = r.nextInt(151)+1;
         
         mysql = new ConexionBD();
         try(Connection cn = mysql.Conectar()) {
@@ -53,6 +58,22 @@ public class Cartas implements Serializable{
             System.err.println("Problema cartas " + e);
         }
 
+    }
+    
+    public boolean verificarDisponibilidadCarta(int numCarta) {
+        boolean aux = false;
+        for (int cartasSeleccionada : cartasSeleccionadas) {
+            if (numCarta == cartasSeleccionada) {
+                aux = false;
+                System.out.println("Se repitio carta #" + numCarta + "!!! Seleccionando otra");
+                break;
+            } else {
+                cartasSeleccionadas[cont] = numCarta;
+                aux = true;
+                break;
+            }
+        }
+        return aux;
     }
     
     public void addImagenCarta() {
