@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import token.tokenCliente;
 import token.tokenServer;
 
@@ -59,6 +61,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         HiloLamport.start();
 
         addValoresMapColor();
+        limpiarTabla();
 
     }
 
@@ -141,6 +144,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanelMostrarCartas = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTablePokemonSelect = new javax.swing.JTable();
         jPanel_inicio = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jTextField_prioridad = new javax.swing.JTextField();
@@ -211,6 +218,54 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel8.setText("Cartas Seleccionadas");
+
+        jTablePokemonSelect.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Nombre", "Tipo", "HP", "Ataque", "Title 5"
+            }
+        ));
+        jTablePokemonSelect.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTablePokemonSelectMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTablePokemonSelect);
+
+        javax.swing.GroupLayout jPanelMostrarCartasLayout = new javax.swing.GroupLayout(jPanelMostrarCartas);
+        jPanelMostrarCartas.setLayout(jPanelMostrarCartasLayout);
+        jPanelMostrarCartasLayout.setHorizontalGroup(
+            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
+                .addContainerGap(47, Short.MAX_VALUE)
+                .addGroup(jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(325, 325, 325))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))))
+        );
+        jPanelMostrarCartasLayout.setVerticalGroup(
+            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel8)
+                .addGap(71, 71, 71)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(213, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanelMostrarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 850, 520));
+        jPanelMostrarCartas.setVisible(false);
+
         jPanel_inicio.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -245,14 +300,12 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel5.setText("Jugador");
         jPanel_inicio.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
 
-        jLabel7.setIcon(new javax.swing.ImageIcon("C:\\Users\\geoge\\Desktop\\Distribuidos\\Distribuidos\\CaidaServer\\Imagenes\\fondo1.png")); // NOI18N
         jLabel7.setText("jLabel7");
         jPanel_inicio.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 550));
 
         getContentPane().add(jPanel_inicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 4, 850, 550));
 
         jPanel3Cartas.setBackground(new java.awt.Color(0, 0, 0));
-        jPanel3Cartas.setForeground(new java.awt.Color(0, 0, 0));
         jPanel3Cartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanelCarta1.setBackground(new java.awt.Color(255, 204, 51));
@@ -274,7 +327,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -423,7 +476,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC2Layout.setVerticalGroup(
             jPanelC2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -572,7 +625,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC3Layout.setVerticalGroup(
             jPanelC3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -701,7 +754,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
         jPanel3Cartas.add(jPanelCarta3, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 6, -1, 470));
 
-        jLabelFondoCartas.setIcon(new javax.swing.ImageIcon("C:\\Users\\geoge\\Desktop\\Distribuidos\\Distribuidos\\CaidaServer\\Imagenes\\fondo1.png")); // NOI18N
         jLabelFondoCartas.setText("jLabel1");
         jLabelFondoCartas.setPreferredSize(new java.awt.Dimension(843, 562));
         jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 843, 560));
@@ -729,7 +781,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel_Reloj.setText("Reloj");
         getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, -1, -1));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\geoge\\Desktop\\Distribuidos\\Distribuidos\\CaidaServer\\Imagenes\\fondo1.png")); // NOI18N
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 850, 650));
 
@@ -857,8 +908,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 System.out.println("Esa opcion no existe prro >:v");
                 break;
         }
-
+        
+        addValoresTabla(c);
         jPanel3Cartas.setVisible(false);
+        jPanelMostrarCartas.setVisible(true);
         grupoRB.clearSelection();
         BDCarta bdCJugador = new BDCarta();
         bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
@@ -875,6 +928,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         try {
             TimeUnit.SECONDS.sleep(1); // Necesario para que pueda recibir el cliente el mazo si no NullPointerException
             mazoRecibido = Cliente_Principal.getMazoCliente();
+            jPanelMostrarCartas.setVisible(false);
             jPanel3Cartas.setVisible(true);
             showInformacionCartas();
             addImagenesCarta();
@@ -885,6 +939,36 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
     }//GEN-LAST:event_jButton_PedirCartasActionPerformed
 
+    private void jTablePokemonSelectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePokemonSelectMouseClicked
+        // TODO add your handling code here:
+        int columna = jTablePokemonSelect.columnAtPoint(evt.getPoint());
+        int fila = jTablePokemonSelect.rowAtPoint(evt.getPoint());
+        if(columna == 0 && fila >= 0){
+            JOptionPane.showMessageDialog(this, null, jTablePokemonSelect.getValueAt(fila, columna).toString(), JOptionPane.DEFAULT_OPTION);
+        }
+        
+        
+    }//GEN-LAST:event_jTablePokemonSelectMouseClicked
+
+    private void limpiarTabla(){
+        DefaultTableModel model = (DefaultTableModel) jTablePokemonSelect.getModel();
+        model.setRowCount(0);
+        jTablePokemonSelect.setModel(model);        
+    }
+    
+    private void addValoresTabla(Carta c){
+        DefaultTableModel modelo = (DefaultTableModel) jTablePokemonSelect.getModel();
+        Object[] fila = new Object[5];
+        fila[0] = c.getNombre();
+        fila[1] = c.getTipo1();
+        fila[2] = c.getHp();
+        fila[3] = c.getAtaque();
+        fila[4] = c.getDefensa();
+        modelo.addRow(fila);
+        jTablePokemonSelect.setModel(modelo);
+    }
+    
+    
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -938,6 +1022,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelFondoCartas;
     private javax.swing.JLabel jLabelImg3;
     private javax.swing.JLabel jLabelImg4;
@@ -951,7 +1036,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel jPanelCarta1;
     private javax.swing.JPanel jPanelCarta2;
     private javax.swing.JPanel jPanelCarta3;
+    private javax.swing.JPanel jPanelMostrarCartas;
     private javax.swing.JPanel jPanel_inicio;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTablePokemonSelect;
     private javax.swing.JTextField jTextField_prioridad;
     private javax.swing.JRadioButton jrbCarta1;
     private javax.swing.JRadioButton jrbCarta2;
