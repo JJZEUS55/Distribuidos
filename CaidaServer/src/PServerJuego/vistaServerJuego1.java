@@ -53,7 +53,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     public vistaServerJuego1(boolean tokenAnterior) {
         initComponents();
         this.getContentPane().setBackground(Color.BLACK);
-
         mapcolorTipo = new HashMap<String, Color>();
         int numCartas = 0;
         Servidor_Principal = new ServerJuego(3000);
@@ -61,6 +60,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         Hilo_ServidorAcceptar = new Thread(this);
         Hilo_ServidorEsperarMensajes = new Thread(this);
         HiloLamport = new Thread(this);
+        
         Hilo_ServidorAcceptar.start();
         HiloLamport.start();
         estado = tokenAnterior;
@@ -196,7 +196,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         getContentPane().add(jbtnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 600, 131, 68));
 
         jPanel3Cartas.setBackground(new java.awt.Color(0, 0, 0));
-        jPanel3Cartas.setForeground(new java.awt.Color(0, 0, 0));
         jPanel3Cartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanelCarta1.setBackground(new java.awt.Color(255, 204, 51));
@@ -218,7 +217,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,7 +359,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC2Layout.setVerticalGroup(
             jPanelC2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -502,7 +501,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC3Layout.setVerticalGroup(
             jPanelC3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -626,7 +625,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
         jPanel3Cartas.add(jPanelCarta3, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 6, -1, -1));
 
-        jLabelFondoCartas.setIcon(new javax.swing.ImageIcon("C:\\Users\\geoge\\Desktop\\Distribuidos\\Distribuidos\\CaidaServer\\Imagenes\\fondo1.png")); // NOI18N
         jLabelFondoCartas.setText("jLabel1");
         jLabelFondoCartas.setPreferredSize(new java.awt.Dimension(843, 562));
         jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, -4, 843, 562));
@@ -637,7 +635,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel_Reloj.setText("Reloj");
         getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 620, -1, -1));
 
-        jLabelFondo.setIcon(new javax.swing.ImageIcon("C:\\Users\\geoge\\Desktop\\Distribuidos\\Distribuidos\\CaidaServer\\Imagenes\\fondo1.png")); // NOI18N
         jLabelFondo.setText("jLabel1");
         jLabelFondo.setMaximumSize(new java.awt.Dimension(860, 690));
         jLabelFondo.setMinimumSize(new java.awt.Dimension(860, 690));
