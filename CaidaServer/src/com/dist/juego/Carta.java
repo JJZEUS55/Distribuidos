@@ -73,10 +73,17 @@ public class Carta implements Serializable {
             } else {
                 cartasSeleccionadas[cont] = numCarta;
                 aux = true;
+                cont++;
                 break;
             }
         }
         return aux;
+    }
+    
+    public void ingresarCartasOcupadas(int carta)
+    {
+        cont++;
+        cartasSeleccionadas[cont] = carta;
     }
 
     public void addImagenCarta() {

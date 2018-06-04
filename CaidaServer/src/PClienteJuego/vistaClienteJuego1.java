@@ -30,6 +30,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     Boolean funcionamiento = false;
     static reloj rel = new reloj();
     int prioridad;
+    int jugador = 0;
     Mazo mazoRecibido, mazoCliente;
     ButtonGroup grupoRB;
     Map<String, Color> mapcolorTipo;
@@ -93,7 +94,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             if (Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {
                 System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego1 n = new vistaServerJuego1(Servidor.isToken());
+                vistaServerJuego1 n = new vistaServerJuego1(Cliente_Principal.getJugador(),Servidor.isToken());
                 n.setVisible(true);
                 this.setVisible(false);
                 HiloEsperaToken.interrupt();
@@ -101,7 +102,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
             {
                 System.out.println("Conectando al nuevo servidor(" + Servidor.getIPNuevoServer() + ")...");
-                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000);
+                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000, jugador);
                 Cliente_Principal.iniciar(PuertoPropio.getText());
                 HiloesperarMensajeSP = new Thread(this);
                 HiloesperarMensajeSP.start();
@@ -825,7 +826,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
         Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server
-        Cliente_Principal = new ClienteJuego("localhost", 3000); //Puerto para servidor y cliente principal 3000
+        Cliente_Principal = new ClienteJuego("localhost", 3000, jugador); //Puerto para servidor y cliente principal 3000
         Servidor.iniciar();
         Cliente_Principal.iniciar(PuertoPropio.getText());
         prioridad = Integer.valueOf(jTextField_prioridad.getText());

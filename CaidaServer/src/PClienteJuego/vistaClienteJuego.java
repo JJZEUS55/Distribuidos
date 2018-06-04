@@ -76,7 +76,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
             else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
             {               
                 System.out.println("Conectando al nuevo servidor("+Servidor.getIPNuevoServer()+")...");
-                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000);
+                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000,0);
                 Cliente_Principal.iniciar(PuertoPropio.getText());  
                 HiloesperarMensajeSP = new Thread(this);
                 HiloesperarMensajeSP.start();
@@ -262,7 +262,7 @@ public class vistaClienteJuego extends javax.swing.JFrame implements Runnable {
 
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
         Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server
-        Cliente_Principal = new ClienteJuego("localhost", 3000); //Puerto para servidor y cliente principal 3000
+        Cliente_Principal = new ClienteJuego("localhost", 3000,0); //Puerto para servidor y cliente principal 3000
         Servidor.iniciar();
         Cliente_Principal.iniciar(PuertoPropio.getText());
         prioridad = Integer.valueOf(jTextField_prioridad.getText());        

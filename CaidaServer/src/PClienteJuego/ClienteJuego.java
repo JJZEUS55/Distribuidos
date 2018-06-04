@@ -32,8 +32,8 @@ public class ClienteJuego {
     private Mazo m;
     private int ronda;
 
-    public ClienteJuego(String host, int puerto) {
-
+    public ClienteJuego(String host, int puerto, int jugador) {
+        this.jugador = jugador;
         try {
             sock = new Socket(host, puerto);
             Entrada = new DataInputStream(sock.getInputStream());
@@ -44,7 +44,7 @@ public class ClienteJuego {
             System.out.println("Error de entrada/salida.");
         }
         System.out.println("ClienteJuego: Se ha conectado el cliente");
-
+        
     }
 
     public void iniciar(String Puerto_Token) {
@@ -59,6 +59,9 @@ public class ClienteJuego {
         tem1.append(IP);
         tem1.append(":");
         tem1.append(Puerto_Token);
+        tem1.append(":");
+        tem1.append(String.valueOf(jugador));
+      
         System.out.println("iniciar: " + tem1.toString());
         enviarMSJ(tem1.toString());
 
@@ -67,12 +70,15 @@ public class ClienteJuego {
     public int IterprestarMensaje() //aqui se puede saber si el servidor principal murio
     {                               //al caerse el buffer tendra basura y caera en el caso de defaul 0
         String buffer;
-
+        int jugadorTemporal;
         buffer = recibirMSJ();
         System.out.println("Del server:" + buffer);
         switch (buffer) {
             case "info":
-                jugador = Integer.valueOf(recibirMSJ()); // recibe su numero de jugador
+                jugadorTemporal = Integer.valueOf(recibirMSJ()); // recibe su numero de jugador
+                if (jugador == 0) {
+                    jugador = jugadorTemporal;
+                }
                 IP_siguiente = recibirMSJ(); //IP del siguiente
                 puerto_siguiente = Integer.valueOf(recibirMSJ()); // puerto del siguiente
                 System.out.println("InterpretarMensaje: jugador " + jugador);

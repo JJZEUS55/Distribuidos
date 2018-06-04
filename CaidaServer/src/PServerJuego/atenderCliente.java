@@ -79,12 +79,6 @@ public class atenderCliente extends Thread {
                             vistaServerJuego1.jbtnSelecCartas.doClick();
                         }
                         break;
-//                    case "nuevo":
-//                        System.out.println("-------- DES NUEVO ---------");
-//                        System.out.println("Generando Nuevas Cartas");
-//                        TimeUnit.SECONDS.sleep(2);
-//                        vistaServerJuego1.jbtnSelecCartas.doClick();
-//                        break;
                     case "fin":
                         break;
                     default:
@@ -93,7 +87,6 @@ public class atenderCliente extends Thread {
                 }
 
                 if (buffer.equals("fin")) {
-
                     break;
                 }
             } catch (InterruptedException ex) {

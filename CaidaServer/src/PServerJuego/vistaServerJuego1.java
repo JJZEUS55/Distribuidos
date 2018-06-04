@@ -1,5 +1,6 @@
 package PServerJuego;
 
+import PClienteJuego.Recuperacion;
 import static PServerJuego.vistaServerJuego.Servidor_Principal;
 import static PServerJuego.vistaServerJuego.rel;
 import Reloj.reloj;
@@ -20,15 +21,16 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
     static Carta c1, c2, c3;
     static Mazo m1;
-    static int numCartas;
+    static int numCartas; // Ronda
     Map<String, Color> mapcolorTipo;
     static reloj rel = new reloj();
     BDCarta bdC;
-
+    Recuperacion rec;
     Thread Hilo_ServidorAcceptar;
     Thread Hilo_ServidorEsperarMensajes;
     Thread HiloLamport;
     boolean estado;
+    static boolean ModoServidorRespaldo;
     static ServerJuego Servidor_Principal;
 
     public vistaServerJuego1() {
@@ -44,13 +46,13 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         Hilo_ServidorEsperarMensajes = new Thread(this);
         HiloLamport = new Thread(this);
         Hilo_ServidorAcceptar.start();
-        HiloLamport.start();
-        estado = false;
+        HiloLamport.start();        
+        ModoServidorRespaldo = false;
         addValoresMapColor();
         get3Cartas();
     }
 
-    public vistaServerJuego1(boolean tokenAnterior) {
+    public vistaServerJuego1(int numeroJugador, boolean tokenAnterior) {
         initComponents();
         this.getContentPane().setBackground(Color.BLACK);
         mapcolorTipo = new HashMap<String, Color>();
@@ -64,7 +66,10 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         Hilo_ServidorAcceptar.start();
         HiloLamport.start();
         estado = tokenAnterior;
+        ModoServidorRespaldo = true;
         addValoresMapColor();
+        rec = new Recuperacion();
+        rec.iniciar();
         get3Cartas();
     }
 
@@ -692,6 +697,14 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
         bdC.guardarMazoServidor(m1);
         Servidor_Principal.setMazoServidor(m1);
+    }
+    
+    public void recuperarEstadoAnterior()
+    {
+        // colocar numero de ronda
+        // recuperar cartas seleccionadas
+        // ingresar cartas nuevas
+        // enviar el token si lo tenia
     }
 
     public void addInformacionPokemon() {
