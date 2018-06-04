@@ -752,11 +752,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jtfTipo1_1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo1()));
         jtfTipo2_1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo2()));
         jPanelCarta1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo1()));
-        if (!activaC1) {
-            c = jPanelCarta1.getComponents();
-            for (Component component : c) {
-                component.setEnabled(false);
-            }
+
+        c = jPanelCarta1.getComponents();
+        for (Component component : c) {
+            component.setEnabled(activaC1);
         }
 
         //CARTA 2
@@ -769,11 +768,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jtfTipo1_2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo1()));
         jtfTipo2_2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo2()));
         jPanelCarta2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo1()));
-        if (!activaC2) {
-            c = jPanelCarta2.getComponents();
-            for (Component component : c) {
-                component.setEnabled(false);
-            }
+
+        c = jPanelCarta2.getComponents();
+        for (Component component : c) {
+            component.setEnabled(activaC2);
         }
 
         //CARTA 3
@@ -786,12 +784,12 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jtfTipo1_3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo1()));
         jtfTipo2_3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo2()));
         jPanelCarta3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo1()));
-        if (!activaC3) {
-            c = jPanelCarta3.getComponents();
-            for (Component component : c) {
-                component.setEnabled(false);
-            }
+
+        c = jPanelCarta3.getComponents();
+        for (Component component : c) {
+            component.setEnabled(activaC3);
         }
+
     }
 
     private void addValoresMapColor() {
