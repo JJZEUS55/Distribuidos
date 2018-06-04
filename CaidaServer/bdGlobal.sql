@@ -1,7 +1,3 @@
-show databases;
-
-
-use pokemon;
 drop database pokepro1;
 
 create database pokePro1;
@@ -49,6 +45,9 @@ create table servidor(
     on delete cascade on update cascade
 );
 
+
+SET SQL_SAFE_UPDATES = 0;
+
 select * from cartas; -- LISTO
 select * from jugadores; -- LISTO
 select * from jugadorCartas; -- nada prog
@@ -60,13 +59,4 @@ delete from jugadores;
 delete from jugadorCartas;
 
 
-SET SQL_SAFE_UPDATES = 0;
-
-
-truncate table cartas;
-
-UPDATE servidor SET clienteConectado = 1 WHERE cartasRepartidas = 112;
-
-
-insert into jugadores (numJugador, cartaSeleccionada) values (1, 112);
 

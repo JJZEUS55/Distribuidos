@@ -843,7 +843,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         switch (elegido) {
             case "seleccion1":
                 c = mazoRecibido.getCartas().get(0);
-                mazoCliente.addCartasMazo(c);                
+                mazoCliente.addCartasMazo(c);
                 break;
             case "seleccion2":
                 c = mazoRecibido.getCartas().get(1);
@@ -862,13 +862,8 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         grupoRB.clearSelection();
         BDCarta bdCJugador = new BDCarta();
         bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
-        
+        Cliente_Principal.enviarMSJ(elegido);
         Cliente.enviarToken();
-        if (Cliente_Principal.getJugador() == 3) {
-            Cliente_Principal.enviarMSJ("nuevo");
-        } else {
-            Cliente_Principal.enviarMSJ(elegido);
-        }
         Servidor.setToken(false);
         jButton_token.setEnabled(false);
         jButton_PedirCartas.setEnabled(false);

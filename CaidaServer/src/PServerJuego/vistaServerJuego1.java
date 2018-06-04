@@ -23,6 +23,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     static int numCartas;
     Map<String, Color> mapcolorTipo;
     static reloj rel = new reloj();
+    BDCarta bdC;
 
     Thread Hilo_ServidorAcceptar;
     Thread Hilo_ServidorEsperarMensajes;
@@ -33,7 +34,8 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     public vistaServerJuego1() {
         initComponents();
         this.getContentPane().setBackground(Color.BLACK);
-
+        bdC = new BDCarta();
+        bdC.borrarTodoTablas();
         mapcolorTipo = new HashMap<String, Color>();
         int numCartas = 0;
         Servidor_Principal = new ServerJuego(3000);
@@ -673,7 +675,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
     public void get3Cartas() {
-        BDCarta bdC = new BDCarta();
+        bdC = new BDCarta();
         m1 = new Mazo();
         c1 = new Carta();
         c2 = new Carta();

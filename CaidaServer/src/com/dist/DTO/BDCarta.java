@@ -34,6 +34,25 @@ public class BDCarta {
         this.carta = c;
     }
 
+    public void borrarTodoTablas() {
+        mysql = new ConexionBD();
+        try (Connection cn = mysql.ConectarpokePro()) {
+            PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
+            PreparedStatement ps1 = cn.prepareStatement("delete from cartas;");
+            PreparedStatement ps2 = cn.prepareStatement("delete from servidor;");
+            PreparedStatement ps3 = cn.prepareStatement("delete from jugadores;");
+            PreparedStatement ps4 = cn.prepareStatement("delete from jugadorCartas;");
+            
+            ps0.execute();
+            ps1.executeUpdate();
+            ps2.executeUpdate();
+            ps3.executeUpdate();
+            ps4.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void guardarMazoServidor(Mazo mazo) {
         mysql = new ConexionBD();
         try (Connection cn = mysql.ConectarpokePro()) {
@@ -68,8 +87,7 @@ public class BDCarta {
             ps1.setInt(2, c.getNum());
             ps1.setString(3, horaLamp);
             ps1.setInt(4, ronda);
-           
-            
+
             ps2.setInt(1, numJugador);
             ps2.setString(2, horaLamp);
             ps2.setInt(3, ronda);
