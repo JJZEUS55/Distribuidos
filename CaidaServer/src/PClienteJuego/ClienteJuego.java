@@ -85,7 +85,7 @@ public class ClienteJuego {
                 System.out.println("InterpretarMensaje: recibiendo informacion del siguiente Jugador[" + IP_siguiente + "][" + puerto_siguiente + "]");
                 return 1;
             case "token":
-                System.out.println("El servidor tenia el token asi que lo ha enviado :v ");
+                System.out.println("InterprentarMensje: El servidor tenia el token asi que lo ha enviado :v ");
                 return 2;
             case "cartas":
                 System.out.println("InterprentarMensje: cartas del servidor");

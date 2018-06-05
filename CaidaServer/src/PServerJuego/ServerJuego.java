@@ -74,11 +74,17 @@ public class ServerJuego {
         JugadorActual.setIp(IP_puerto_jugador[0]);
         JugadorActual.setPuerto(Integer.valueOf(IP_puerto_jugador[1]));
         JugadorActual.setSock(sock);
-        if (!vistaServerJuego1.ModoServidorRespaldo) {
+        if (!vistaServerJuego1.ModoServidorRespaldo) { //solo si es un servidor normal(desde el inicio de la partida)
             BDJugador bdJ = new BDJugador();
             bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto());
-        }
-            
+        } 
+        else
+        {
+            if (vistaServerJuego1.rec.getIP().equals(JugadorActual.getIp()) && vistaServerJuego1.rec.getPuerto() == JugadorActual.getPuerto())
+            {
+                enviarMSJ("token");
+            }
+        }    
         ConjuntoJugadores.add(JugadorActual);
         t = new atenderCliente(JugadorActual);
         t.start();

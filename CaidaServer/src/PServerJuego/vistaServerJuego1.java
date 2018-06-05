@@ -25,7 +25,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     Map<String, Color> mapcolorTipo;
     static reloj rel = new reloj();
     BDCarta bdC;
-    Recuperacion rec;
+    static Recuperacion rec;
     Thread Hilo_ServidorAcceptar;
     Thread Hilo_ServidorEsperarMensajes;
     Thread HiloLamport;
@@ -62,14 +62,12 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         Hilo_ServidorAcceptar = new Thread(this);
         Hilo_ServidorEsperarMensajes = new Thread(this);
         HiloLamport = new Thread(this);
-        
         Hilo_ServidorAcceptar.start();
         HiloLamport.start();
-        estado = tokenAnterior;
         ModoServidorRespaldo = true;
         addValoresMapColor();
         rec = new Recuperacion();
-        rec.iniciar();
+        rec.iniciar(tokenAnterior, numeroJugador);
         get3Cartas();
     }
 

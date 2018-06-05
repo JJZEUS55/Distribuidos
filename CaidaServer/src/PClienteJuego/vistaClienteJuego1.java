@@ -123,7 +123,14 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_token.setEnabled(Servidor.isToken());
                 jButton_PedirCartas.setEnabled(Servidor.isToken());
                 funcionamiento = true;
-            } else if (estado_mensajes == 0) {
+            }
+            else if (estado_mensajes == 2)
+            {
+                Servidor.setToken(true);
+                jButton_token.setEnabled(Servidor.isToken());
+                jButton_PedirCartas.setEnabled(Servidor.isToken());
+            }
+            else if (estado_mensajes == 0) {
                 System.out.println("El servidor murio");
                 Cliente.enviarMSJ(jTextField_prioridad.getText());
                 HiloesperarMensajeSP.interrupt();

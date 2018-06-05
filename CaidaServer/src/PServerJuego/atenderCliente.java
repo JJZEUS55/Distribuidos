@@ -32,65 +32,60 @@ public class atenderCliente extends Thread {
         String buffer;
 
         while (true) {
-            try {
-                buffer = recibirMSJ();
-                System.out.println("jugador " + jugador + ": " + buffer);
-
-                System.out.println("------ Entrando SWITHC DESCARTIVAR ---------");
-                switch (buffer) {
-                    case "cartas":
-                        System.out.println("pidio cartas");
-                        enviarMSJ("hora");
-                        enviarMSJ(vistaServerJuego.rel.imprimeHora());
-                        enviarMSJ("cartas");
-                        enviarRonda(vistaServerJuego1.numCartas);
-                        enviarCarta(vistaServerJuego1.Servidor_Principal.mazoEnviar);
-                        break;
-                    case "seleccion1":
-                        System.out.println("-------- DES 1 ---------");
-                        System.out.println("Desactivando Carta 1");
-                        vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(0).setActiva(false);
-                        if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
-                            System.out.println("-------- DES NUEVO ---------");
-                            System.out.println("Generando Nuevas Cartas");
-                            TimeUnit.SECONDS.sleep(2);
-                            vistaServerJuego1.jbtnSelecCartas.doClick();
-                        }
-                        break;
-                    case "seleccion2":
-                        System.out.println("-------- DES 2 ---------");
-                        System.out.println("Desactivando Carta 2");
-                        vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(1).setActiva(false);
-                        if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
-                            System.out.println("-------- DES NUEVO ---------");
-                            System.out.println("Generando Nuevas Cartas");
-                            TimeUnit.SECONDS.sleep(2);
-                            vistaServerJuego1.jbtnSelecCartas.doClick();
-                        }
-                        break;
-                    case "seleccion3":
-                        System.out.println("-------- DES 3 ---------");
-                        System.out.println("Desactivando Carta 3");
-                        vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(2).setActiva(false);
-                        if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
-                            System.out.println("-------- DES NUEVO ---------");
-                            System.out.println("Generando Nuevas Cartas");
-                            TimeUnit.SECONDS.sleep(2);
-                            vistaServerJuego1.jbtnSelecCartas.doClick();
-                        }
-                        break;
-                    case "fin":
-                        break;
-                    default:
-                        System.out.println("Err");
-                        break;
-                }
-
-                if (buffer.equals("fin")) {
+            buffer = recibirMSJ();
+            System.out.println("jugador " + jugador + ": " + buffer);
+            System.out.println("------ Entrando SWITHC DESCARTIVAR ---------");
+            switch (buffer)
+            {
+                case "cartas":
+                    System.out.println("pidio cartas");
+                    enviarMSJ("hora");
+                    enviarMSJ(vistaServerJuego.rel.imprimeHora());
+                    enviarMSJ("cartas");
+                    enviarRonda(vistaServerJuego1.numCartas);
+                    enviarCarta(vistaServerJuego1.Servidor_Principal.mazoEnviar);
                     break;
-                }
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                case "seleccion1":
+                    System.out.println("-------- DES 1 ---------");
+                    System.out.println("Desactivando Carta 1");
+                    vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(0).setActiva(false);
+                    if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
+                        System.out.println("-------- DES NUEVO ---------");
+                        System.out.println("Generando Nuevas Cartas");
+                        //TimeUnit.SECONDS.sleep(2);
+                        vistaServerJuego1.jbtnSelecCartas.doClick();
+                    }
+                    break;
+                case "seleccion2":
+                    System.out.println("-------- DES 2 ---------");
+                    System.out.println("Desactivando Carta 2");
+                    vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(1).setActiva(false);
+                    if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
+                        System.out.println("-------- DES NUEVO ---------");
+                        System.out.println("Generando Nuevas Cartas");
+                        //TimeUnit.SECONDS.sleep(2);
+                        vistaServerJuego1.jbtnSelecCartas.doClick();
+                    }
+                    break;
+                case "seleccion3":
+                    System.out.println("-------- DES 3 ---------");
+                    System.out.println("Desactivando Carta 3");
+                    vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(2).setActiva(false);
+                    if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
+                        System.out.println("-------- DES NUEVO ---------");
+                        System.out.println("Generando Nuevas Cartas");
+                        //TimeUnit.SECONDS.sleep(2);
+                        vistaServerJuego1.jbtnSelecCartas.doClick();
+                    }
+                    break;
+                case "fin":
+                    break;
+                default:
+                    System.out.println("Err");
+                    break;
+            }
+            if (buffer.equals("fin")) {
+                break;
             }
         }
         System.out.println("Termino");
@@ -102,6 +97,11 @@ public class atenderCliente extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private void enviarToken()
+    {
+        enviarMSJ("token");
     }
 
     private void enviarMSJ(String buffer) {
