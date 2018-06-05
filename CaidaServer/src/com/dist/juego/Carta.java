@@ -35,11 +35,25 @@ public class Carta implements Serializable {
     private static int[] cartasSeleccionadas = new int[200];
     private static int cont = 0;
 
+    public Carta() {
+
+    }
+
+    public  Carta(int num, String nombre, String tipo1, String tipo2, int hp, int ataque, int defensa) {
+        this.num = num;
+        this.nombre = nombre;
+        this.tipo1 = tipo1;
+        this.tipo2 = tipo2;
+        this.hp = hp;
+        this.ataque = ataque;
+        this.defensa = defensa;
+    }
+
     public void getCartaAleatoria() {
         Random r = new Random();
 //        num = r.nextInt(151)+1;
         do {
-            num = r.nextInt(151)+1;
+            num = r.nextInt(151) + 1;
         } while (verificarDisponibilidadCarta(num) == false);
 
         mysql = new ConexionBD();
@@ -79,9 +93,8 @@ public class Carta implements Serializable {
         }
         return aux;
     }
-    
-    public void ingresarCartasOcupadas(int carta)
-    {
+
+    public void ingresarCartasOcupadas(int carta) {
         cont++;
         cartasSeleccionadas[cont] = carta;
     }

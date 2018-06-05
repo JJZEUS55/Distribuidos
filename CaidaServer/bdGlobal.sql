@@ -53,6 +53,22 @@ select * from jugadores; -- LISTO
 select * from jugadorCartas; -- nada prog
 select * from servidor; -- falta ronda y cliente
 
+select c.num, c.nombre, c.tipo1, c.hp, c.ataque, c.defensa
+from cartas c, jugadorCartas j
+where c.num = j.cartaSeleccionada
+and j.numJugador = 1;
+
+
+create table cartas(
+	num int (11) not null primary key,
+	nombre varchar (30),
+	tipo1 varchar(30),
+	tipo2 varchar(30),
+	hp int(11),
+	ataque int(11),
+	defensa int (11)
+);
+
 delete from cartas;
 delete from servidor;
 delete from jugadores;

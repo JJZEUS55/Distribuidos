@@ -96,12 +96,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             if (Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
             {
                 System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego1 n = new vistaServerJuego1(Cliente_Principal.getJugador(),Servidor.isToken());
+                vistaServerJuego1 n = new vistaServerJuego1(Cliente_Principal.getJugador(), Servidor.isToken());
                 n.setVisible(true);
                 this.setVisible(false);
                 HiloEsperaToken.interrupt();
-            } 
-            else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
+            } else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
             {
                 System.out.println("Conectando al nuevo servidor(" + Servidor.getIPNuevoServer() + ")...");
                 Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000, jugador);
@@ -122,14 +121,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_token.setEnabled(Servidor.isToken());
                 jButton_PedirCartas.setEnabled(Servidor.isToken());
                 funcionamiento = true;
-            }
-            else if (estado_mensajes == 2)
-            {
+            } else if (estado_mensajes == 2) {
                 Servidor.setToken(true);
                 jButton_token.setEnabled(Servidor.isToken());
                 jButton_PedirCartas.setEnabled(Servidor.isToken());
-            }
-            else if (estado_mensajes == 0) {
+            } else if (estado_mensajes == 0) {
                 System.out.println("El servidor murio");
                 Cliente.enviarMSJ(jTextField_prioridad.getText());
                 HiloesperarMensajeSP.interrupt();
@@ -154,6 +150,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePokemonSelect = new javax.swing.JTable();
+        jFondoMostrarCartas = new javax.swing.JLabel();
         jPanel_inicio = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jTextField_prioridad = new javax.swing.JTextField();
@@ -224,8 +221,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanelMostrarCartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel8.setText("Cartas Seleccionadas");
+        jPanelMostrarCartas.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(337, 6, -1, -1));
 
         jTablePokemonSelect.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -235,9 +235,17 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Tipo", "HP", "Ataque", "Title 5"
+                "Nombre", "Tipo", "HP", "Ataque", "Defensa"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTablePokemonSelect.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTablePokemonSelectMouseClicked(evt);
@@ -245,29 +253,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         });
         jScrollPane1.setViewportView(jTablePokemonSelect);
 
-        javax.swing.GroupLayout jPanelMostrarCartasLayout = new javax.swing.GroupLayout(jPanelMostrarCartas);
-        jPanelMostrarCartas.setLayout(jPanelMostrarCartasLayout);
-        jPanelMostrarCartasLayout.setHorizontalGroup(
-            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
-                .addGroup(jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(325, 325, 325))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36))))
-        );
-        jPanelMostrarCartasLayout.setVerticalGroup(
-            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel8)
-                .addGap(71, 71, 71)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(213, Short.MAX_VALUE))
-        );
+        jPanelMostrarCartas.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(47, 99, 767, 203));
+
+        jFondoMostrarCartas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/dist/imagenes/fondos/fondo1.png"))); // NOI18N
+        jFondoMostrarCartas.setText("jLabel9");
+        jPanelMostrarCartas.add(jFondoMostrarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 850, 530));
 
         getContentPane().add(jPanelMostrarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 850, 520));
         jPanelMostrarCartas.setVisible(false);
@@ -306,6 +296,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel5.setText("Jugador");
         jPanel_inicio.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
 
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/dist/imagenes/fondos/fondo1.png"))); // NOI18N
         jLabel7.setText("jLabel7");
         jPanel_inicio.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 550));
 
@@ -333,7 +324,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,7 +473,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanelC2Layout.setVerticalGroup(
             jPanelC2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -631,7 +622,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanelC3Layout.setVerticalGroup(
             jPanelC3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -760,6 +751,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
         jPanel3Cartas.add(jPanelCarta3, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 6, -1, 470));
 
+        jLabelFondoCartas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/dist/imagenes/fondos/fondo1.png"))); // NOI18N
         jLabelFondoCartas.setText("jLabel1");
         jLabelFondoCartas.setPreferredSize(new java.awt.Dimension(843, 562));
         jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 843, 560));
@@ -787,6 +779,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel_Reloj.setText("Reloj");
         getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, -1, -1));
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/dist/imagenes/fondos/fondo1.png"))); // NOI18N
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 850, 650));
 
@@ -891,6 +884,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         HiloesperarMensajeSP.start();
         Servidor.setIP(Cliente_Principal.getIP());
         jPanel_inicio.setVisible(false);
+        jPanelMostrarCartas.setVisible(true);
     }//GEN-LAST:event_jButtonIniciarActionPerformed
 
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
@@ -914,7 +908,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 System.out.println("Esa opcion no existe prro >:v");
                 break;
         }
-        
+
         addValoresTabla(c);
         jPanel3Cartas.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
@@ -949,20 +943,25 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         // TODO add your handling code here:
         int columna = jTablePokemonSelect.columnAtPoint(evt.getPoint());
         int fila = jTablePokemonSelect.rowAtPoint(evt.getPoint());
-        if(columna == 0 && fila >= 0){
-            JOptionPane.showMessageDialog(this, null, jTablePokemonSelect.getValueAt(fila, columna).toString(), JOptionPane.DEFAULT_OPTION);
+        JPanelCartaTabla cartaSeleccionada = new JPanelCartaTabla(mazoCliente.getCartas().get(fila));
+        cartaSeleccionada.setBackground(mapcolorTipo.get(mazoCliente.getCartas().get(fila).getTipo1()));
+        cartaSeleccionada.setBackground(mapcolorTipo.get(mazoCliente.getCartas().get(fila).getTipo2()));
+        cartaSeleccionada.setBackground(mapcolorTipo.get(mazoCliente.getCartas().get(fila).getTipo1()));
+        
+        if (columna == 0 && fila >= 0) {
+            JOptionPane.showConfirmDialog(null, cartaSeleccionada, mazoCliente.getCartas().get(fila).getNombre(), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
         }
-        
-        
+
+
     }//GEN-LAST:event_jTablePokemonSelectMouseClicked
 
-    private void limpiarTabla(){
+    private void limpiarTabla() {
         DefaultTableModel model = (DefaultTableModel) jTablePokemonSelect.getModel();
         model.setRowCount(0);
-        jTablePokemonSelect.setModel(model);        
+        jTablePokemonSelect.setModel(model);
     }
-    
-    private void addValoresTabla(Carta c){
+
+    private void addValoresTabla(Carta c) {
         DefaultTableModel modelo = (DefaultTableModel) jTablePokemonSelect.getModel();
         Object[] fila = new Object[5];
         fila[0] = c.getNombre();
@@ -973,8 +972,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         modelo.addRow(fila);
         jTablePokemonSelect.setModel(modelo);
     }
-    
-    
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1002,6 +1000,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JButton jButtonIniciar;
     private javax.swing.JButton jButton_PedirCartas;
     private javax.swing.JButton jButton_token;
+    private javax.swing.JLabel jFondoMostrarCartas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
