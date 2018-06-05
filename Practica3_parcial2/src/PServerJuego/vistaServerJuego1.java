@@ -1,141 +1,92 @@
-package PClienteJuego;
+package PServerJuego;
 
-import static PClienteJuego.vistaClienteJuego1.rel;
-import PServerJuego.vistaServerJuego1;
+import PClienteJuego.Recuperacion;
+import static PServerJuego.vistaServerJuego.Servidor_Principal;
+import static PServerJuego.vistaServerJuego.rel;
 import Reloj.reloj;
 import com.dist.DTO.BDCarta;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
+import com.dist.vistas.coordinador.VistaCordinador;
 import java.awt.Color;
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import token.tokenCliente;
-import token.tokenServer;
 
-public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
+/**
+ *
+ * @author Alan
+ */
+public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
-    tokenServer Servidor; // tokenserver y cliente se encargan solamente de los procesos relacionados al token
-    tokenCliente Cliente;
-    ClienteJuego Cliente_Principal;
-    Thread HiloEsperaToken; //Hilo del servidor para esperar el token
-    Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
-    Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
-    Thread HiloLamport;
-    Boolean funcionamiento = false;
-    static reloj rel = new reloj();
-    int prioridad;
-    int jugador = 0;
-    Mazo mazoRecibido, mazoCliente;
-    ButtonGroup grupoRB;
+    static Carta c1, c2, c3;
+    static Mazo m1;
+    static int numCartas; // Ronda
     Map<String, Color> mapcolorTipo;
+    static reloj rel = new reloj();
+    BDCarta bdC;
+    static Recuperacion rec;
+    Thread Hilo_ServidorAcceptar;
+    Thread Hilo_ServidorEsperarMensajes;
+    Thread HiloLamport;
+    boolean estado;
+    static boolean ModoServidorRespaldo;
+    static ServerJuego Servidor_Principal;
 
-    public vistaClienteJuego1() {
+    public vistaServerJuego1() {
         initComponents();
-        setTitle("Jugador");
-        setLocationRelativeTo(null);
-        setVisible(true);
-        mazoCliente = new Mazo();
-
-        grupoRB = new ButtonGroup();
+        this.getContentPane().setBackground(Color.BLACK);
+        bdC = new BDCarta();
+        bdC.borrarTodoTablas();
         mapcolorTipo = new HashMap<String, Color>();
-        grupoRB.add(jrbCarta1);
-        grupoRB.add(jrbCarta2);
-        grupoRB.add(jrbCarta3);
-        this.jrbCarta1.setActionCommand("seleccion1");
-        this.jrbCarta2.setActionCommand("seleccion2");
-        this.jrbCarta3.setActionCommand("seleccion3");
-
-        jButton_token.setEnabled(false);
-        HiloEsperaConTok = new Thread(this);
-        HiloesperarMensajeSP = new Thread(this);
-        HiloEsperaToken = new Thread(this);
+        int numCartas = 0;
+        Servidor_Principal = new ServerJuego(3000);
+        Servidor_Principal.iniciar();
+        Hilo_ServidorAcceptar = new Thread(this);
+        Hilo_ServidorEsperarMensajes = new Thread(this);
         HiloLamport = new Thread(this);
-        HiloLamport.start();
-
+        Hilo_ServidorAcceptar.start();
+        HiloLamport.start();        
+        ModoServidorRespaldo = false;
         addValoresMapColor();
-        limpiarTabla();
+        get3Cartas();
+    }
 
+    public vistaServerJuego1(int numeroJugador, boolean tokenAnterior) {
+        initComponents();
+        this.getContentPane().setBackground(Color.BLACK);
+        mapcolorTipo = new HashMap<String, Color>();
+        int numCartas = 0;
+        Servidor_Principal = new ServerJuego(3000);
+        Servidor_Principal.iniciar();
+        Hilo_ServidorAcceptar = new Thread(this);
+        Hilo_ServidorEsperarMensajes = new Thread(this);
+        HiloLamport = new Thread(this);
+        Hilo_ServidorAcceptar.start();
+        HiloLamport.start();
+        ModoServidorRespaldo = true;
+        addValoresMapColor();
+        rec = new Recuperacion();
+        rec.iniciar(tokenAnterior, numeroJugador);
+        get3Cartas();
     }
 
     @Override
     public void run() {
-        String buffer;
-        int estado_mensajes;
-        boolean bandera = false;
-        Thread hilo = Thread.currentThread();
-        while (hilo == HiloEsperaConTok) // Este hilo se puede parar por completo tan pronto acepta ya que solo requiere la primer conexion
-        {
-            Servidor.acceptar();
-            System.out.println("...");
-            if (bandera == false) {
-                System.out.println("Iniciando Hilo");
-                HiloEsperaToken.start();
-                bandera = true;
-            } else {
-                HiloEsperaToken.interrupt();
-                HiloEsperaToken = new Thread(this);
-                HiloEsperaToken.start();
-                System.out.println("Reiniciando hilo");
-            }
-        }
-        while (hilo == HiloEsperaToken && !(HiloEsperaToken.isInterrupted())) // este hilo es para recibir los mensajes que se mandan entre los jugadores
-        {
-            buffer = Servidor.EsperarMensaje();
-            jButton_token.setEnabled(Servidor.isToken());
-            jButton_PedirCartas.setEnabled(Servidor.isToken());
-            if (!buffer.equals("Token")) {
-                Cliente.accion(buffer);
-            }
-            if (Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
-            {
-                System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego1 n = new vistaServerJuego1(Cliente_Principal.getJugador(),Servidor.isToken());
-                n.setVisible(true);
-                this.setVisible(false);
-                HiloEsperaToken.interrupt();
-            } 
-            else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
-            {
-                System.out.println("Conectando al nuevo servidor(" + Servidor.getIPNuevoServer() + ")...");
-                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000, jugador);
-                Cliente_Principal.iniciar(PuertoPropio.getText());
-                HiloesperarMensajeSP = new Thread(this);
-                HiloesperarMensajeSP.start();
-            }
-        }
-        while (hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted())) {
-            estado_mensajes = Cliente_Principal.IterprestarMensaje();
-            if (estado_mensajes == 1) {
-                Cliente = new tokenCliente(Cliente_Principal.getIP_siguiente(), Cliente_Principal.getPuerto_siguiente());
-                Cliente.setPrioridad(prioridad);
-                Servidor.setPrioridad(prioridad);
-                if (Cliente_Principal.getJugador() == 1 && funcionamiento == false) {
-                    Servidor.setToken(true);
-                }
-                jButton_token.setEnabled(Servidor.isToken());
-                jButton_PedirCartas.setEnabled(Servidor.isToken());
-                funcionamiento = true;
-            }
-            else if (estado_mensajes == 2)
-            {
-                Servidor.setToken(true);
-                jButton_token.setEnabled(Servidor.isToken());
-                jButton_PedirCartas.setEnabled(Servidor.isToken());
-            }
-            else if (estado_mensajes == 0) {
-                System.out.println("El servidor murio");
-                Cliente.enviarMSJ(jTextField_prioridad.getText());
-                HiloesperarMensajeSP.interrupt();
-            }
-        }
 
+        Thread hilo = Thread.currentThread();
+        if (estado == true) {
+            System.out.println("Tengo el token");
+        }
+        while (hilo == Hilo_ServidorAcceptar && !hilo.isInterrupted()) {
+            try {
+                Servidor_Principal.acceptar();
+                Thread.sleep(500); //el sleep esta ya que en el momento de la reconexion todos los clientes se conectan de golpe y causan problemas al momento de responderles a donde conectarse
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+
+        }
         while (hilo == HiloLamport) {
             rel.pasarTiempo();
             jLabel_Reloj.setText(rel.imprimeHora());
@@ -144,25 +95,17 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             } catch (InterruptedException e) {
             }
         }
+
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelMostrarCartas = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTablePokemonSelect = new javax.swing.JTable();
-        jPanel_inicio = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField_prioridad = new javax.swing.JTextField();
-        PuertoPropio = new javax.swing.JTextField();
-        jLabelinfo = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jButtonIniciar = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jButton_Iniciar = new javax.swing.JButton();
+        jbtnTomarCartas = new javax.swing.JButton();
+        jbtnSelecCartas = new javax.swing.JButton();
+        jbtnReporte = new javax.swing.JButton();
         jPanel3Cartas = new javax.swing.JPanel();
         jPanelCarta1 = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
@@ -180,7 +123,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel29 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
         jtfAtaque1 = new javax.swing.JTextField();
-        jrbCarta1 = new javax.swing.JRadioButton();
         jPanelCarta2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanelC2 = new javax.swing.JPanel();
@@ -197,7 +139,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jtfAtaque2 = new javax.swing.JTextField();
-        jrbCarta2 = new javax.swing.JRadioButton();
         jPanelCarta3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanelC3 = new javax.swing.JPanel();
@@ -214,102 +155,48 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jtfAtaque3 = new javax.swing.JTextField();
-        jrbCarta3 = new javax.swing.JRadioButton();
         jLabelFondoCartas = new javax.swing.JLabel();
-        jButton_PedirCartas = new javax.swing.JButton();
-        jButton_token = new javax.swing.JButton();
         jLabel_Reloj = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Juego de Cartas (Servidor)");
+        setBackground(new java.awt.Color(204, 255, 0));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setPreferredSize(new java.awt.Dimension(860, 690));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel8.setText("Cartas Seleccionadas");
-
-        jTablePokemonSelect.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Nombre", "Tipo", "HP", "Ataque", "Title 5"
-            }
-        ));
-        jTablePokemonSelect.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTablePokemonSelectMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTablePokemonSelect);
-
-        javax.swing.GroupLayout jPanelMostrarCartasLayout = new javax.swing.GroupLayout(jPanelMostrarCartas);
-        jPanelMostrarCartas.setLayout(jPanelMostrarCartasLayout);
-        jPanelMostrarCartasLayout.setHorizontalGroup(
-            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
-                .addGroup(jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(325, 325, 325))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36))))
-        );
-        jPanelMostrarCartasLayout.setVerticalGroup(
-            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel8)
-                .addGap(71, 71, 71)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(213, Short.MAX_VALUE))
-        );
-
-        getContentPane().add(jPanelMostrarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 850, 520));
-        jPanelMostrarCartas.setVisible(false);
-
-        jPanel_inicio.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel6.setText("Prioridad");
-        jPanel_inicio.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 170, -1, -1));
-
-        jTextField_prioridad.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jPanel_inicio.add(jTextField_prioridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 170, 55, -1));
-
-        PuertoPropio.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        PuertoPropio.setText("300");
-        jPanel_inicio.add(PuertoPropio, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 120, 55, -1));
-
-        jLabelinfo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabelinfo.setText("Información Propia");
-        jPanel_inicio.add(jLabelinfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, -1, -1));
-
-        jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel4.setText("Puerto");
-        jPanel_inicio.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, -1, -1));
-
-        jButtonIniciar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButtonIniciar.setText("Iniciar");
-        jButtonIniciar.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Iniciar.setText("Iniciar Juego");
+        jButton_Iniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonIniciarActionPerformed(evt);
+                jButton_IniciarActionPerformed(evt);
             }
         });
-        jPanel_inicio.add(jButtonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 220, 110, 50));
+        getContentPane().add(jButton_Iniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 600, 121, 68));
 
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel5.setText("Jugador");
-        jPanel_inicio.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
+        jbtnTomarCartas.setText("Repartir Mazo");
+        jbtnTomarCartas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnTomarCartasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jbtnTomarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 620, 133, -1));
 
-        jLabel7.setText("jLabel7");
-        jPanel_inicio.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 550));
+        jbtnSelecCartas.setText("Seleccionar 3 cartas");
+        jbtnSelecCartas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnSelecCartasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jbtnSelecCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 580, 156, 68));
 
-        getContentPane().add(jPanel_inicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 4, 850, 550));
+        jbtnReporte.setText("Reporte");
+        jbtnReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnReporteActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jbtnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 600, 131, 68));
 
         jPanel3Cartas.setBackground(new java.awt.Color(0, 0, 0));
         jPanel3Cartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -381,9 +268,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jtfAtaque1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jtfAtaque1.setText("jTextField1");
 
-        jrbCarta1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jrbCarta1.setText("Seleccionar Carta 1");
-
         javax.swing.GroupLayout jPanelCarta1Layout = new javax.swing.GroupLayout(jPanelCarta1);
         jPanelCarta1.setLayout(jPanelCarta1Layout);
         jPanelCarta1Layout.setHorizontalGroup(
@@ -393,37 +277,35 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 .addComponent(jPanelC1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanelCarta1Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCarta1Layout.createSequentialGroup()
+                        .addComponent(jLabel30)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtfNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCarta1Layout.createSequentialGroup()
+                        .addComponent(jLabel26)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtfTipo1_1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCarta1Layout.createSequentialGroup()
+                        .addComponent(jLabel25)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtfDefensa1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCarta1Layout.createSequentialGroup()
+                        .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel27)
+                            .addComponent(jLabel28)
+                            .addComponent(jLabel29))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jtfAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jtfHP1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jtfTipo2_1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(62, Short.MAX_VALUE))
+            .addGroup(jPanelCarta1Layout.createSequentialGroup()
                 .addGap(104, 104, 104)
                 .addComponent(jLabel24)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanelCarta1Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jrbCarta1)
-                    .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelCarta1Layout.createSequentialGroup()
-                            .addComponent(jLabel30)
-                            .addGap(18, 18, 18)
-                            .addComponent(jtfNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanelCarta1Layout.createSequentialGroup()
-                            .addComponent(jLabel26)
-                            .addGap(18, 18, 18)
-                            .addComponent(jtfTipo1_1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanelCarta1Layout.createSequentialGroup()
-                            .addComponent(jLabel25)
-                            .addGap(18, 18, 18)
-                            .addComponent(jtfDefensa1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanelCarta1Layout.createSequentialGroup()
-                            .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel27)
-                                .addComponent(jLabel28)
-                                .addComponent(jLabel29))
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jtfAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jtfHP1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jtfTipo2_1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(57, Short.MAX_VALUE))
         );
         jPanelCarta1Layout.setVerticalGroup(
             jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -456,12 +338,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 .addGroup(jPanelCarta1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
                     .addComponent(jtfDefensa1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jrbCarta1)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(172, Short.MAX_VALUE))
         );
 
-        jPanel3Cartas.add(jPanelCarta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, 470));
+        jPanel3Cartas.add(jPanelCarta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         jPanelCarta2.setBackground(new java.awt.Color(102, 102, 255));
         jPanelCarta2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -530,48 +410,43 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jtfAtaque2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jtfAtaque2.setText("jTextField1");
 
-        jrbCarta2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jrbCarta2.setText("Seleccionar Carta 2");
-
         javax.swing.GroupLayout jPanelCarta2Layout = new javax.swing.GroupLayout(jPanelCarta2);
         jPanelCarta2.setLayout(jPanelCarta2Layout);
         jPanelCarta2Layout.setHorizontalGroup(
             jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCarta2Layout.createSequentialGroup()
-                .addContainerGap(94, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(108, 108, 108))
+                .addContainerGap(74, Short.MAX_VALUE)
+                .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelC2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCarta2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(41, 41, 41)))
+                .addGap(67, 67, 67))
             .addGroup(jPanelCarta2Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
                 .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelCarta2Layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelCarta2Layout.createSequentialGroup()
-                                .addComponent(jLabel15)
-                                .addGap(18, 18, 18)
-                                .addComponent(jtfNombre2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelCarta2Layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addGap(18, 18, 18)
-                                .addComponent(jtfTipo1_2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelCarta2Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addGap(18, 18, 18)
-                                .addComponent(jtfDefensa2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelCarta2Layout.createSequentialGroup()
-                                .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel14))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jtfAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jtfHP2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jtfTipo2_2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jrbCarta2)))
+                        .addComponent(jLabel15)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtfNombre2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanelCarta2Layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(jPanelC2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtfTipo1_2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCarta2Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtfDefensa2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCarta2Layout.createSequentialGroup()
+                        .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel14))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jtfAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jtfHP2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jtfTipo2_2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelCarta2Layout.setVerticalGroup(
@@ -579,7 +454,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelCarta2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanelC2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -605,12 +480,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 .addGroup(jPanelCarta2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jtfDefensa2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jrbCarta2)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(160, Short.MAX_VALUE))
         );
 
-        jPanel3Cartas.add(jPanelCarta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(289, 6, -1, 470));
+        jPanel3Cartas.add(jPanelCarta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(289, 6, -1, -1));
 
         jPanelCarta3.setBackground(new java.awt.Color(51, 255, 0));
         jPanelCarta3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -679,20 +552,18 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jtfAtaque3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jtfAtaque3.setText("jTextField1");
 
-        jrbCarta3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jrbCarta3.setText("Seleccionar Carta 3");
-
         javax.swing.GroupLayout jPanelCarta3Layout = new javax.swing.GroupLayout(jPanelCarta3);
         jPanelCarta3.setLayout(jPanelCarta3Layout);
         jPanelCarta3Layout.setHorizontalGroup(
             jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCarta3Layout.createSequentialGroup()
+                .addContainerGap(65, Short.MAX_VALUE)
+                .addComponent(jPanelC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(76, 76, 76))
             .addGroup(jPanelCarta3Layout.createSequentialGroup()
                 .addGroup(jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelCarta3Layout.createSequentialGroup()
-                        .addGap(98, 98, 98)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanelCarta3Layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
+                        .addGap(39, 39, 39)
                         .addGroup(jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelCarta3Layout.createSequentialGroup()
                                 .addComponent(jLabel21)
@@ -715,19 +586,18 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                                 .addGroup(jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jtfAtaque3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jtfHP3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jtfTipo2_3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jrbCarta3)))
+                                    .addComponent(jtfTipo2_3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanelCarta3Layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(jPanelC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(49, Short.MAX_VALUE))
+                        .addGap(98, 98, 98)
+                        .addComponent(jLabel3)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelCarta3Layout.setVerticalGroup(
             jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelCarta3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -753,104 +623,139 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 .addGroup(jPanelCarta3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(jtfDefensa3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jrbCarta3)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(166, Short.MAX_VALUE))
         );
 
-        jPanel3Cartas.add(jPanelCarta3, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 6, -1, 470));
+        jPanel3Cartas.add(jPanelCarta3, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 6, -1, -1));
 
         jLabelFondoCartas.setText("jLabel1");
         jLabelFondoCartas.setPreferredSize(new java.awt.Dimension(843, 562));
-        jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 843, 560));
+        jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, -4, 843, 562));
 
-        getContentPane().add(jPanel3Cartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-        jPanel3Cartas.setVisible(false);
-
-        jButton_PedirCartas.setText("Pedir Cartas");
-        jButton_PedirCartas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_PedirCartasActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton_PedirCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 560, -1, 60));
-
-        jButton_token.setText("Seleccionar carta");
-        jButton_token.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_tokenActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton_token, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 560, -1, 60));
+        getContentPane().add(jPanel3Cartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 22, -1, -1));
 
         jLabel_Reloj.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel_Reloj.setText("Reloj");
-        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, -1, -1));
+        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 620, -1, -1));
 
-        jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 850, 650));
+        jLabelFondo.setText("jLabel1");
+        jLabelFondo.setMaximumSize(new java.awt.Dimension(860, 690));
+        jLabelFondo.setMinimumSize(new java.awt.Dimension(860, 690));
+        jLabelFondo.setName(""); // NOI18N
+        jLabelFondo.setPreferredSize(new java.awt.Dimension(860, 690));
+        getContentPane().add(jLabelFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-4, 0, 860, 690));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void showInformacionCartas() {
-        boolean activaC1 = mazoRecibido.getCartas().get(0).isActiva();
-        boolean activaC2 = mazoRecibido.getCartas().get(1).isActiva();
-        boolean activaC3 = mazoRecibido.getCartas().get(2).isActiva();
-        System.out.println("Informacion " + activaC1);
-        Component[] c = null;
-        //CARTA 1
-        jtfNombre1.setText(mazoRecibido.getCartas().get(0).getNombre());
-        jtfTipo1_1.setText(mazoRecibido.getCartas().get(0).getTipo1());
-        jtfTipo2_1.setText(mazoRecibido.getCartas().get(0).getTipo2());
-        jtfHP1.setText("" + mazoRecibido.getCartas().get(0).getHp());
-        jtfAtaque1.setText("" + mazoRecibido.getCartas().get(0).getAtaque());
-        jtfDefensa1.setText("" + mazoRecibido.getCartas().get(0).getDefensa());
-        //Cambiando colores
-        jtfTipo1_1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo1()));
-        jtfTipo2_1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo2()));
-        jPanelCarta1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo1()));
+    private void jButton_IniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciarActionPerformed
+        // TODO add your handling code here:
 
-        c = jPanelCarta1.getComponents();
-        for (Component component : c) {
-            component.setEnabled(activaC1);
+    }//GEN-LAST:event_jButton_IniciarActionPerformed
+
+    private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
+
+        //Agregar funcionalidad para que al presionar el boton se envien las 3 cartas que salieron
+//        atomics.addAndGet(1);
+//        enviarCartas();
+
+    }//GEN-LAST:event_jbtnTomarCartasActionPerformed
+
+    private void jbtnSelecCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSelecCartasActionPerformed
+        if (numCartas <= 4) {
+            get3Cartas();
+        } else {
+            try {
+                jbtnSelecCartas.setEnabled(false);
+                JOptionPane.showMessageDialog(this, "Solo se pueden tener 5 cartas en cada mazo");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+    }//GEN-LAST:event_jbtnSelecCartasActionPerformed
+
+    public void get3Cartas() {
+        bdC = new BDCarta();
+        m1 = new Mazo();
+        c1 = new Carta();
+        c2 = new Carta();
+        c3 = new Carta();
+
+        c1.getCartaAleatoria();
+        c2.getCartaAleatoria();
+        c3.getCartaAleatoria();
+
+        c1.addImagenCarta();
+        c2.addImagenCarta();
+        c3.addImagenCarta();
+
+        addImagenesCarta();//añade las imagenes de los pokemones a la pantalla
+        addInformacionPokemon();//Imprime en pantalla estadisticas de cada carta
+        crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
+
+        bdC.guardarMazoServidor(m1);
+        Servidor_Principal.setMazoServidor(m1);
+    }
+    
+    public void recuperarEstadoAnterior()
+    {
+        // colocar numero de ronda
+        // recuperar cartas seleccionadas
+        // ingresar cartas nuevas
+        // enviar el token si lo tenia
+    }
+
+    public void addInformacionPokemon() {
+
+        //CARTA 1
+        jtfNombre1.setText(c1.getNombre());
+        jtfTipo1_1.setText(c1.getTipo1());
+        jtfTipo2_1.setText(c1.getTipo2());
+        jtfHP1.setText("" + c1.getHp());
+        jtfAtaque1.setText("" + c1.getAtaque());
+        jtfDefensa1.setText("" + c1.getDefensa());
+        //Cambiando colores
+        jtfTipo1_1.setBackground(mapcolorTipo.get(c1.getTipo1()));
+        jtfTipo2_1.setBackground(mapcolorTipo.get(c1.getTipo2()));
+        jPanelCarta1.setBackground(mapcolorTipo.get(c1.getTipo1()));
 
         //CARTA 2
-        jtfNombre2.setText(mazoRecibido.getCartas().get(1).getNombre());
-        jtfTipo1_2.setText(mazoRecibido.getCartas().get(1).getTipo1());
-        jtfTipo2_2.setText(mazoRecibido.getCartas().get(1).getTipo2());
-        jtfHP2.setText("" + mazoRecibido.getCartas().get(1).getHp());
-        jtfAtaque2.setText("" + mazoRecibido.getCartas().get(1).getAtaque());
-        jtfDefensa2.setText("" + mazoRecibido.getCartas().get(1).getDefensa());
-        jtfTipo1_2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo1()));
-        jtfTipo2_2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo2()));
-        jPanelCarta2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo1()));
-
-        c = jPanelCarta2.getComponents();
-        for (Component component : c) {
-            component.setEnabled(activaC2);
-        }
+        jtfNombre2.setText(c2.getNombre());
+        jtfTipo1_2.setText(c2.getTipo1());
+        jtfTipo2_2.setText(c2.getTipo2());
+        jtfHP2.setText("" + c2.getHp());
+        jtfAtaque2.setText("" + c2.getAtaque());
+        jtfDefensa2.setText("" + c2.getDefensa());
+        jtfTipo1_2.setBackground(mapcolorTipo.get(c2.getTipo1()));
+        jtfTipo2_2.setBackground(mapcolorTipo.get(c2.getTipo2()));
+        jPanelCarta2.setBackground(mapcolorTipo.get(c2.getTipo1()));
 
         //CARTA 3
-        jtfNombre3.setText(mazoRecibido.getCartas().get(2).getNombre());
-        jtfTipo1_3.setText(mazoRecibido.getCartas().get(2).getTipo1());
-        jtfTipo2_3.setText(mazoRecibido.getCartas().get(2).getTipo2());
-        jtfHP3.setText("" + mazoRecibido.getCartas().get(2).getHp());
-        jtfAtaque3.setText("" + mazoRecibido.getCartas().get(2).getAtaque());
-        jtfDefensa3.setText("" + mazoRecibido.getCartas().get(2).getDefensa());
-        jtfTipo1_3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo1()));
-        jtfTipo2_3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo2()));
-        jPanelCarta3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo1()));
-
-        c = jPanelCarta3.getComponents();
-        for (Component component : c) {
-            component.setEnabled(activaC3);
-        }
+        jtfNombre3.setText(c3.getNombre());
+        jtfTipo1_3.setText(c3.getTipo1());
+        jtfTipo2_3.setText(c3.getTipo2());
+        jtfHP3.setText("" + c3.getHp());
+        jtfAtaque3.setText("" + c3.getAtaque());
+        jtfDefensa3.setText("" + c3.getDefensa());
+        jtfTipo1_3.setBackground(mapcolorTipo.get(c3.getTipo1()));
+        jtfTipo2_3.setBackground(mapcolorTipo.get(c3.getTipo2()));
+        jPanelCarta3.setBackground(mapcolorTipo.get(c3.getTipo1()));
 
     }
 
-    private void addValoresMapColor() {
+    public void addImagenesCarta() {
+
+        jPanelC1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, c1.getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jLabelImg3.setIcon(c1.getImagenPokemon());
+
+        jPanelC2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, c2.getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jLabelImg4.setIcon(c2.getImagenPokemon());
+
+        jPanelC3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, c3.getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jLabelImg5.setIcon(c3.getImagenPokemon());
+    }
+
+    public void addValoresMapColor() {
         mapcolorTipo.put("bug", new Color(168, 185, 31));//Cambiar a cafe
         mapcolorTipo.put("dragon", new Color(112, 56, 248));
         mapcolorTipo.put("electric", new Color(248, 208, 48));
@@ -869,113 +774,24 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         mapcolorTipo.put("water", new Color(104, 144, 240));
     }
 
-    public void addImagenesCarta() {
-
-        jPanelC1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoRecibido.getCartas().get(0).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jLabelImg3.setIcon(mazoRecibido.getCartas().get(0).getIconPokemon());
-
-        jPanelC2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoRecibido.getCartas().get(1).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jLabelImg4.setIcon(mazoRecibido.getCartas().get(1).getIconPokemon());
-
-        jPanelC3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoRecibido.getCartas().get(2).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jLabelImg5.setIcon(mazoRecibido.getCartas().get(2).getIconPokemon());
+    public void crearMazos() {
+        m1.addCartasMazo(c1);
+        m1.addCartasMazo(c2);
+        m1.addCartasMazo(c3);
+        numCartas++;
     }
 
-    private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
-        Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server
-        Cliente_Principal = new ClienteJuego("localhost", 3000, jugador); //Puerto para servidor y cliente principal 3000
-        Servidor.iniciar();
-        Cliente_Principal.iniciar(PuertoPropio.getText());
-        prioridad = Integer.valueOf(jTextField_prioridad.getText());
-        HiloEsperaConTok.start();
-        HiloesperarMensajeSP.start();
-        Servidor.setIP(Cliente_Principal.getIP());
-        jPanel_inicio.setVisible(false);
-    }//GEN-LAST:event_jButtonIniciarActionPerformed
 
-    private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
-        String elegido = grupoRB.getSelection().getActionCommand();
-        Carta c = new Carta();
-        System.out.println("Boton elegido " + elegido);
-        switch (elegido) {
-            case "seleccion1":
-                c = mazoRecibido.getCartas().get(0);
-                mazoCliente.addCartasMazo(c);
-                break;
-            case "seleccion2":
-                c = mazoRecibido.getCartas().get(1);
-                mazoCliente.addCartasMazo(c);
-                break;
-            case "seleccion3":
-                c = mazoRecibido.getCartas().get(2);
-                mazoCliente.addCartasMazo(c);
-                break;
-            default:
-                System.out.println("Esa opcion no existe prro >:v");
-                break;
-        }
-        
-        addValoresTabla(c);
-        jPanel3Cartas.setVisible(false);
-        jPanelMostrarCartas.setVisible(true);
-        grupoRB.clearSelection();
-        BDCarta bdCJugador = new BDCarta();
-        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
-        Cliente_Principal.enviarMSJ(elegido);
-        Cliente.enviarToken();
-        Servidor.setToken(false);
-        jButton_token.setEnabled(false);
-        jButton_PedirCartas.setEnabled(false);
-    }//GEN-LAST:event_jButton_tokenActionPerformed
-
-    private void jButton_PedirCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PedirCartasActionPerformed
-        Cliente_Principal.enviarMSJ("cartas");
-        System.out.println("Pidiendo cartas");
-        try {
-            TimeUnit.SECONDS.sleep(1); // Necesario para que pueda recibir el cliente el mazo si no NullPointerException
-            mazoRecibido = Cliente_Principal.getMazoCliente();
-            jPanelMostrarCartas.setVisible(false);
-            jPanel3Cartas.setVisible(true);
-            showInformacionCartas();
-            addImagenesCarta();
-
-        } catch (InterruptedException ex) {
-            Logger.getLogger(vistaClienteJuego1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }//GEN-LAST:event_jButton_PedirCartasActionPerformed
-
-    private void jTablePokemonSelectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePokemonSelectMouseClicked
-        // TODO add your handling code here:
-        int columna = jTablePokemonSelect.columnAtPoint(evt.getPoint());
-        int fila = jTablePokemonSelect.rowAtPoint(evt.getPoint());
-        if(columna == 0 && fila >= 0){
-            JOptionPane.showMessageDialog(this, null, jTablePokemonSelect.getValueAt(fila, columna).toString(), JOptionPane.DEFAULT_OPTION);
-        }
-        
-        
-    }//GEN-LAST:event_jTablePokemonSelectMouseClicked
-
-    private void limpiarTabla(){
-        DefaultTableModel model = (DefaultTableModel) jTablePokemonSelect.getModel();
-        model.setRowCount(0);
-        jTablePokemonSelect.setModel(model);        
-    }
-    
-    private void addValoresTabla(Carta c){
-        DefaultTableModel modelo = (DefaultTableModel) jTablePokemonSelect.getModel();
-        Object[] fila = new Object[5];
-        fila[0] = c.getNombre();
-        fila[1] = c.getTipo1();
-        fila[2] = c.getHp();
-        fila[3] = c.getAtaque();
-        fila[4] = c.getDefensa();
-        modelo.addRow(fila);
-        jTablePokemonSelect.setModel(modelo);
-    }
-    
-    
+    private void jbtnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnReporteActionPerformed
+        //        ReporteCordinador rc = new ReporteCordinador(j1, j2, j3);
+        //        rc.setVisible(true);
+    }//GEN-LAST:event_jbtnReporteActionPerformed
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -984,25 +800,21 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VistaSeleccionCarta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VistaSeleccionCarta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VistaSeleccionCarta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VistaSeleccionCarta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaCordinador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
-            new vistaClienteJuego1().setVisible(true);
+            new vistaServerJuego1().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField PuertoPropio;
-    private javax.swing.JButton jButtonIniciar;
-    private javax.swing.JButton jButton_PedirCartas;
-    private javax.swing.JButton jButton_token;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton_Iniciar;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1024,17 +836,12 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelFondo;
     private javax.swing.JLabel jLabelFondoCartas;
     private javax.swing.JLabel jLabelImg3;
     private javax.swing.JLabel jLabelImg4;
     private javax.swing.JLabel jLabelImg5;
     private javax.swing.JLabel jLabel_Reloj;
-    private javax.swing.JLabel jLabelinfo;
     private javax.swing.JPanel jPanel3Cartas;
     private javax.swing.JPanel jPanelC1;
     private javax.swing.JPanel jPanelC2;
@@ -1042,14 +849,9 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel jPanelCarta1;
     private javax.swing.JPanel jPanelCarta2;
     private javax.swing.JPanel jPanelCarta3;
-    private javax.swing.JPanel jPanelMostrarCartas;
-    private javax.swing.JPanel jPanel_inicio;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTablePokemonSelect;
-    private javax.swing.JTextField jTextField_prioridad;
-    private javax.swing.JRadioButton jrbCarta1;
-    private javax.swing.JRadioButton jrbCarta2;
-    private javax.swing.JRadioButton jrbCarta3;
+    private javax.swing.JButton jbtnReporte;
+    public static javax.swing.JButton jbtnSelecCartas;
+    private javax.swing.JButton jbtnTomarCartas;
     private javax.swing.JTextField jtfAtaque1;
     private javax.swing.JTextField jtfAtaque2;
     private javax.swing.JTextField jtfAtaque3;

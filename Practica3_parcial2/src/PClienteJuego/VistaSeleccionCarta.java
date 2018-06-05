@@ -1,168 +1,76 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package PClienteJuego;
 
-import static PClienteJuego.vistaClienteJuego1.rel;
-import PServerJuego.vistaServerJuego1;
-import Reloj.reloj;
-import com.dist.DTO.BDCarta;
-import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import token.tokenCliente;
-import token.tokenServer;
 
-public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
+/**
+ *
+ * @author geoge
+ */
+public class VistaSeleccionCarta extends javax.swing.JFrame {
 
-    tokenServer Servidor; // tokenserver y cliente se encargan solamente de los procesos relacionados al token
-    tokenCliente Cliente;
-    ClienteJuego Cliente_Principal;
-    Thread HiloEsperaToken; //Hilo del servidor para esperar el token
-    Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
-    Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
-    Thread HiloLamport;
-    Boolean funcionamiento = false;
-    static reloj rel = new reloj();
-    int prioridad;
-    int jugador = 0;
-    Mazo mazoRecibido, mazoCliente;
+    /**
+     * Creates new form VistaSeleccionCarta
+     */
     ButtonGroup grupoRB;
+    Mazo mazoElegir;
     Map<String, Color> mapcolorTipo;
 
-    public vistaClienteJuego1() {
+    public VistaSeleccionCarta() {
         initComponents();
-        setTitle("Jugador");
-        setLocationRelativeTo(null);
-        setVisible(true);
-        mazoCliente = new Mazo();
-
         grupoRB = new ButtonGroup();
         mapcolorTipo = new HashMap<String, Color>();
         grupoRB.add(jrbCarta1);
         grupoRB.add(jrbCarta2);
         grupoRB.add(jrbCarta3);
-        this.jrbCarta1.setActionCommand("seleccion1");
-        this.jrbCarta2.setActionCommand("seleccion2");
-        this.jrbCarta3.setActionCommand("seleccion3");
 
-        jButton_token.setEnabled(false);
-        HiloEsperaConTok = new Thread(this);
-        HiloesperarMensajeSP = new Thread(this);
-        HiloEsperaToken = new Thread(this);
-        HiloLamport = new Thread(this);
-        HiloLamport.start();
+        this.jrbCarta1.setActionCommand("1");
+        this.jrbCarta2.setActionCommand("2");
+        this.jrbCarta3.setActionCommand("3");
 
         addValoresMapColor();
-        limpiarTabla();
-
+        addImagenesCarta();
+        showInformacionCartas();
     }
 
-    @Override
-    public void run() {
-        String buffer;
-        int estado_mensajes;
-        boolean bandera = false;
-        Thread hilo = Thread.currentThread();
-        while (hilo == HiloEsperaConTok) // Este hilo se puede parar por completo tan pronto acepta ya que solo requiere la primer conexion
-        {
-            Servidor.acceptar();
-            System.out.println("...");
-            if (bandera == false) {
-                System.out.println("Iniciando Hilo");
-                HiloEsperaToken.start();
-                bandera = true;
-            } else {
-                HiloEsperaToken.interrupt();
-                HiloEsperaToken = new Thread(this);
-                HiloEsperaToken.start();
-                System.out.println("Reiniciando hilo");
-            }
-        }
-        while (hilo == HiloEsperaToken && !(HiloEsperaToken.isInterrupted())) // este hilo es para recibir los mensajes que se mandan entre los jugadores
-        {
-            buffer = Servidor.EsperarMensaje();
-            jButton_token.setEnabled(Servidor.isToken());
-            jButton_PedirCartas.setEnabled(Servidor.isToken());
-            if (!buffer.equals("Token")) {
-                Cliente.accion(buffer);
-            }
-            if (Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
-            {
-                System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego1 n = new vistaServerJuego1(Cliente_Principal.getJugador(),Servidor.isToken());
-                n.setVisible(true);
-                this.setVisible(false);
-                HiloEsperaToken.interrupt();
-            } 
-            else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
-            {
-                System.out.println("Conectando al nuevo servidor(" + Servidor.getIPNuevoServer() + ")...");
-                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000, jugador);
-                Cliente_Principal.iniciar(PuertoPropio.getText());
-                HiloesperarMensajeSP = new Thread(this);
-                HiloesperarMensajeSP.start();
-            }
-        }
-        while (hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted())) {
-            estado_mensajes = Cliente_Principal.IterprestarMensaje();
-            if (estado_mensajes == 1) {
-                Cliente = new tokenCliente(Cliente_Principal.getIP_siguiente(), Cliente_Principal.getPuerto_siguiente());
-                Cliente.setPrioridad(prioridad);
-                Servidor.setPrioridad(prioridad);
-                if (Cliente_Principal.getJugador() == 1 && funcionamiento == false) {
-                    Servidor.setToken(true);
-                }
-                jButton_token.setEnabled(Servidor.isToken());
-                jButton_PedirCartas.setEnabled(Servidor.isToken());
-                funcionamiento = true;
-            }
-            else if (estado_mensajes == 2)
-            {
-                Servidor.setToken(true);
-                jButton_token.setEnabled(Servidor.isToken());
-                jButton_PedirCartas.setEnabled(Servidor.isToken());
-            }
-            else if (estado_mensajes == 0) {
-                System.out.println("El servidor murio");
-                Cliente.enviarMSJ(jTextField_prioridad.getText());
-                HiloesperarMensajeSP.interrupt();
-            }
-        }
+    public VistaSeleccionCarta(Mazo m) {
+        initComponents();
+        this.mazoElegir = m;
+        mapcolorTipo = new HashMap<String, Color>();
+        grupoRB = new ButtonGroup();
+        grupoRB.add(jrbCarta1);
+        grupoRB.add(jrbCarta2);
+        grupoRB.add(jrbCarta3);
 
-        while (hilo == HiloLamport) {
-            rel.pasarTiempo();
-            jLabel_Reloj.setText(rel.imprimeHora());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-            }
-        }
+        this.jrbCarta1.setActionCommand("1");
+        this.jrbCarta2.setActionCommand("2");
+        this.jrbCarta3.setActionCommand("3");
+
+        addValoresMapColor();
+
+        showInformacionCartas();
+        addImagenesCarta();
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelMostrarCartas = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTablePokemonSelect = new javax.swing.JTable();
-        jPanel_inicio = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField_prioridad = new javax.swing.JTextField();
-        PuertoPropio = new javax.swing.JTextField();
-        jLabelinfo = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jButtonIniciar = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
         jPanel3Cartas = new javax.swing.JPanel();
         jPanelCarta1 = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
@@ -215,103 +123,15 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabel21 = new javax.swing.JLabel();
         jtfAtaque3 = new javax.swing.JTextField();
         jrbCarta3 = new javax.swing.JRadioButton();
+        jbtnGuardarCuarta = new javax.swing.JButton();
         jLabelFondoCartas = new javax.swing.JLabel();
-        jButton_PedirCartas = new javax.swing.JButton();
-        jButton_token = new javax.swing.JButton();
-        jLabel_Reloj = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+
+        jPasswordField1.setText("jPasswordField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel8.setText("Cartas Seleccionadas");
-
-        jTablePokemonSelect.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Nombre", "Tipo", "HP", "Ataque", "Title 5"
-            }
-        ));
-        jTablePokemonSelect.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTablePokemonSelectMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTablePokemonSelect);
-
-        javax.swing.GroupLayout jPanelMostrarCartasLayout = new javax.swing.GroupLayout(jPanelMostrarCartas);
-        jPanelMostrarCartas.setLayout(jPanelMostrarCartasLayout);
-        jPanelMostrarCartasLayout.setHorizontalGroup(
-            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
-                .addGroup(jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(325, 325, 325))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMostrarCartasLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36))))
-        );
-        jPanelMostrarCartasLayout.setVerticalGroup(
-            jPanelMostrarCartasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMostrarCartasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel8)
-                .addGap(71, 71, 71)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(213, Short.MAX_VALUE))
-        );
-
-        getContentPane().add(jPanelMostrarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 850, 520));
-        jPanelMostrarCartas.setVisible(false);
-
-        jPanel_inicio.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel6.setText("Prioridad");
-        jPanel_inicio.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 170, -1, -1));
-
-        jTextField_prioridad.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jPanel_inicio.add(jTextField_prioridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 170, 55, -1));
-
-        PuertoPropio.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        PuertoPropio.setText("300");
-        jPanel_inicio.add(PuertoPropio, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 120, 55, -1));
-
-        jLabelinfo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabelinfo.setText("Información Propia");
-        jPanel_inicio.add(jLabelinfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, -1, -1));
-
-        jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel4.setText("Puerto");
-        jPanel_inicio.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, -1, -1));
-
-        jButtonIniciar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButtonIniciar.setText("Iniciar");
-        jButtonIniciar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonIniciarActionPerformed(evt);
-            }
-        });
-        jPanel_inicio.add(jButtonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 220, 110, 50));
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel5.setText("Jugador");
-        jPanel_inicio.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
-
-        jLabel7.setText("jLabel7");
-        jPanel_inicio.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 550));
-
-        getContentPane().add(jPanel_inicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 4, 850, 550));
 
         jPanel3Cartas.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel3Cartas.setForeground(new java.awt.Color(0, 0, 0));
         jPanel3Cartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanelCarta1.setBackground(new java.awt.Color(255, 204, 51));
@@ -333,7 +153,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,7 +302,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanelC2Layout.setVerticalGroup(
             jPanelC2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -631,7 +451,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanelC3Layout.setVerticalGroup(
             jPanelC3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -760,94 +580,100 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
         jPanel3Cartas.add(jPanelCarta3, new org.netbeans.lib.awtextra.AbsoluteConstraints(572, 6, -1, 470));
 
+        jbtnGuardarCuarta.setText("Guardar Carta");
+        jbtnGuardarCuarta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnGuardarCuartaActionPerformed(evt);
+            }
+        });
+        jPanel3Cartas.add(jbtnGuardarCuarta, new org.netbeans.lib.awtextra.AbsoluteConstraints(667, 482, 160, 60));
+
+        jLabelFondoCartas.setIcon(new javax.swing.ImageIcon("C:\\Users\\geoge\\Desktop\\Distribuidos\\Distribuidos\\CaidaServer\\Imagenes\\fondo1.png")); // NOI18N
         jLabelFondoCartas.setText("jLabel1");
         jLabelFondoCartas.setPreferredSize(new java.awt.Dimension(843, 562));
-        jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 843, 560));
+        jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, -4, 843, 562));
 
-        getContentPane().add(jPanel3Cartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-        jPanel3Cartas.setVisible(false);
-
-        jButton_PedirCartas.setText("Pedir Cartas");
-        jButton_PedirCartas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_PedirCartasActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton_PedirCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 560, -1, 60));
-
-        jButton_token.setText("Seleccionar carta");
-        jButton_token.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_tokenActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton_token, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 560, -1, 60));
-
-        jLabel_Reloj.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel_Reloj.setText("Reloj");
-        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, -1, -1));
-
-        jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 850, 650));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 844, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel3Cartas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 558, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel3Cartas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void showInformacionCartas() {
-        boolean activaC1 = mazoRecibido.getCartas().get(0).isActiva();
-        boolean activaC2 = mazoRecibido.getCartas().get(1).isActiva();
-        boolean activaC3 = mazoRecibido.getCartas().get(2).isActiva();
+        boolean activaC1 = mazoElegir.getCartas().get(0).isActiva();
+        boolean activaC2 = mazoElegir.getCartas().get(1).isActiva();
+        boolean activaC3 = mazoElegir.getCartas().get(2).isActiva();
         System.out.println("Informacion " + activaC1);
         Component[] c = null;
         //CARTA 1
-        jtfNombre1.setText(mazoRecibido.getCartas().get(0).getNombre());
-        jtfTipo1_1.setText(mazoRecibido.getCartas().get(0).getTipo1());
-        jtfTipo2_1.setText(mazoRecibido.getCartas().get(0).getTipo2());
-        jtfHP1.setText("" + mazoRecibido.getCartas().get(0).getHp());
-        jtfAtaque1.setText("" + mazoRecibido.getCartas().get(0).getAtaque());
-        jtfDefensa1.setText("" + mazoRecibido.getCartas().get(0).getDefensa());
+        jtfNombre1.setText(mazoElegir.getCartas().get(0).getNombre());
+        jtfTipo1_1.setText(mazoElegir.getCartas().get(0).getTipo1());
+        jtfTipo2_1.setText(mazoElegir.getCartas().get(0).getTipo2());
+        jtfHP1.setText("" + mazoElegir.getCartas().get(0).getHp());
+        jtfAtaque1.setText("" + mazoElegir.getCartas().get(0).getAtaque());
+        jtfDefensa1.setText("" + mazoElegir.getCartas().get(0).getDefensa());
         //Cambiando colores
-        jtfTipo1_1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo1()));
-        jtfTipo2_1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo2()));
-        jPanelCarta1.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(0).getTipo1()));
-
-        c = jPanelCarta1.getComponents();
-        for (Component component : c) {
-            component.setEnabled(activaC1);
+        jtfTipo1_1.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(0).getTipo1()));
+        jtfTipo2_1.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(0).getTipo2()));
+        jPanelCarta1.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(0).getTipo1()));
+        if (!activaC1) {
+            c = jPanelCarta1.getComponents();
+            for (Component component : c) {
+                component.setEnabled(false);
+            }
         }
 
         //CARTA 2
-        jtfNombre2.setText(mazoRecibido.getCartas().get(1).getNombre());
-        jtfTipo1_2.setText(mazoRecibido.getCartas().get(1).getTipo1());
-        jtfTipo2_2.setText(mazoRecibido.getCartas().get(1).getTipo2());
-        jtfHP2.setText("" + mazoRecibido.getCartas().get(1).getHp());
-        jtfAtaque2.setText("" + mazoRecibido.getCartas().get(1).getAtaque());
-        jtfDefensa2.setText("" + mazoRecibido.getCartas().get(1).getDefensa());
-        jtfTipo1_2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo1()));
-        jtfTipo2_2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo2()));
-        jPanelCarta2.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(1).getTipo1()));
-
-        c = jPanelCarta2.getComponents();
-        for (Component component : c) {
-            component.setEnabled(activaC2);
+        jtfNombre2.setText(mazoElegir.getCartas().get(1).getNombre());
+        jtfTipo1_2.setText(mazoElegir.getCartas().get(1).getTipo1());
+        jtfTipo2_2.setText(mazoElegir.getCartas().get(1).getTipo2());
+        jtfHP2.setText("" + mazoElegir.getCartas().get(1).getHp());
+        jtfAtaque2.setText("" + mazoElegir.getCartas().get(1).getAtaque());
+        jtfDefensa2.setText("" + mazoElegir.getCartas().get(1).getDefensa());
+        jtfTipo1_2.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(1).getTipo1()));
+        jtfTipo2_2.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(1).getTipo2()));
+        jPanelCarta2.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(1).getTipo1()));
+        if (!activaC2) {
+            c = jPanelCarta2.getComponents();
+            for (Component component : c) {
+                component.setEnabled(false);
+            }
         }
 
         //CARTA 3
-        jtfNombre3.setText(mazoRecibido.getCartas().get(2).getNombre());
-        jtfTipo1_3.setText(mazoRecibido.getCartas().get(2).getTipo1());
-        jtfTipo2_3.setText(mazoRecibido.getCartas().get(2).getTipo2());
-        jtfHP3.setText("" + mazoRecibido.getCartas().get(2).getHp());
-        jtfAtaque3.setText("" + mazoRecibido.getCartas().get(2).getAtaque());
-        jtfDefensa3.setText("" + mazoRecibido.getCartas().get(2).getDefensa());
-        jtfTipo1_3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo1()));
-        jtfTipo2_3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo2()));
-        jPanelCarta3.setBackground(mapcolorTipo.get(mazoRecibido.getCartas().get(2).getTipo1()));
-
-        c = jPanelCarta3.getComponents();
-        for (Component component : c) {
-            component.setEnabled(activaC3);
+        jtfNombre3.setText(mazoElegir.getCartas().get(2).getNombre());
+        jtfTipo1_3.setText(mazoElegir.getCartas().get(2).getTipo1());
+        jtfTipo2_3.setText(mazoElegir.getCartas().get(2).getTipo2());
+        jtfHP3.setText("" + mazoElegir.getCartas().get(2).getHp());
+        jtfAtaque3.setText("" + mazoElegir.getCartas().get(2).getAtaque());
+        jtfDefensa3.setText("" + mazoElegir.getCartas().get(2).getDefensa());
+        jtfTipo1_3.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(2).getTipo1()));
+        jtfTipo2_3.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(2).getTipo2()));
+        jPanelCarta3.setBackground(mapcolorTipo.get(mazoElegir.getCartas().get(2).getTipo1()));
+        if (!activaC3) {
+            c = jPanelCarta3.getComponents();
+            for (Component component : c) {
+                component.setEnabled(false);
+            }
         }
-
     }
 
     private void addValoresMapColor() {
@@ -871,111 +697,43 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
     public void addImagenesCarta() {
 
-        jPanelC1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoRecibido.getCartas().get(0).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jLabelImg3.setIcon(mazoRecibido.getCartas().get(0).getIconPokemon());
+        jPanelC1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoElegir.getCartas().get(0).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jLabelImg3.setIcon(mazoElegir.getCartas().get(0).getImagenPokemon());
 
-        jPanelC2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoRecibido.getCartas().get(1).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jLabelImg4.setIcon(mazoRecibido.getCartas().get(1).getIconPokemon());
+        jPanelC2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoElegir.getCartas().get(1).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jLabelImg4.setIcon(mazoElegir.getCartas().get(1).getImagenPokemon());
 
-        jPanelC3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoRecibido.getCartas().get(2).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jLabelImg5.setIcon(mazoRecibido.getCartas().get(2).getIconPokemon());
+        jPanelC3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, mazoElegir.getCartas().get(2).getNombre(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jLabelImg5.setIcon(mazoElegir.getCartas().get(2).getImagenPokemon());
     }
 
-    private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
-        Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server
-        Cliente_Principal = new ClienteJuego("localhost", 3000, jugador); //Puerto para servidor y cliente principal 3000
-        Servidor.iniciar();
-        Cliente_Principal.iniciar(PuertoPropio.getText());
-        prioridad = Integer.valueOf(jTextField_prioridad.getText());
-        HiloEsperaConTok.start();
-        HiloesperarMensajeSP.start();
-        Servidor.setIP(Cliente_Principal.getIP());
-        jPanel_inicio.setVisible(false);
-    }//GEN-LAST:event_jButtonIniciarActionPerformed
+    private void jbtnGuardarCuartaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarCuartaActionPerformed
 
-    private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
         String elegido = grupoRB.getSelection().getActionCommand();
-        Carta c = new Carta();
         System.out.println("Boton elegido " + elegido);
         switch (elegido) {
-            case "seleccion1":
-                c = mazoRecibido.getCartas().get(0);
-                mazoCliente.addCartasMazo(c);
+            case "1":
                 break;
-            case "seleccion2":
-                c = mazoRecibido.getCartas().get(1);
-                mazoCliente.addCartasMazo(c);
+            case "2":
                 break;
-            case "seleccion3":
-                c = mazoRecibido.getCartas().get(2);
-                mazoCliente.addCartasMazo(c);
+            case "3":
                 break;
             default:
-                System.out.println("Esa opcion no existe prro >:v");
+                System.out.println("Esa opcion ni existe puños :v");
                 break;
         }
-        
-        addValoresTabla(c);
-        jPanel3Cartas.setVisible(false);
-        jPanelMostrarCartas.setVisible(true);
-        grupoRB.clearSelection();
-        BDCarta bdCJugador = new BDCarta();
-        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
-        Cliente_Principal.enviarMSJ(elegido);
-        Cliente.enviarToken();
-        Servidor.setToken(false);
-        jButton_token.setEnabled(false);
-        jButton_PedirCartas.setEnabled(false);
-    }//GEN-LAST:event_jButton_tokenActionPerformed
 
-    private void jButton_PedirCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PedirCartasActionPerformed
-        Cliente_Principal.enviarMSJ("cartas");
-        System.out.println("Pidiendo cartas");
-        try {
-            TimeUnit.SECONDS.sleep(1); // Necesario para que pueda recibir el cliente el mazo si no NullPointerException
-            mazoRecibido = Cliente_Principal.getMazoCliente();
-            jPanelMostrarCartas.setVisible(false);
-            jPanel3Cartas.setVisible(true);
-            showInformacionCartas();
-            addImagenesCarta();
+    }//GEN-LAST:event_jbtnGuardarCuartaActionPerformed
 
-        } catch (InterruptedException ex) {
-            Logger.getLogger(vistaClienteJuego1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }//GEN-LAST:event_jButton_PedirCartasActionPerformed
-
-    private void jTablePokemonSelectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePokemonSelectMouseClicked
-        // TODO add your handling code here:
-        int columna = jTablePokemonSelect.columnAtPoint(evt.getPoint());
-        int fila = jTablePokemonSelect.rowAtPoint(evt.getPoint());
-        if(columna == 0 && fila >= 0){
-            JOptionPane.showMessageDialog(this, null, jTablePokemonSelect.getValueAt(fila, columna).toString(), JOptionPane.DEFAULT_OPTION);
-        }
-        
-        
-    }//GEN-LAST:event_jTablePokemonSelectMouseClicked
-
-    private void limpiarTabla(){
-        DefaultTableModel model = (DefaultTableModel) jTablePokemonSelect.getModel();
-        model.setRowCount(0);
-        jTablePokemonSelect.setModel(model);        
-    }
-    
-    private void addValoresTabla(Carta c){
-        DefaultTableModel modelo = (DefaultTableModel) jTablePokemonSelect.getModel();
-        Object[] fila = new Object[5];
-        fila[0] = c.getNombre();
-        fila[1] = c.getTipo1();
-        fila[2] = c.getHp();
-        fila[3] = c.getAtaque();
-        fila[4] = c.getDefensa();
-        modelo.addRow(fila);
-        jTablePokemonSelect.setModel(modelo);
-    }
-    
-    
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -992,17 +750,17 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(VistaSeleccionCarta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        java.awt.EventQueue.invokeLater(() -> {
-            new vistaClienteJuego1().setVisible(true);
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new VistaSeleccionCarta().setVisible(true);
+            }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField PuertoPropio;
-    private javax.swing.JButton jButtonIniciar;
-    private javax.swing.JButton jButton_PedirCartas;
-    private javax.swing.JButton jButton_token;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1024,17 +782,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelFondoCartas;
     private javax.swing.JLabel jLabelImg3;
     private javax.swing.JLabel jLabelImg4;
     private javax.swing.JLabel jLabelImg5;
-    private javax.swing.JLabel jLabel_Reloj;
-    private javax.swing.JLabel jLabelinfo;
     private javax.swing.JPanel jPanel3Cartas;
     private javax.swing.JPanel jPanelC1;
     private javax.swing.JPanel jPanelC2;
@@ -1042,11 +793,8 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel jPanelCarta1;
     private javax.swing.JPanel jPanelCarta2;
     private javax.swing.JPanel jPanelCarta3;
-    private javax.swing.JPanel jPanelMostrarCartas;
-    private javax.swing.JPanel jPanel_inicio;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTablePokemonSelect;
-    private javax.swing.JTextField jTextField_prioridad;
+    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JButton jbtnGuardarCuarta;
     private javax.swing.JRadioButton jrbCarta1;
     private javax.swing.JRadioButton jrbCarta2;
     private javax.swing.JRadioButton jrbCarta3;

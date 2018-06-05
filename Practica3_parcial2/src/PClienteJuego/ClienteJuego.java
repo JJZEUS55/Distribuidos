@@ -31,37 +31,26 @@ public class ClienteJuego {
     private DataInputStream Entrada; //recibir mensajes
     private Mazo m;
     private int ronda;
+    private InfoServidor Servidores;
 
     public ClienteJuego(String host, int puerto, int jugador) {
-        this.jugador = jugador;
-        try {
-            sock = new Socket(host, puerto);
-            Entrada = new DataInputStream(sock.getInputStream());
-            salida = new DataOutputStream(sock.getOutputStream());
-        } catch (UnknownHostException e) {
-            System.out.println("El host no existe o no está activo.");
-        } catch (IOException e) {
-            System.out.println("Error de entrada/salida.");
-        }
-        System.out.println("ClienteJuego: Se ha conectado el cliente");
-        
+        Servidores = new InfoServidor();
+        this.jugador = jugador;              
     }
 
     public void iniciar(String Puerto_Token) {
         StringBuilder tem1 = new StringBuilder();
-
         try {
             InetAddress tem = InetAddress.getLocalHost();
             IP = tem.getHostAddress();
             System.out.println("IP del equipo := " + IP);
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
+        tem1.append("CONE");
         tem1.append(IP);
         tem1.append(":");
         tem1.append(Puerto_Token);
         tem1.append(":");
-        tem1.append(String.valueOf(jugador));
-      
+        tem1.append(String.valueOf(jugador));   
         System.out.println("iniciar: " + tem1.toString());
         enviarMSJ(tem1.toString());
 
@@ -108,6 +97,7 @@ public class ClienteJuego {
     }
 
     public void enviarMSJ(String buffer) {
+        Conexion();
         try {
             salida.writeUTF(buffer);
         } catch (UnknownHostException e) {
@@ -129,6 +119,34 @@ public class ClienteJuego {
             System.out.println("Error de entrada/salida.");
         }
         return buffer;
+    }
+    
+    public void Conexion()
+    {
+        System.out.println("Tratando Conexion");
+        int numero;
+        
+        while(true)
+        {
+            numero = (int) (Math.random() * 4);
+            System.out.println(numero);
+            System.out.println(Servidores.getIP(numero));
+            System.out.println(Servidores.getPuerto(numero));
+            try {
+                sock = new Socket(Servidores.getIP(numero), Servidores.getPuerto(numero));
+                Entrada = new DataInputStream(sock.getInputStream());
+                salida = new DataOutputStream(sock.getOutputStream());
+                System.out.println("Conexion: Se ha establecido el canal"); 
+                break;
+            } catch (UnknownHostException e) {
+                System.out.println("El host no existe o no está activo.");
+                continue;
+            } catch (IOException e) {
+                System.out.println("Error de entrada/salida.");
+                continue;
+            }
+        }
+           
     }
 
     public Mazo recibirCarta() {
@@ -198,5 +216,18 @@ public class ClienteJuego {
     public void setRonda(int ronda) {
         this.ronda = ronda;
     }
+
+    public void setSock(Socket sock) {
+        this.sock = sock;
+    }
+
+    public void setSalida(DataOutputStream salida) {
+        this.salida = salida;
+    }
+
+    public void setEntrada(DataInputStream Entrada) {
+        this.Entrada = Entrada;
+    }
+    
 
 }
