@@ -40,7 +40,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         bdC.borrarTodoTablas();
         mapcolorTipo = new HashMap<String, Color>();
         int numCartas = 0;
-        Servidor_Principal = new ServerJuego(3000);
+        Servidor_Principal = new ServerJuego(3100);
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar = new Thread(this);
         Hilo_ServidorEsperarMensajes = new Thread(this);

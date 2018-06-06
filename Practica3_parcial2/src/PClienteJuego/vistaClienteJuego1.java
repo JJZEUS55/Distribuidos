@@ -93,27 +93,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             if (!buffer.equals("Token")) {
                 Cliente.accion(buffer);
             }
-            if (Servidor.isElegido())// se checan banderas dentro de las clases token para iniciar el nuevo servidor en uno de los jugadores 
-            {
-                System.out.println("Iniciando nuevo servidor......");
-                vistaServerJuego1 n = new vistaServerJuego1(Cliente_Principal.getJugador(),Servidor.isToken());
-                n.setVisible(true);
-                this.setVisible(false);
-                HiloEsperaToken.interrupt();
-            } 
-            else if (Cliente.isCancelarReenvio())// o conectarse al nuevo servidor segun sea el caso
-            {
-                System.out.println("Conectando al nuevo servidor(" + Servidor.getIPNuevoServer() + ")...");
-                Cliente_Principal = new ClienteJuego(Servidor.getIPNuevoServer(), 3000, jugador);
-                Cliente_Principal.iniciar(PuertoPropio.getText());
-                HiloesperarMensajeSP = new Thread(this);
-                HiloesperarMensajeSP.start();
-            }
+            
         }
         while (hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted())) {
-            estado_mensajes = Cliente_Principal.IterprestarMensaje();
+            estado_mensajes = Cliente_Principal.InterpretarMensaje();
             if (estado_mensajes == 1) {
-                Cliente = new tokenCliente(Cliente_Principal.getIP_siguiente(), Cliente_Principal.getPuerto_siguiente());
                 Cliente.setPrioridad(prioridad);
                 Servidor.setPrioridad(prioridad);
                 if (Cliente_Principal.getJugador() == 1 && funcionamiento == false) {
@@ -128,11 +112,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 Servidor.setToken(true);
                 jButton_token.setEnabled(Servidor.isToken());
                 jButton_PedirCartas.setEnabled(Servidor.isToken());
-            }
-            else if (estado_mensajes == 0) {
-                System.out.println("El servidor murio");
-                Cliente.enviarMSJ(jTextField_prioridad.getText());
-                HiloesperarMensajeSP.interrupt();
             }
         }
 
@@ -161,19 +140,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jLabelinfo = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jButtonIniciar = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jLabelinfo1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jTextField_prioridad1 = new javax.swing.JTextField();
-        PuertoPropio1 = new javax.swing.JTextField();
-        jButtonIniciar1 = new javax.swing.JButton();
-        PuertoPropio2 = new javax.swing.JTextField();
+        jText_PUERTOSIG = new javax.swing.JTextField();
         jLabelinfo2 = new javax.swing.JLabel();
         jLabel32 = new javax.swing.JLabel();
-        jTextField_prioridad3 = new javax.swing.JTextField();
+        jTextField_IPSIG = new javax.swing.JTextField();
         jButton_conectarSiguiente = new javax.swing.JButton();
         jLabel33 = new javax.swing.JLabel();
         jPanel3Cartas = new javax.swing.JPanel();
@@ -289,10 +260,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
         jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel6.setText("Prioridad");
-        jPanel_inicio.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 170, -1, -1));
+        jPanel_inicio.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
 
         jTextField_prioridad.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jPanel_inicio.add(jTextField_prioridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 170, 55, -1));
+        jPanel_inicio.add(jTextField_prioridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 150, 55, -1));
 
         PuertoPropio.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         PuertoPropio.setText("300");
@@ -300,7 +271,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
         jLabelinfo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabelinfo.setText("Información Propia");
-        jPanel_inicio.add(jLabelinfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, -1, -1));
+        jPanel_inicio.add(jLabelinfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 80, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel4.setText("Puerto");
@@ -313,61 +284,32 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 jButtonIniciarActionPerformed(evt);
             }
         });
-        jPanel_inicio.add(jButtonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 220, 110, 50));
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel5.setText("Jugador");
-        jPanel_inicio.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
-
-        jLabelinfo1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabelinfo1.setText("Información Propia");
-        jPanel_inicio.add(jLabelinfo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, -1, -1));
+        jPanel_inicio.add(jButtonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 180, 120, 30));
 
         jLabel7.setText("jLabel7");
         jPanel_inicio.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 550));
 
-        jLabel9.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel9.setText("Puerto");
-        jPanel_inicio.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, -1, -1));
-
-        jLabel22.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel22.setText("Jugador");
-        jPanel_inicio.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
-
-        jLabel23.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel23.setText("Prioridad");
-        jPanel_inicio.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 170, -1, -1));
-
-        jTextField_prioridad1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jPanel_inicio.add(jTextField_prioridad1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 170, 55, -1));
-
-        PuertoPropio1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        PuertoPropio1.setText("300");
-        jPanel_inicio.add(PuertoPropio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 120, 55, -1));
-
-        jButtonIniciar1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButtonIniciar1.setText("Iniciar");
-        jButtonIniciar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonIniciar1ActionPerformed(evt);
-            }
-        });
-        jPanel_inicio.add(jButtonIniciar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 220, 110, 50));
-
-        PuertoPropio2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        PuertoPropio2.setText("300");
-        jPanel_inicio.add(PuertoPropio2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 380, 55, -1));
+        jText_PUERTOSIG.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jText_PUERTOSIG.setText("300");
+        jPanel_inicio.add(jText_PUERTOSIG, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 380, 55, -1));
 
         jLabelinfo2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabelinfo2.setText("Siguiente");
-        jPanel_inicio.add(jLabelinfo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 290, -1, -1));
+        jPanel_inicio.add(jLabelinfo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 310, -1, -1));
 
         jLabel32.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel32.setText("IP");
         jPanel_inicio.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 350, -1, -1));
 
-        jTextField_prioridad3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jPanel_inicio.add(jTextField_prioridad3, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 350, 55, -1));
+        jTextField_IPSIG.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jTextField_IPSIG.setText("localhost");
+        jTextField_IPSIG.setToolTipText("");
+        jTextField_IPSIG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_IPSIGActionPerformed(evt);
+            }
+        });
+        jPanel_inicio.add(jTextField_IPSIG, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 350, 55, -1));
 
         jButton_conectarSiguiente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jButton_conectarSiguiente.setText("Iniciar");
@@ -376,7 +318,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_conectarSiguienteActionPerformed(evt);
             }
         });
-        jPanel_inicio.add(jButton_conectarSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 420, 110, 50));
+        jPanel_inicio.add(jButton_conectarSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 410, 110, 30));
 
         jLabel33.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel33.setText("Puerto");
@@ -955,15 +897,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     }
 
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
-        Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server
-        Cliente_Principal = new ClienteJuego("localhost", 3000, jugador); //Puerto para servidor y cliente principal 3000
-        Servidor.iniciar();
-        Cliente_Principal.iniciar(PuertoPropio.getText());
+        Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server        
+        Servidor.iniciar();        
         prioridad = Integer.valueOf(jTextField_prioridad.getText());
-        HiloEsperaConTok.start();
-        HiloesperarMensajeSP.start();
-        Servidor.setIP(Cliente_Principal.getIP());
-        jPanel_inicio.setVisible(false);
+        HiloEsperaConTok.start();       
+        jButtonIniciar.setVisible(false);
     }//GEN-LAST:event_jButtonIniciarActionPerformed
 
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
@@ -1029,13 +967,19 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         
     }//GEN-LAST:event_jTablePokemonSelectMouseClicked
 
-    private void jButtonIniciar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonIniciar1ActionPerformed
-
     private void jButton_conectarSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_conectarSiguienteActionPerformed
-        // TODO add your handling code here:
+        Cliente = new tokenCliente(jTextField_IPSIG.getText(), Integer.valueOf(jText_PUERTOSIG.getText().toString()));
+        Cliente_Principal = new ClienteJuego("localhost", 3000, jugador); //Puerto para servidor y cliente principal 3000
+        Cliente_Principal.iniciar(PuertoPropio.getText());
+        HiloesperarMensajeSP.start();
+        Servidor.setIP(Cliente_Principal.getIP());
+        jPanel_inicio.setVisible(false);
+        //conectar al principal
     }//GEN-LAST:event_jButton_conectarSiguienteActionPerformed
+
+    private void jTextField_IPSIGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_IPSIGActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_IPSIGActionPerformed
 
     private void limpiarTabla(){
         DefaultTableModel model = (DefaultTableModel) jTablePokemonSelect.getModel();
@@ -1080,10 +1024,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField PuertoPropio;
-    private javax.swing.JTextField PuertoPropio1;
-    private javax.swing.JTextField PuertoPropio2;
     private javax.swing.JButton jButtonIniciar;
-    private javax.swing.JButton jButtonIniciar1;
     private javax.swing.JButton jButton_PedirCartas;
     private javax.swing.JButton jButton_conectarSiguiente;
     private javax.swing.JButton jButton_token;
@@ -1101,8 +1042,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
@@ -1114,18 +1053,15 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelFondoCartas;
     private javax.swing.JLabel jLabelImg3;
     private javax.swing.JLabel jLabelImg4;
     private javax.swing.JLabel jLabelImg5;
     private javax.swing.JLabel jLabel_Reloj;
     private javax.swing.JLabel jLabelinfo;
-    private javax.swing.JLabel jLabelinfo1;
     private javax.swing.JLabel jLabelinfo2;
     private javax.swing.JPanel jPanel3Cartas;
     private javax.swing.JPanel jPanelC1;
@@ -1138,9 +1074,9 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel jPanel_inicio;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePokemonSelect;
+    private javax.swing.JTextField jTextField_IPSIG;
     private javax.swing.JTextField jTextField_prioridad;
-    private javax.swing.JTextField jTextField_prioridad1;
-    private javax.swing.JTextField jTextField_prioridad3;
+    private javax.swing.JTextField jText_PUERTOSIG;
     private javax.swing.JRadioButton jrbCarta1;
     private javax.swing.JRadioButton jrbCarta2;
     private javax.swing.JRadioButton jrbCarta3;

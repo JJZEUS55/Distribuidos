@@ -51,44 +51,29 @@ public class ServerJuego {
     public void acceptar() {
         String buffer;
         String[] IP_puerto_jugador;      
-        System.out.println("------ Class Servidor: acceptar ------");
         System.out.println("acceptar: esperando");
         try {
             sock = ss.accept();
             entrada = new DataInputStream(sock.getInputStream());
             salida = new DataOutputStream(sock.getOutputStream());
-            System.out.println("Canales listos");
         } catch (IOException e) {
             System.out.println("Error de entrada/salida.");
         }
         buffer = recibirMSJ();
-        System.out.println("Esperar mensaje: " + buffer);
+        System.out.println("acceptar: " + buffer);
         
         JugadorActual = new Jugadores(); // solo para agregar de manera temporal un jugador para despues pasarlo al arreglo       
-        IP_puerto_jugador = buffer.split(":"); // recibe IP y puerto del juegador  
-        System.out.println("acceptar: IP puerto jugador " + IP_puerto_jugador[0] + "-" + IP_puerto_jugador[1] + "-" + IP_puerto_jugador[2]);
         Num_Jugadores++;
         JugadorActual.setEntrada(entrada);
         JugadorActual.setSalida(salida);
         JugadorActual.setJugador(Num_Jugadores);
-        JugadorActual.setIp(IP_puerto_jugador[0]);
-        JugadorActual.setPuerto(Integer.valueOf(IP_puerto_jugador[1]));
+        JugadorActual.setIp("1111");
+        JugadorActual.setPuerto(0);
         JugadorActual.setSock(sock);
-        if (!vistaServerJuego1.ModoServidorRespaldo) { //solo si es un servidor normal(desde el inicio de la partida)
-            BDJugador bdJ = new BDJugador();
-            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto());
-        } 
-        else
-        {
-            if (vistaServerJuego1.rec.getIP().equals(JugadorActual.getIp()) && vistaServerJuego1.rec.getPuerto() == JugadorActual.getPuerto())
-            {
-                enviarMSJ("token");
-            }
-        }    
         ConjuntoJugadores.add(JugadorActual);
-        t = new atenderCliente(JugadorActual);
+        t = new atenderCliente(JugadorActual, buffer);
         t.start();
-        nuevo(buffer);
+        //nuevo(buffer);
 
     }
 
