@@ -70,7 +70,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         rec.iniciar(tokenAnterior, numeroJugador);
         m1 = new Mazo();
         m1 = rec.getMazoRecuperado();
-        //get3Cartas();
+        recuperarMazoAnterior();
     }
 
     @Override
@@ -680,15 +680,15 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
     public void get3Cartas() {
         bdC = new BDCarta();
+            
         m1 = new Mazo();
         c1 = new Carta();
         c2 = new Carta();
         c3 = new Carta();
-
         c1.getCartaAleatoria();
         c2.getCartaAleatoria();
         c3.getCartaAleatoria();
-
+              
         c1.addImagenCarta();
         c2.addImagenCarta();
         c3.addImagenCarta();
@@ -701,12 +701,29 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         Servidor_Principal.setMazoServidor(m1);
     }
     
-    public void recuperarEstadoAnterior()
+    public void recuperarMazoAnterior()
     {
-        // colocar numero de ronda
-        // recuperar cartas seleccionadas
-        // ingresar cartas nuevas
-        // enviar el token si lo tenia
+        bdC = new BDCarta();
+        m1 = new Mazo();
+        c1 = new Carta();
+        c2 = new Carta();
+        c3 = new Carta();
+        m1 = rec.getMazoRecuperado();
+        c1 = m1.getCartas().get(0);
+        c2 = m1.getCartas().get(1);
+        c3 = m1.getCartas().get(2);
+        c1.addImagenCarta();
+        c2.addImagenCarta();
+        c3.addImagenCarta();
+        System.out.println(c1.getNum());
+        System.out.println(c2.getNum());
+        System.out.println(c2.getNum());
+        addImagenesCarta();//añade las imagenes de los pokemones a la pantalla
+        addInformacionPokemon();//Imprime en pantalla estadisticas de cada carta
+        crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
+
+        bdC.guardarMazoServidor(m1);
+        Servidor_Principal.setMazoServidor(m1);
     }
 
     public void addInformacionPokemon() {

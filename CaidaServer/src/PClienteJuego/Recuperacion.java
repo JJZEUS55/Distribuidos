@@ -26,8 +26,10 @@ public class Recuperacion {
     
     public Recuperacion ()
     {
-        BD = new ConexionBD();
-        MazoRecuperado = new Mazo();
+        this.BD = new ConexionBD();
+        this.MazoRecuperado = new Mazo();
+        this.IP ="0.0.0.0";
+        this.puerto = 0; 
         
     }
     
@@ -56,23 +58,25 @@ public class Recuperacion {
                 {
                     if (Integer.valueOf(rs1.getObject(4).toString()) == Ronda) // la carta fue escogida en la ultima Ronda
                     {
+                        c = new Carta();
                         cont++;
                         c.EstablecerCarta(Integer.valueOf(rs1.getObject(2).toString()));                        
                         c.setActiva(false);
                         MazoRecuperado.addCartasMazo(c);
+                        System.out.println("Recuperacion: agregar a mazo A"+rs1.getObject(2));
                     }                   
                 }
-                else if(rs1.getObject(1) != null)
+                else if(rs1.getObject(1) == null)
                 {
-                    if (Integer.valueOf(rs1.getObject(4).toString()) == Ronda)// la carta no fue escogida en la ultima ronda
-                    {
-                        c.EstablecerCarta(Integer.valueOf(rs1.getObject(2).toString()));
-                        c.setActiva(true);
-                        MazoRecuperado.addCartasMazo(c);
-                    }
-                    
+                    c = new Carta();
+                    c.EstablecerCarta(Integer.valueOf(rs1.getObject(2).toString()));
+                    c.setActiva(true);
+                    MazoRecuperado.addCartasMazo(c);
+                    System.out.println("Recuperacion: agregar a mazo B"+rs1.getObject(2));
+    
                 }
             } while (rs1.next());
+            System.out.println("Recuperacion: tam mazo anterior:"+MazoRecuperado.getTamano());
             rs1 = s1.executeQuery("SELECT * FROM jugadores");
             rs1.last();
             jugadoresPartidaPasada = rs1.getRow();

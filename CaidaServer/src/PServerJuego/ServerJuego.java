@@ -82,6 +82,7 @@ public class ServerJuego {
         {
             if (vistaServerJuego1.rec.getIP().equals(JugadorActual.getIp()) && vistaServerJuego1.rec.getPuerto() == JugadorActual.getPuerto())
             {
+                System.out.println("Este jugador encaja con la descripcion");
                 enviarMSJ("token");
             }
         }    
