@@ -135,6 +135,7 @@ public class ClienteJuego {
             e.printStackTrace();
             System.out.println("Error de entrada/salida.");
         }
+        CerrarConexion();
         return buffer;
     }
     
@@ -162,8 +163,18 @@ public class ClienteJuego {
                 System.out.println("Error de entrada/salida.");
                 continue;
             }
+        }           
+    }
+    
+    public void CerrarConexion()
+    {
+        try{
+            Entrada.close();
+            salida.close();
+            sock.close();
+        } catch (IOException e) {
+            System.out.println("Error de entrada/salida.");
         }
-           
     }
 
     public Mazo recibirCarta() {
