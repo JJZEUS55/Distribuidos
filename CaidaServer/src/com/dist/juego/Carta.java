@@ -79,11 +79,13 @@ public class Carta implements Serializable {
     
     public void EstablecerCarta(int numC)
     {
+        mysql = new ConexionBD();
         try (Connection cn = mysql.Conectar()) {
         Statement s1 = cn.createStatement();
         ResultSet rs1 = s1.executeQuery("SELECT * FROM datos WHERE num=" + numC);
 
         while (rs1.next()) {
+            this.num = Integer.parseInt(rs1.getObject(1).toString());
             this.nombre = rs1.getObject(2).toString();
             this.tipo1 = rs1.getObject(3).toString();
             this.tipo2 = rs1.getObject(4).toString();

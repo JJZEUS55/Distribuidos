@@ -22,28 +22,33 @@ public class Prueba {
     static Carta c1, c2, c3;
 
     public static void main(String[] args) {
-        bd1 = new BDJugador();
-        bd1.guardarJuagador(1, "10.0.0.0", 3030);
-        for (int i = 0; i < 5; i++) {
-            c1 = new Carta();
-            c2 = new Carta();
-            c3 = new Carta();
+//        bd1 = new BDJugador();
+//        bd1.guardarJuagador(1, "10.0.0.0", 3030);
+//        for (int i = 0; i < 5; i++) {
+//            c1 = new Carta();
+//            c2 = new Carta();
+//            c3 = new Carta();
+//
+//            c1.getCartaAleatoria();
+//            c2.getCartaAleatoria();
+//            c3.getCartaAleatoria();
+//
+//            m = new Mazo();
+//            m.addCartasMazo(c1);
+//            m.addCartasMazo(c2);
+//            m.addCartasMazo(c3);
+//
+//            bd = new BDCarta(m);
+//            bd.guardarMazoServidor(m);
+//            System.out.println("Se ha guardad en la BASE :3");
+//
+//            bd.guardarCartaCliente(1, "10:12:11", c2, 1);
+//        }
 
-            c1.getCartaAleatoria();
-            c2.getCartaAleatoria();
-            c3.getCartaAleatoria();
-
-            m = new Mazo();
-            m.addCartasMazo(c1);
-            m.addCartasMazo(c2);
-            m.addCartasMazo(c3);
-
-            bd = new BDCarta(m);
-            bd.guardarMazoServidor(m);
-            System.out.println("Se ha guardad en la BASE :3");
-
-            bd.guardarCartaCliente(1, "10:12:11", c2, 1);
-        }
+        Carta c1 = new Carta();
+        c1.EstablecerCarta(7);
+        
+        System.out.println(c1);
 
     }
 }
