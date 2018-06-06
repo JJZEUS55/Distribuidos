@@ -27,6 +27,7 @@ public class Recuperacion {
     public Recuperacion ()
     {
         BD = new ConexionBD();
+        MazoRecuperado = new Mazo();
         
     }
     
@@ -35,7 +36,7 @@ public class Recuperacion {
         int cont = 0;
         int jugadoresPartidaPasada = 0;
         ResultSet rs1;
-        Carta c1, c2, c3;
+        Carta c = new Carta();
         try(Connection cn = BD.ConectarpokePro())
         {
             Statement s1 = cn.createStatement();
@@ -51,14 +52,23 @@ public class Recuperacion {
             do 
             {
                 System.out.println("Recuperacion: carta rep:"+rs1.getObject(2)); 
-                if (rs1.getObject(1) != null) // la carta fue escogida
+                if (rs1.getObject(1) != null) 
                 {
-                    if (Integer.valueOf(rs1.getObject(4).toString()) == Ronda) 
+                    if (Integer.valueOf(rs1.getObject(4).toString()) == Ronda) // la carta fue escogida en la ultima Ronda
                     {
-                        
                         cont++;
-                        // colocar carta en false
-                        // agregar al mazo
+                        c.EstablecerCarta(Integer.valueOf(rs1.getObject(2).toString()));                        
+                        c.setActiva(false);
+                        MazoRecuperado.addCartasMazo(c);
+                    }                   
+                }
+                else if(rs1.getObject(1) != null)
+                {
+                    if (Integer.valueOf(rs1.getObject(4).toString()) == Ronda)// la carta no fue escogida en la ultima ronda
+                    {
+                        c.EstablecerCarta(Integer.valueOf(rs1.getObject(2).toString()));
+                        c.setActiva(true);
+                        MazoRecuperado.addCartasMazo(c);
                     }
                     
                 }
@@ -69,9 +79,7 @@ public class Recuperacion {
             if(cont < jugadoresPartidaPasada)
                 System.out.println("Recuperacion: Continuar Ronda anterior");
             else
-                System.out.println("Recuperacion: Ronda anterior terminada generando nuevo mazo");
-            
-        
+                System.out.println("Recuperacion: Ronda anterior terminada generando nuevo mazo");                    
         
             if (token) 
             {
@@ -105,6 +113,10 @@ public class Recuperacion {
 
     public int getPuerto() {
         return puerto;
+    }
+
+    public Mazo getMazoRecuperado() {
+        return MazoRecuperado;
     }
     
         
