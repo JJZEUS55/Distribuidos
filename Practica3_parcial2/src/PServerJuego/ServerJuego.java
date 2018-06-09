@@ -1,5 +1,7 @@
 package PServerJuego;
 
+import PClienteJuego.ClienteJuego;
+import PClienteJuego.Mensaje;
 import static PServerJuego.vistaServerJuego1.m1;
 import com.dist.DTO.BDJugador;
 import com.dist.juego.Carta;
@@ -7,10 +9,13 @@ import com.dist.juego.Mazo;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -49,8 +54,7 @@ public class ServerJuego {
     }
 
     public void acceptar() {
-        String buffer;
-        String[] IP_puerto_jugador;      
+        Mensaje buffer; 
         System.out.println("acceptar: esperando");
         try {
             sock = ss.accept();
@@ -59,79 +63,33 @@ public class ServerJuego {
         } catch (IOException e) {
             System.out.println("Error de entrada/salida.");
         }
-        buffer = recibirMSJ();
-        System.out.println("acceptar: " + buffer);
-        
+        buffer = recibirMSG();
         JugadorActual = new Jugadores(); // solo para agregar de manera temporal un jugador para despues pasarlo al arreglo       
         Num_Jugadores++;
         JugadorActual.setEntrada(entrada);
         JugadorActual.setSalida(salida);
         JugadorActual.setJugador(Num_Jugadores);
-        JugadorActual.setIp("1111");
-        JugadorActual.setPuerto(0);
         JugadorActual.setSock(sock);
         ConjuntoJugadores.add(JugadorActual);
         t = new atenderCliente(JugadorActual, buffer);
         t.start();
-        //nuevo(buffer);
-
     }
-
-    public void nuevo(String buffer) {
-        System.out.println("------ Class Servidor: nuevo ------");
-        System.out.println("acceptar: Cantidad de jugadores:" + ConjuntoJugadores.size());
-        for (int i = 0; i < ConjuntoJugadores.size(); i++) {
-            if (i == ConjuntoJugadores.size() - 2) //penultimo
-            {
-                System.out.println("acceptar: penultimo i=" + i);
-                entrada = ConjuntoJugadores.get(i).getEntrada();
-                salida = ConjuntoJugadores.get(i).getSalida();
-                enviarMSJ("info");
-                enviarMSJ(String.valueOf(ConjuntoJugadores.get(i).getJugador()));
-                enviarMSJ(JugadorActual.getIp());
-                enviarMSJ(String.valueOf(JugadorActual.getPuerto()));
-
-            } else if (i == ConjuntoJugadores.size() - 1 && (i != 0)) // ultimo
-            {
-                System.out.println("acceptar: ultimo i=" + i);
-                entrada = ConjuntoJugadores.get(i).getEntrada();
-                salida = ConjuntoJugadores.get(i).getSalida();
-                enviarMSJ("info");
-                enviarMSJ(String.valueOf(JugadorActual.getJugador()));
-                enviarMSJ(ConjuntoJugadores.get(0).getIp());
-                enviarMSJ(String.valueOf(ConjuntoJugadores.get(0).getPuerto()));
-            }
-
-        }
-        System.out.println("-------------");
-
-    }
-
-    public int Cartas(String buffer) // Trama ---|-|
+   
+    public Mensaje recibirMSG()
     {
-        System.out.println("Mensajes: mensaje completo = " + buffer);
-        System.out.println("Mensajes:" + buffer.substring(0, 3));
-        int NumeroJugador = Integer.valueOf(buffer.substring(3));
-        System.out.println("Cliente " + NumeroJugador + " Solicita Cartas");
-        return 1;
-    }
-
-    private void enviarMSJ(String buffer) {
+        Mensaje ms = new Mensaje();
+        ObjectInputStream ob;
         try {
-            salida.writeUTF(buffer);
-        } catch (IOException e) {
-            System.out.println("Error de entrada/salida.");
-        }
-    }
-
-    private String recibirMSJ() {
-        String buffer = "";
-        try {
-            buffer = entrada.readUTF();
-        } catch (IOException e) {
-            System.out.println("Error de entrada/salida.");
-        }
-        return buffer;
+            ob = new ObjectInputStream(sock.getInputStream());
+            ms = (Mensaje) ob.readObject();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(ClienteJuego.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(ClienteJuego.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        return ms;
     }
 
     public int getNum_Jugadores() {

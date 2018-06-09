@@ -16,7 +16,13 @@ public class Jugadores
     private DataInputStream entrada;
     private DataOutputStream salida;
     private Socket sock;
-
+    
+    public Jugadores()
+    {
+        jugador = 0;
+        puerto = 0;
+        ip = "";
+    }
     public int getJugador() {
         return jugador;
     }

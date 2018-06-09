@@ -1,8 +1,8 @@
 package PServerJuego;
 
 import PClienteJuego.Recuperacion;
-import static PServerJuego.vistaServerJuego.Servidor_Principal;
-import static PServerJuego.vistaServerJuego.rel;
+import static PServerJuego.vistaServerJuego1.Servidor_Principal;
+import static PServerJuego.vistaServerJuego1.rel;
 import Reloj.reloj;
 import com.dist.DTO.BDCarta;
 import com.dist.juego.Carta;
@@ -38,37 +38,12 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         this.getContentPane().setBackground(Color.BLACK);
         bdC = new BDCarta();
         bdC.borrarTodoTablas();
-        mapcolorTipo = new HashMap<String, Color>();
-        int numCartas = 0;
-        Servidor_Principal = new ServerJuego(3100);
-        Servidor_Principal.iniciar();
+        mapcolorTipo = new HashMap<String, Color>();      
         Hilo_ServidorAcceptar = new Thread(this);
         Hilo_ServidorEsperarMensajes = new Thread(this);
         HiloLamport = new Thread(this);
-        Hilo_ServidorAcceptar.start();
         HiloLamport.start();        
-        ModoServidorRespaldo = false;
-        addValoresMapColor();
-        get3Cartas();
-    }
-
-    public vistaServerJuego1(int numeroJugador, boolean tokenAnterior) {
-        initComponents();
-        this.getContentPane().setBackground(Color.BLACK);
-        mapcolorTipo = new HashMap<String, Color>();
-        int numCartas = 0;
-        Servidor_Principal = new ServerJuego(3000);
-        Servidor_Principal.iniciar();
-        Hilo_ServidorAcceptar = new Thread(this);
-        Hilo_ServidorEsperarMensajes = new Thread(this);
-        HiloLamport = new Thread(this);
-        Hilo_ServidorAcceptar.start();
-        HiloLamport.start();
-        ModoServidorRespaldo = true;
-        addValoresMapColor();
-        rec = new Recuperacion();
-        rec.iniciar(tokenAnterior, numeroJugador);
-        get3Cartas();
+        
     }
 
     @Override
@@ -157,6 +132,8 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         jtfAtaque3 = new javax.swing.JTextField();
         jLabelFondoCartas = new javax.swing.JLabel();
         jLabel_Reloj = new javax.swing.JLabel();
+        jButton_ServerOn = new javax.swing.JButton();
+        jTextField_ServerOn = new javax.swing.JTextField();
         jLabelFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -172,7 +149,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_IniciarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Iniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 600, 121, 68));
+        getContentPane().add(jButton_Iniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 600, 100, 68));
 
         jbtnTomarCartas.setText("Repartir Mazo");
         jbtnTomarCartas.addActionListener(new java.awt.event.ActionListener() {
@@ -180,7 +157,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jbtnTomarCartasActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnTomarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 620, 133, -1));
+        getContentPane().add(jbtnTomarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 600, 133, 30));
 
         jbtnSelecCartas.setText("Seleccionar 3 cartas");
         jbtnSelecCartas.addActionListener(new java.awt.event.ActionListener() {
@@ -188,7 +165,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jbtnSelecCartasActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnSelecCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 580, 156, 68));
+        getContentPane().add(jbtnSelecCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 640, 130, 30));
 
         jbtnReporte.setText("Reporte");
         jbtnReporte.addActionListener(new java.awt.event.ActionListener() {
@@ -196,7 +173,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jbtnReporteActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 600, 131, 68));
+        getContentPane().add(jbtnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 600, 80, 68));
 
         jPanel3Cartas.setBackground(new java.awt.Color(0, 0, 0));
         jPanel3Cartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -636,7 +613,16 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
         jLabel_Reloj.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel_Reloj.setText("Reloj");
-        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 620, -1, -1));
+        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 640, -1, -1));
+
+        jButton_ServerOn.setText("Start");
+        jButton_ServerOn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ServerOnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton_ServerOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 600, 70, -1));
+        getContentPane().add(jTextField_ServerOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 630, 70, -1));
 
         jLabelFondo.setText("jLabel1");
         jLabelFondo.setMaximumSize(new java.awt.Dimension(860, 690));
@@ -654,10 +640,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButton_IniciarActionPerformed
 
     private void jbtnTomarCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnTomarCartasActionPerformed
-
-        //Agregar funcionalidad para que al presionar el boton se envien las 3 cartas que salieron
-//        atomics.addAndGet(1);
-//        enviarCartas();
 
     }//GEN-LAST:event_jbtnTomarCartasActionPerformed
 
@@ -695,14 +677,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
         bdC.guardarMazoServidor(m1);
         Servidor_Principal.setMazoServidor(m1);
-    }
-    
-    public void recuperarEstadoAnterior()
-    {
-        // colocar numero de ronda
-        // recuperar cartas seleccionadas
-        // ingresar cartas nuevas
-        // enviar el token si lo tenia
     }
 
     public void addInformacionPokemon() {
@@ -786,6 +760,16 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         //        ReporteCordinador rc = new ReporteCordinador(j1, j2, j3);
         //        rc.setVisible(true);
     }//GEN-LAST:event_jbtnReporteActionPerformed
+
+    private void jButton_ServerOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ServerOnActionPerformed
+        // TODO add your handling code here:
+        Servidor_Principal = new ServerJuego(Integer.valueOf(jTextField_ServerOn.getText().toString()));
+        Servidor_Principal.iniciar();
+        Hilo_ServidorAcceptar.start();
+        addValoresMapColor();
+        get3Cartas();
+        
+    }//GEN-LAST:event_jButton_ServerOnActionPerformed
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -815,6 +799,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Iniciar;
+    private javax.swing.JButton jButton_ServerOn;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -849,6 +834,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel jPanelCarta1;
     private javax.swing.JPanel jPanelCarta2;
     private javax.swing.JPanel jPanelCarta3;
+    private javax.swing.JTextField jTextField_ServerOn;
     private javax.swing.JButton jbtnReporte;
     public static javax.swing.JButton jbtnSelecCartas;
     private javax.swing.JButton jbtnTomarCartas;

@@ -906,33 +906,14 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
         String elegido = grupoRB.getSelection().getActionCommand();
-        Carta c = new Carta();
-        System.out.println("Boton elegido " + elegido);
-        switch (elegido) {
-            case "seleccion1":
-                c = mazoRecibido.getCartas().get(0);
-                mazoCliente.addCartasMazo(c);
-                break;
-            case "seleccion2":
-                c = mazoRecibido.getCartas().get(1);
-                mazoCliente.addCartasMazo(c);
-                break;
-            case "seleccion3":
-                c = mazoRecibido.getCartas().get(2);
-                mazoCliente.addCartasMazo(c);
-                break;
-            default:
-                System.out.println("Esa opcion no existe prro >:v");
-                break;
-        }
-        
+        Carta c = Cliente_Principal.SeleccionarCarta(elegido, mazoRecibido);
+        mazoCliente.addCartasMazo(c);                    
         addValoresTabla(c);
         jPanel3Cartas.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
         grupoRB.clearSelection();
         BDCarta bdCJugador = new BDCarta();
         bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
-        Cliente_Principal.enviarMSJ(elegido);
         Cliente.enviarToken();
         Servidor.setToken(false);
         jButton_token.setEnabled(false);
@@ -940,7 +921,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButton_tokenActionPerformed
 
     private void jButton_PedirCartasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PedirCartasActionPerformed
-        Cliente_Principal.enviarMSJ("cartas");
+        Cliente_Principal.pedirCartas();
         System.out.println("Pidiendo cartas");
         try {
             TimeUnit.SECONDS.sleep(1); // Necesario para que pueda recibir el cliente el mazo si no NullPointerException
@@ -971,10 +952,14 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         Cliente = new tokenCliente(jTextField_IPSIG.getText(), Integer.valueOf(jText_PUERTOSIG.getText().toString()));
         Cliente_Principal = new ClienteJuego("localhost", 3000, jugador); //Puerto para servidor y cliente principal 3000
         Cliente_Principal.iniciar(PuertoPropio.getText());
-        HiloesperarMensajeSP.start();
+        //HiloesperarMensajeSP.start();
         Servidor.setIP(Cliente_Principal.getIP());
         jPanel_inicio.setVisible(false);
         //conectar al principal
+        if(Cliente_Principal.getJugador() == 1){
+            Servidor.setToken(true);
+            jButton_token.setEnabled(Servidor.isToken());
+        }
     }//GEN-LAST:event_jButton_conectarSiguienteActionPerformed
 
     private void jTextField_IPSIGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_IPSIGActionPerformed

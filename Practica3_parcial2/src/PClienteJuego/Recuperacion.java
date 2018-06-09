@@ -1,7 +1,6 @@
 
 package PClienteJuego;
 
-import PServerJuego.vistaServerJuego;
 import PServerJuego.vistaServerJuego1;
 import com.dist.bd.ConexionBD;
 import com.dist.juego.Carta;
