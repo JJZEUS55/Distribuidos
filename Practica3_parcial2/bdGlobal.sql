@@ -14,7 +14,8 @@ create table cartas(
 	tipo2 varchar(30),
 	hp int(11),
 	ataque int(11),
-	defensa int (11)
+	defensa int (11),
+	estado int(11)
 );
 
 create table jugadores(
