@@ -8,6 +8,7 @@ package com.dist.DTO;
 import com.dist.bd.ConexionBD;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,11 +24,10 @@ public class BDCarta {
     private Carta carta;
     private Mazo m;
     private ConexionBD mysql;
-    private Mazo m2;
     private static final String bd = "pokePro1";
 
     public BDCarta() {
-        m2 = null;
+        
     }
 
     public BDCarta(Mazo m) {
@@ -38,53 +38,80 @@ public class BDCarta {
         this.carta = c;
     }
 
-    public Mazo getM2() {
-        return m2;
-    }
+    
     
 
     public void borrarTodoTablas() {
         mysql = new ConexionBD();
-        m2 = new Mazo();
+        try (Connection cn = mysql.ConectarpokePro()) {
+            PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
+            PreparedStatement ps1 = cn.prepareStatement("delete from cartas;");
+            PreparedStatement ps2 = cn.prepareStatement("delete from servidor;");
+            PreparedStatement ps3 = cn.prepareStatement("delete from jugadores;");
+            PreparedStatement ps4 = cn.prepareStatement("delete from jugadorCartas;");
+            
+            ps0.execute();
+            ps1.executeUpdate();
+            ps2.executeUpdate();
+            ps3.executeUpdate();
+            ps4.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public Mazo Retomar()
+    {
+        int cantidad;
+        mysql = new ConexionBD();        
+        Mazo maz = null;
         Carta c;
-        PreparedStatement ps0, ps1, ps2, ps3, ps4;
+        try (Connection cn = mysql.ConectarpokePro()) 
+        {
+            Statement s1 = cn.createStatement();
+            ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas");
+            rs1.last();
+            cantidad = rs1.getRow();
+            if (cantidad == 0)             
+                return null;
+            
+            maz = new Mazo();
+            for (int i = 2; i >= 0; i--) 
+            {   
+                rs1.absolute(cantidad - i);
+                c = new Carta();
+                c.EstablecerCarta(Integer.valueOf(rs1.getObject(1).toString()));
+                maz.addCartasMazo(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return maz;
+                
+    }
+    
+    public boolean checkCartas(int actual) // funcion para ver si ocurren cambios en la tabla de las cartas
+    {
+        int nuevo = actual;
         try (Connection cn = mysql.ConectarpokePro()) {
             Statement s1 = cn.createStatement();
             ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas");
             rs1.last();
-            if(rs1.getRow() <= 3)
-            {              
-                System.out.println("Sin cambios"+ rs1.getRow());
-                rs1.first();
-                do {
-                    c = new Carta();
-                    c.EstablecerCarta(Integer.valueOf(rs1.getObject(1).toString()));
-                    m2.addCartasMazo(c);
-                } while (rs1.next());               
-            }
-            else
-            {
-                System.out.println("Limpiando");
-                ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
-                ps1 = cn.prepareStatement("delete from cartas;");            
-                ps2 = cn.prepareStatement("delete from servidor;");
-                ps3 = cn.prepareStatement("delete from jugadores;");
-                ps4 = cn.prepareStatement("delete from jugadorCartas;");
-                ps0.execute();
-                ps1.executeUpdate();
-                ps2.executeUpdate();
-                ps3.executeUpdate();
-                ps4.executeUpdate();
-                
-            }
-            
-            
-            
-            
-            
+            nuevo =  rs1.getRow();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        if(nuevo == actual)
+        {
+            System.out.println("Sin cambios");
+            return false;
+        }
+        else
+        {    
+            System.out.println("Se ha cambiado la base");
+            return  true;
+        }
+        
     }
 
     public void guardarMazoServidor(Mazo mazo) {

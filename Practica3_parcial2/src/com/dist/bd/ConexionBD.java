@@ -64,7 +64,6 @@ public class ConexionBD implements Serializable{
         Connection link = null;
         try {
             Class.forName("org.gjt.mm.mysql.Driver");
-
             link = DriverManager.getConnection(this.url, this.user, this.pass);
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Problema " + e);

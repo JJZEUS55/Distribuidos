@@ -27,20 +27,15 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     BDCarta bdC;
     static Recuperacion rec;
     Thread Hilo_ServidorAcceptar;
-    Thread Hilo_ServidorEsperarMensajes;
-    Thread HiloLamport;
-    boolean estado;
-    static boolean ModoServidorRespaldo;
+    Thread HiloLamport; // tambien checa la BD
     static ServerJuego Servidor_Principal;
 
     public vistaServerJuego1() {
         initComponents();
         this.getContentPane().setBackground(Color.BLACK);
         bdC = new BDCarta();
-        bdC.borrarTodoTablas();
         mapcolorTipo = new HashMap<String, Color>();      
         Hilo_ServidorAcceptar = new Thread(this);
-        Hilo_ServidorEsperarMensajes = new Thread(this);
         HiloLamport = new Thread(this);
         HiloLamport.start();        
         
@@ -50,10 +45,8 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     public void run() {
 
         Thread hilo = Thread.currentThread();
-        if (estado == true) {
-            System.out.println("Tengo el token");
-        }
-        while (hilo == Hilo_ServidorAcceptar && !hilo.isInterrupted()) {
+        while (hilo == Hilo_ServidorAcceptar && !hilo.isInterrupted()) 
+        {
             try {
                 Servidor_Principal.acceptar();
                 Thread.sleep(500); //el sleep esta ya que en el momento de la reconexion todos los clientes se conectan de golpe y causan problemas al momento de responderles a donde conectarse
@@ -62,7 +55,8 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             }
 
         }
-        while (hilo == HiloLamport) {
+        while (hilo == HiloLamport) 
+        {
             rel.pasarTiempo();
             jLabel_Reloj.setText(rel.imprimeHora());
             try {
@@ -143,13 +137,13 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         setPreferredSize(new java.awt.Dimension(860, 690));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton_Iniciar.setText("Iniciar Juego");
+        jButton_Iniciar.setText("Borrar Base");
         jButton_Iniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_IniciarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Iniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 600, 100, 68));
+        getContentPane().add(jButton_Iniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 590, 100, 68));
 
         jbtnTomarCartas.setText("Repartir Mazo");
         jbtnTomarCartas.addActionListener(new java.awt.event.ActionListener() {
@@ -157,7 +151,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jbtnTomarCartasActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnTomarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 600, 133, 30));
+        getContentPane().add(jbtnTomarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 590, 133, 30));
 
         jbtnSelecCartas.setText("Seleccionar 3 cartas");
         jbtnSelecCartas.addActionListener(new java.awt.event.ActionListener() {
@@ -165,7 +159,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jbtnSelecCartasActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnSelecCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 640, 130, 30));
+        getContentPane().add(jbtnSelecCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 630, 130, 30));
 
         jbtnReporte.setText("Reporte");
         jbtnReporte.addActionListener(new java.awt.event.ActionListener() {
@@ -173,7 +167,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jbtnReporteActionPerformed(evt);
             }
         });
-        getContentPane().add(jbtnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 600, 80, 68));
+        getContentPane().add(jbtnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 590, 80, 68));
 
         jPanel3Cartas.setBackground(new java.awt.Color(0, 0, 0));
         jPanel3Cartas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -613,7 +607,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
         jLabel_Reloj.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel_Reloj.setText("Reloj");
-        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 640, -1, -1));
+        getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 590, -1, -1));
 
         jButton_ServerOn.setText("Start");
         jButton_ServerOn.addActionListener(new java.awt.event.ActionListener() {
@@ -621,8 +615,11 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_ServerOnActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_ServerOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 600, 70, -1));
-        getContentPane().add(jTextField_ServerOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 630, 70, -1));
+        getContentPane().add(jButton_ServerOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 590, 120, 30));
+
+        jTextField_ServerOn.setText("310");
+        jTextField_ServerOn.setToolTipText("");
+        getContentPane().add(jTextField_ServerOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 630, 120, 20));
 
         jLabelFondo.setText("jLabel1");
         jLabelFondo.setMaximumSize(new java.awt.Dimension(860, 690));
@@ -636,6 +633,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
     private void jButton_IniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciarActionPerformed
         // TODO add your handling code here:
+        bdC.borrarTodoTablas();
 
     }//GEN-LAST:event_jButton_IniciarActionPerformed
 
@@ -656,7 +654,9 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_jbtnSelecCartasActionPerformed
 
-    public void get3Cartas() {
+    public void get3Cartas() 
+    {
+        System.out.println("GenerandoNuevasCartas");
         bdC = new BDCarta();
         m1 = new Mazo();
         c1 = new Carta();
@@ -678,14 +678,15 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         bdC.guardarMazoServidor(m1);
         Servidor_Principal.setMazoServidor(m1);
     }
-    public void recuperarMazoAnterior()
+    public void set3cartas()
     {
+        System.out.println("EstableciendoCartas");
         bdC = new BDCarta();
         m1 = new Mazo();
         c1 = new Carta();
         c2 = new Carta();
         c3 = new Carta();
-        m1 = bdC.getM2();
+        m1 = bdC.Retomar();
         c1 = m1.getCartas().get(0);
         c2 = m1.getCartas().get(1);
         c3 = m1.getCartas().get(2);
@@ -789,15 +790,14 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar.start();
         addValoresMapColor();
-        if(bdC.getM2() == null)
+        if(bdC.Retomar() == null)
         {
-            System.out.println("B");
+            System.out.println("xxxx");
             get3Cartas();
         }
         else
-        {   
-            System.out.println("A");
-            recuperarMazoAnterior();
+        {   System.out.println("uuuuu");
+            set3cartas();
         }
     }//GEN-LAST:event_jButton_ServerOnActionPerformed
     public static void main(String args[]) {
