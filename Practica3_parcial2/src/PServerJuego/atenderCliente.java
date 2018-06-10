@@ -68,7 +68,6 @@ public class atenderCliente extends Thread {
                 System.out.println("Desactivando Carta:"+ mensaje.getInformacion());
                 vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(ncarta).setActiva(false);
                 if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
-                    System.out.println("-------- DES NUEVO ---------");
                     System.out.println("Generando Nuevas Cartas");
                     vistaServerJuego1.jbtnSelecCartas.doClick();
                 }

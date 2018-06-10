@@ -678,6 +678,29 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         bdC.guardarMazoServidor(m1);
         Servidor_Principal.setMazoServidor(m1);
     }
+    public void recuperarMazoAnterior()
+    {
+        bdC = new BDCarta();
+        m1 = new Mazo();
+        c1 = new Carta();
+        c2 = new Carta();
+        c3 = new Carta();
+        m1 = bdC.getM2();
+        c1 = m1.getCartas().get(0);
+        c2 = m1.getCartas().get(1);
+        c3 = m1.getCartas().get(2);
+        c1.addImagenCarta();
+        c2.addImagenCarta();
+        c3.addImagenCarta();
+        System.out.println(c1.getNum());
+        System.out.println(c2.getNum());
+        System.out.println(c2.getNum());
+        addImagenesCarta();//añade las imagenes de los pokemones a la pantalla
+        addInformacionPokemon();//Imprime en pantalla estadisticas de cada carta
+        crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
+
+        Servidor_Principal.setMazoServidor(m1);
+    }
 
     public void addInformacionPokemon() {
 
@@ -762,13 +785,20 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jbtnReporteActionPerformed
 
     private void jButton_ServerOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ServerOnActionPerformed
-        // TODO add your handling code here:
         Servidor_Principal = new ServerJuego(Integer.valueOf(jTextField_ServerOn.getText().toString()));
         Servidor_Principal.iniciar();
         Hilo_ServidorAcceptar.start();
         addValoresMapColor();
-        get3Cartas();
-        
+        if(bdC.getM2() == null)
+        {
+            System.out.println("B");
+            get3Cartas();
+        }
+        else
+        {   
+            System.out.println("A");
+            recuperarMazoAnterior();
+        }
     }//GEN-LAST:event_jButton_ServerOnActionPerformed
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

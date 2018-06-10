@@ -10,7 +10,9 @@ import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -21,9 +23,11 @@ public class BDCarta {
     private Carta carta;
     private Mazo m;
     private ConexionBD mysql;
+    private Mazo m2;
     private static final String bd = "pokePro1";
 
     public BDCarta() {
+        m2 = null;
     }
 
     public BDCarta(Mazo m) {
@@ -34,20 +38,50 @@ public class BDCarta {
         this.carta = c;
     }
 
+    public Mazo getM2() {
+        return m2;
+    }
+    
+
     public void borrarTodoTablas() {
         mysql = new ConexionBD();
+        m2 = new Mazo();
+        Carta c;
+        PreparedStatement ps0, ps1, ps2, ps3, ps4;
         try (Connection cn = mysql.ConectarpokePro()) {
-            PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
-            PreparedStatement ps1 = cn.prepareStatement("delete from cartas;");
-            PreparedStatement ps2 = cn.prepareStatement("delete from servidor;");
-            PreparedStatement ps3 = cn.prepareStatement("delete from jugadores;");
-            PreparedStatement ps4 = cn.prepareStatement("delete from jugadorCartas;");
+            Statement s1 = cn.createStatement();
+            ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas");
+            rs1.last();
+            if(rs1.getRow() <= 3)
+            {              
+                System.out.println("Sin cambios"+ rs1.getRow());
+                rs1.first();
+                do {
+                    c = new Carta();
+                    c.EstablecerCarta(Integer.valueOf(rs1.getObject(1).toString()));
+                    m2.addCartasMazo(c);
+                } while (rs1.next());               
+            }
+            else
+            {
+                System.out.println("Limpiando");
+                ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
+                ps1 = cn.prepareStatement("delete from cartas;");            
+                ps2 = cn.prepareStatement("delete from servidor;");
+                ps3 = cn.prepareStatement("delete from jugadores;");
+                ps4 = cn.prepareStatement("delete from jugadorCartas;");
+                ps0.execute();
+                ps1.executeUpdate();
+                ps2.executeUpdate();
+                ps3.executeUpdate();
+                ps4.executeUpdate();
+                
+            }
             
-            ps0.execute();
-            ps1.executeUpdate();
-            ps2.executeUpdate();
-            ps3.executeUpdate();
-            ps4.executeUpdate();
+            
+            
+            
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

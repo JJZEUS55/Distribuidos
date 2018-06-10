@@ -75,7 +75,7 @@ public class ServerJuego {
         t.start();
     }
    
-    public Mensaje recibirMSG()
+    private Mensaje recibirMSG()
     {
         Mensaje ms = new Mensaje();
         ObjectInputStream ob;
@@ -91,6 +91,8 @@ public class ServerJuego {
         }        
         return ms;
     }
+    
+    
 
     public int getNum_Jugadores() {
         return Num_Jugadores;
