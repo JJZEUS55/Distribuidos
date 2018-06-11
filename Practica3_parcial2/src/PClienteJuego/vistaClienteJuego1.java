@@ -203,6 +203,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jButton_PedirCartas = new javax.swing.JButton();
         jButton_token = new javax.swing.JButton();
         jLabel_Reloj = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -250,7 +251,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 .addComponent(jLabel8)
                 .addGap(71, 71, 71)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(213, Short.MAX_VALUE))
+                .addContainerGap(216, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanelMostrarCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 850, 520));
@@ -788,7 +789,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_PedirCartasActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_PedirCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 560, -1, 60));
+        getContentPane().add(jButton_PedirCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 570, 110, 40));
 
         jButton_token.setText("Seleccionar carta");
         jButton_token.addActionListener(new java.awt.event.ActionListener() {
@@ -796,11 +797,19 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 jButton_tokenActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_token, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 560, -1, 60));
+        getContentPane().add(jButton_token, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 570, 120, 40));
 
         jLabel_Reloj.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel_Reloj.setText("Reloj");
         getContentPane().add(jLabel_Reloj, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, -1, -1));
+
+        jButton1.setText("Info");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 570, 80, 40));
 
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 850, 650));
@@ -970,6 +979,11 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_IPSIGActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        Cliente_Principal.mostrarReg();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void limpiarTabla(){
         DefaultTableModel model = (DefaultTableModel) jTablePokemonSelect.getModel();
         model.setRowCount(0);
@@ -1013,6 +1027,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField PuertoPropio;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonIniciar;
     private javax.swing.JButton jButton_PedirCartas;
     private javax.swing.JButton jButton_conectarSiguiente;

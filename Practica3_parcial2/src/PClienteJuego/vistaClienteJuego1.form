@@ -60,7 +60,7 @@
                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="203" max="-2" attributes="0"/>
-                  <EmptySpace pref="213" max="32767" attributes="0"/>
+                  <EmptySpace pref="216" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -1180,7 +1180,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="530" y="560" width="-1" height="60"/>
+          <AbsoluteConstraints x="510" y="570" width="110" height="40"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -1193,7 +1193,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="690" y="560" width="-1" height="60"/>
+          <AbsoluteConstraints x="630" y="570" width="120" height="40"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -1207,6 +1207,19 @@
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="40" y="600" width="-1" height="-1"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Info"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="760" y="570" width="80" height="40"/>
         </Constraint>
       </Constraints>
     </Component>
