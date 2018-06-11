@@ -172,14 +172,11 @@ public class ClienteJuego {
         while(true)
         {
             numero = (int) (Math.random() * 4);
-            System.out.println(numero);
-            System.out.println(Servidores.getIP(numero));
-            System.out.println(Servidores.getPuerto(numero));
             try {
                 sock = new Socket(Servidores.getIP(numero), Servidores.getPuerto(numero));
                 Entrada = new DataInputStream(sock.getInputStream());
                 salida = new DataOutputStream(sock.getOutputStream());
-                System.out.println("Conexion: Se ha establecido el canal"); 
+                System.out.println("Conexion: "+Servidores.getIP(numero)+"-"+Servidores.getPuerto(numero)); 
                 break;
             } catch (UnknownHostException e) {
                 System.out.println("El host no existe o no está activo.");

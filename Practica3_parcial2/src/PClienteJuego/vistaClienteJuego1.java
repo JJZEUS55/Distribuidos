@@ -907,15 +907,17 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButtonIniciarActionPerformed
 
     private void jButton_tokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_tokenActionPerformed
+        
         String elegido = grupoRB.getSelection().getActionCommand();
         Carta c = Cliente_Principal.SeleccionarCarta(elegido, mazoRecibido);
+        BDCarta bdCJugador = new BDCarta();
+        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
+        
         mazoCliente.addCartasMazo(c);                    
         addValoresTabla(c);
         jPanel3Cartas.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
         grupoRB.clearSelection();
-        BDCarta bdCJugador = new BDCarta();
-        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
         Cliente.enviarToken();
         Servidor.setToken(false);
         jButton_token.setEnabled(false);

@@ -37,7 +37,6 @@ public class Carta implements Serializable {
 
     public void getCartaAleatoria() {
         Random r = new Random();
-//        num = r.nextInt(151)+1;
         do {
             num = r.nextInt(151)+1;
         } while (verificarDisponibilidadCarta(num) == false);
@@ -104,6 +103,7 @@ public class Carta implements Serializable {
     public boolean verificarDisponibilidadCarta(int numCarta) {
         boolean aux = false;
         for (int cartasSeleccionada : cartasSeleccionadas) {
+            
             if (numCarta == cartasSeleccionada) {
                 aux = false;
                 System.out.println("Se repitio carta #" + numCarta + "!!! Seleccionando otra");

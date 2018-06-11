@@ -682,6 +682,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
 
         bdC.guardarMazoServidor(m1);
         Servidor_Principal.setMazoServidor(m1);
+        System.out.println("Se han generado 3 cartas nuevas");
         
         
     }

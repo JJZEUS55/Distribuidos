@@ -70,34 +70,45 @@ public class BDCarta {
         try (Connection cn = mysql.ConectarpokePro()) 
         {
             Statement s1 = cn.createStatement();
-            ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas");
+            ResultSet rs1 = s1.executeQuery("SELECT * FROM servidor");
+            ResultSet rs2;
             rs1.last();
             cantidad = rs1.getRow();
             if (cantidad == 0)             
                 return null;
-            
             maz = new Mazo();
-            System.out.println("----------------");
             for (int i = 2; i >= 0; i--) 
             {   
-                t = rs1.getInt(8);
                 rs1.absolute(cantidad - i);
                 c = new Carta();
-                c.EstablecerCarta(Integer.valueOf(rs1.getObject(1).toString()));
-                if(t == 1)
-                    c.setActiva(true);
-                else
-                    c.setActiva(false);
-                System.out.println("carta: "+ c.getNombre() +"--"+ c.isActiva());
+                c.EstablecerCarta(rs1.getInt(2));
+                c.setActiva(checkActive(c.getNum()));
                 maz.addCartasMazo(c);
                 
             }
-            System.out.println("----------------");
+            //System.out.println("----------------");
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return maz;
                 
+    }
+    
+    public boolean checkActive(int num)
+    {
+         try (Connection cn = mysql.ConectarpokePro()) 
+        {
+            Statement s1 = cn.createStatement();
+            ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas WHERE num =" + num);
+            rs1.first();
+            if(rs1.getInt(8) == 1)
+                return true;
+       
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+        
     }
         
     public boolean checkCartas() // funcion para ver si ocurren cambios en la tabla de las cartas
@@ -146,6 +157,7 @@ public class BDCarta {
                 ps2.setInt(1, mazo.getCartas().get(i).getNum());
                 ps1.executeUpdate();
                 ps2.executeUpdate();
+                System.out.println("Se guardaron 3 cartas nuevas");
             }
 
         } catch (SQLException e) {

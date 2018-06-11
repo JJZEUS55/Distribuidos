@@ -67,9 +67,8 @@ public class atenderCliente extends Thread {
                 njugadorBD = bdJ.obtenerUltimoJ();
                 ncarta = Integer.valueOf( mensaje.getInformacion());
                 System.out.println("Desactivando Carta:"+ mensaje.getInformacion());
-                //vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(ncarta).setActiva(false);
+                System.out.println(njugadorBD +"dd"+ mensaje.getNumeroJugador());
                 if (njugadorBD == mensaje.getNumeroJugador()) {
-                    System.out.println("Generando Nuevas Cartas");
                     vistaServerJuego1.jbtnSelecCartas.doClick();
                 }
                 break;
