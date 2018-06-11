@@ -6,6 +6,7 @@
 package PServerJuego;
 
 import com.dist.DTO.BDJugador;
+import com.dist.DTO.ServidoresNom;
 import com.dist.juego.Mazo;
 import javax.swing.table.DefaultTableModel;
 
@@ -153,7 +154,9 @@ public class ReporteCordinador extends javax.swing.JFrame {
                 this.jugadorSeleccionado = 3;
                 break;
         }
-        aux = bdJ.getMazoJugador(jugadorSeleccionado);
+        aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR1.getHost());
+        aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR2.getHost());
+        aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR3.getHost());
         for (int i = 0; i < aux.getCartas().size(); i++) {
              addValoresTablaJugador(i, aux);
         }      

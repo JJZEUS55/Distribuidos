@@ -4,6 +4,7 @@ import static PClienteJuego.vistaClienteJuego1.rel;
 import PServerJuego.vistaServerJuego1;
 import Reloj.reloj;
 import com.dist.DTO.BDCarta;
+import com.dist.DTO.ServidoresNom;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.awt.Color;
@@ -914,7 +915,9 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jPanelMostrarCartas.setVisible(true);
         grupoRB.clearSelection();
         BDCarta bdCJugador = new BDCarta();
-        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda());
+        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR1.getHost());
+        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR2.getHost());
+//        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR3.getHost());
         Cliente_Principal.enviarMSJ(elegido);
         Cliente.enviarToken();
         Servidor.setToken(false);

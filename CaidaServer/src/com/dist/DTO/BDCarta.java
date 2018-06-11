@@ -34,9 +34,10 @@ public class BDCarta {
         this.carta = c;
     }
 
-    public void borrarTodoTablas() {
+    public void borrarTodoTablas(String url) {
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro()) {
+        try (Connection cn = mysql.ConectarpokePro(url)) {
+            System.out.println("Borrando del servidor " + url);
             PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
             PreparedStatement ps1 = cn.prepareStatement("delete from cartas;");
             PreparedStatement ps2 = cn.prepareStatement("delete from servidor;");
@@ -53,9 +54,9 @@ public class BDCarta {
         }
     }
 
-    public void guardarMazoServidor(Mazo mazo) {
+    public void guardarMazoServidor(Mazo mazo, String url) {
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro()) {
+        try (Connection cn = mysql.ConectarpokePro(url)) {
             //Guardando Cartas
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO cartas VALUES(?, ?, ?, ?, ?, ?, ?)");
             PreparedStatement ps2 = cn.prepareStatement("INSERT INTO servidor (cartasRepartidas) VALUES(?)");
@@ -77,9 +78,9 @@ public class BDCarta {
         }
     }
 
-    public void guardarCartaCliente(int numJugador, String horaLamp, Carta c, int ronda) {
+    public void guardarCartaCliente(int numJugador, String horaLamp, Carta c, int ronda, String url) {
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro()) {
+        try (Connection cn = mysql.ConectarpokePro(url)) {
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO jugadorCartas VALUES(?, ?, ?, ?)");
             PreparedStatement ps2 = cn.prepareStatement("UPDATE servidor SET clienteConectado = ?, horaLamport = ?, ronda = ? WHERE cartasRepartidas = " + c.getNum());
 

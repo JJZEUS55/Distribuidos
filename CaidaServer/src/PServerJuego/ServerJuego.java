@@ -2,6 +2,7 @@ package PServerJuego;
 
 import static PServerJuego.vistaServerJuego1.m1;
 import com.dist.DTO.BDJugador;
+import com.dist.DTO.ServidoresNom;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.io.DataInputStream;
@@ -76,7 +77,9 @@ public class ServerJuego {
         JugadorActual.setSock(sock);
         if (!vistaServerJuego1.ModoServidorRespaldo) { //solo si es un servidor normal(desde el inicio de la partida)
             BDJugador bdJ = new BDJugador();
-            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto());
+            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR1.getHost());
+            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR2.getHost());
+//            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR3.getHost());
         } 
         else
         {

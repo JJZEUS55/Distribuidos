@@ -7,8 +7,11 @@ package pruebas;
 
 import com.dist.DTO.BDCarta;
 import com.dist.DTO.BDJugador;
+import com.dist.DTO.ServidoresNom;
+import com.dist.bd.ConexionBD;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -45,10 +48,11 @@ public class Prueba {
 //            bd.guardarCartaCliente(1, "10:12:11", c2, 1);
 //        }
 
-        Carta c1 = new Carta();
-        c1.EstablecerCarta(7);
-        
-        System.out.println(c1);
+//        Carta c1 = new Carta();
+//        c1.EstablecerCarta(7);
+        System.out.println("Cual es el host :v " + Color.BEIGE);
+        BDCarta bdC = new BDCarta();
+        bdC.borrarTodoTablas(ServidoresNom.SERVIDOR2.getHost());
 
     }
 }
