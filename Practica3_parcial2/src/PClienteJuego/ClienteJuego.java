@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,10 +35,12 @@ public class ClienteJuego {
     private Mazo m;
     private int ronda;
     private InfoServidor Servidores;
+    private ArrayList<InfoIntermedio> Info;
     
     public ClienteJuego(String host, int puerto, int jugador) {
         this.Servidores = new InfoServidor();
         this.jugador = jugador;
+        this.Info = new ArrayList<InfoIntermedio>();
         
     }
 
@@ -117,7 +120,6 @@ public class ClienteJuego {
         {
             case "CONE":
                 System.out.println("InterpretarMensaje: jugador "+ ms.getInformacion());
-                //jugador = Integer.valueOf(ms.getInformacion());
                 return 1;
             case "CART":
                 System.out.println("InterpretarMensaje: Cartas");
@@ -131,7 +133,10 @@ public class ClienteJuego {
     public void enviarMSG(Mensaje ms)
     {
         Conexion();
+        InfoIntermedio x = new InfoIntermedio();
+        x.setHora(vistaClienteJuego1.rel.imprimeHora());
         System.out.println("Escribiento:"+ ms.getProposito()+ms.getInformacion());
+        x.setInfo("Enviando:"+ ms.getProposito()+ms.getInformacion());
         ObjectOutputStream ob = null;
         try {
             ob = new ObjectOutputStream(sock.getOutputStream());
@@ -140,14 +145,19 @@ public class ClienteJuego {
             ex.printStackTrace();
             Logger.getLogger(atenderCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+        Info.add(x);
     }
     
     public Mensaje recibirMSG()
     {
+        InfoIntermedio x = new InfoIntermedio();
         Mensaje ms = new Mensaje();
         ObjectInputStream ob;
+        x.setHora(vistaClienteJuego1.rel.imprimeHora());
+        
         try {
             System.out.println("Recibiendo:"+ ms.getProposito()+ms.getInformacion() );
+            x.setInfo("Recibiendo:"+ ms.getProposito()+ms.getInformacion());
             ob = new ObjectInputStream(sock.getInputStream());
             ms = (Mensaje) ob.readObject();
             System.out.println(ms.getProposito()+ms.getInformacion());
@@ -160,30 +170,45 @@ public class ClienteJuego {
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
             Logger.getLogger(ClienteJuego.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
+        Info.add(x);
         return null;
+        
     }
     
   
     public void Conexion()
     {
-        System.out.println("Tratando Conexion");
         int numero;
+        InfoIntermedio x = new InfoIntermedio();
+        
         while(true)
         {
             numero = (int) (Math.random() * 4);
+            x.setHora(vistaClienteJuego1.rel.imprimeHora());
             try {
                 sock = new Socket(Servidores.getIP(numero), Servidores.getPuerto(numero));
                 Entrada = new DataInputStream(sock.getInputStream());
                 salida = new DataOutputStream(sock.getOutputStream());
-                System.out.println("Conexion: "+Servidores.getIP(numero)+"-"+Servidores.getPuerto(numero)); 
+                System.out.println("Conexion: "+Servidores.getIP(numero)+"-"+Servidores.getPuerto(numero));
+                x.setInfo("Conexion exitosa("+Servidores.getIP(numero)+":"+Servidores.getIP(numero)+")");
                 break;
             } catch (UnknownHostException e) {
                 System.out.println("El host no existe o no está activo.");
+                x.setInfo("error de conexion");
             } catch (IOException e) {
                 System.out.println("Error de entrada/salida.");
+                x.setInfo("error de conexion");
             }
-        }           
+        }
+        Info.add(x);
+    }
+    
+    public void mostrarReg()
+    {
+        for (int i = 0; i < Info.size(); i++) {
+            System.out.println(Info.get(i).getHora()+" | "+Info.get(i).getInfo());
+        }
     }
 
     public int getJugador() {

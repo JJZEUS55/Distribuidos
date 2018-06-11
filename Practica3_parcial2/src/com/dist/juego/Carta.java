@@ -128,7 +128,7 @@ public class Carta implements Serializable {
         this.icono = new ImageIcon("Imagenes\\" + this.num + ".png");
         Image imgEscalada = this.icono.getImage().getScaledInstance(75, 75, java.awt.Image.SCALE_AREA_AVERAGING);
         this.icono = new ImageIcon(imgEscalada);
-        System.out.println("numero " + this.num);
+        //System.out.println("numero " + this.num);
     }
 
     public ImageIcon getIconPokemon() {

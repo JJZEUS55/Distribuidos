@@ -110,30 +110,6 @@ public class BDCarta {
         return false;
         
     }
-        
-    public boolean checkCartas() // funcion para ver si ocurren cambios en la tabla de las cartas
-    {
-        int nuevo = actual;
-        try (Connection cn = mysql.ConectarpokePro()) {
-            Statement s1 = cn.createStatement();
-            ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas");
-            rs1.last();
-            nuevo =  rs1.getRow();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(nuevo == actual)
-        {
-            System.out.println("Sin cambios");
-            return false;
-        }
-        else
-        {    
-            System.out.println("Se ha cambiado la base");
-            return  true;
-        }
-        
-    }
 
     public void guardarMazoServidor(Mazo mazo) {
         mysql = new ConexionBD();
