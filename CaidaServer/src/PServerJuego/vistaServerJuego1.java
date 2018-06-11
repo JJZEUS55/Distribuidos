@@ -5,6 +5,7 @@ import static PServerJuego.vistaServerJuego.Servidor_Principal;
 import static PServerJuego.vistaServerJuego.rel;
 import Reloj.reloj;
 import com.dist.DTO.BDCarta;
+import com.dist.DTO.ServidoresNom;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import com.dist.vistas.coordinador.VistaCordinador;
@@ -37,7 +38,9 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         initComponents();
         this.getContentPane().setBackground(Color.BLACK);
         bdC = new BDCarta();
-        bdC.borrarTodoTablas();
+        bdC.borrarTodoTablas(ServidoresNom.SERVIDOR1.getHost());
+        bdC.borrarTodoTablas(ServidoresNom.SERVIDOR2.getHost());
+       //bdC.borrarTodoTablas(ServidoresNom.SERVIDOR3.getHost());
         mapcolorTipo = new HashMap<String, Color>();
         int numCartas = 0;
         Servidor_Principal = new ServerJuego(3000);
@@ -67,7 +70,9 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         ModoServidorRespaldo = true;
         addValoresMapColor();
         rec = new Recuperacion();
-        rec.iniciar(tokenAnterior, numeroJugador);
+        rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR1.getHost());
+        rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR2.getHost());
+        //rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR3.getHost());
         m1 = new Mazo();
         m1 = rec.getMazoRecuperado();
         recuperarMazoAnterior();
@@ -222,7 +227,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -364,7 +369,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanelC2Layout.setVerticalGroup(
             jPanelC2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -506,7 +511,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanelC3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanelC3Layout.setVerticalGroup(
             jPanelC3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -697,7 +702,9 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         addInformacionPokemon();//Imprime en pantalla estadisticas de cada carta
         crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
 
-        bdC.guardarMazoServidor(m1);
+        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR1.getHost());
+        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR2.getHost());
+//        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR3.getHost());
         Servidor_Principal.setMazoServidor(m1);
     }
     
@@ -722,7 +729,9 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         addInformacionPokemon();//Imprime en pantalla estadisticas de cada carta
         crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
 
-        bdC.guardarMazoServidor(m1);
+        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR1.getHost());
+        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR2.getHost());
+//        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR3.getHost());
         Servidor_Principal.setMazoServidor(m1);
     }
 

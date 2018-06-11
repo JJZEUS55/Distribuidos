@@ -21,10 +21,10 @@ public class BDJugador {
 
     private ConexionBD mysql;
 
-    public void guardarJuagador(int numJugador, String ip, int puerto) {
+    public void guardarJuagador(int numJugador, String ip, int puerto, String host) {
         mysql = new ConexionBD();
         System.out.println("------ BD JUGADOR: guardarJugador ------");
-        try (Connection cn = mysql.ConectarpokePro()) {
+        try (Connection cn = mysql.ConectarpokePro(host)) {
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO jugadores VALUES(?, ?, ?)");
             ps1.setInt(1, numJugador);
             ps1.setString(2, ip);
@@ -35,13 +35,13 @@ public class BDJugador {
         }
     }
 
-    public Mazo getMazoJugador(int numJugador) {
+    public Mazo getMazoJugador(int numJugador, String host) {
         String nombre, tipo1, tipo2;
         int num, hp, ataque, defensa;
         Mazo m = new Mazo();
         Carta c = null;
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro()) {
+        try (Connection cn = mysql.ConectarpokePro(host)) {
             PreparedStatement ps1 = cn.prepareStatement("select c.num, c.nombre, c.tipo1, c.tipo2, c.hp, c.ataque, c.defensa "
                     + "from cartas c, jugadorCartas j "
                     + "where c.num = j.cartaSeleccionada "

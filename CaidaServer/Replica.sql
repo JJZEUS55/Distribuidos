@@ -1,0 +1,29 @@
+-- Replicacar BD MASTER
+CREATE USER 'root'@'192.168.0.14' IDENTIFIED BY '1234';
+
+
+GRANT ALL ON *.* TO 'root'@'192.168.0.14' IDENTIFIED BY '1234';
+
+GRANT REPLICATION SLAVE on *.* TO 'root'@'192.168.0.14';
+
+GRANT SELECT,REPLICATION SLAVE,REPLICATION CLIENT ON *.* to root@'192.168.0.14' IDENTIFIED BY '1234';
+
+SHOW MASTER STATUS;
+
+
+-- Replica esclavo
+
+CHANGE MASTER TO MASTER_HOST = '192.168.0.14',
+ MASTER_USER = 'root',
+ MASTER_PASSWORD = '1234',
+ MASTER_LOG_FILE = 'binlog.000003',
+ MASTER_LOG_POS = 17669;
+ 
+ 
+start slave;
+stop slave;
+reset slave;
+
+show slave status;
+
+

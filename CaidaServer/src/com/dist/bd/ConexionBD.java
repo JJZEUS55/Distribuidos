@@ -58,9 +58,9 @@ public class ConexionBD implements Serializable{
 
     }
     
-    public Connection ConectarpokePro() {
+    public Connection ConectarpokePro(String host) {
         bd = "pokePro1";
-        url = "jdbc:mysql://localhost:3306/" + bd;
+        url = "jdbc:mysql://" + host + ":3306/" + bd;
         Connection link = null;
         try {
             Class.forName("org.gjt.mm.mysql.Driver");

@@ -33,13 +33,13 @@ public class Recuperacion {
         
     }
     
-    public void iniciar(boolean token, int numJugador)
+    public void iniciar(boolean token, int numJugador, String url)
     {
         int cont = 0;
         int jugadoresPartidaPasada = 0;
         ResultSet rs1;
         Carta c = new Carta();
-        try(Connection cn = BD.ConectarpokePro())
+        try(Connection cn = BD.ConectarpokePro(url))
         {
             Statement s1 = cn.createStatement();
             rs1 = s1.executeQuery("SELECT * FROM servidor order by ronda desc");
