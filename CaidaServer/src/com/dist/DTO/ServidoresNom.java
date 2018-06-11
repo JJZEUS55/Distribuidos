@@ -11,7 +11,7 @@ package com.dist.DTO;
  */
 public enum ServidoresNom {
     
-    SERVIDOR1("192.168.0.3"),
+    SERVIDOR1("localhost"),
     SERVIDOR2("192.168.0.14"),
     SERVIDOR3("192.168.0.16");
     

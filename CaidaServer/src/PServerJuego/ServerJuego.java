@@ -78,7 +78,7 @@ public class ServerJuego {
         if (!vistaServerJuego1.ModoServidorRespaldo) { //solo si es un servidor normal(desde el inicio de la partida)
             BDJugador bdJ = new BDJugador();
             bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR1.getHost());
-            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR2.getHost());
+            //bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR2.getHost());
 //            bdJ.guardarJuagador(JugadorActual.getJugador(), JugadorActual.getIp(), JugadorActual.getPuerto(), ServidoresNom.SERVIDOR3.getHost());
         } 
         else

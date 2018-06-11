@@ -155,8 +155,8 @@ public class ReporteCordinador extends javax.swing.JFrame {
                 break;
         }
         aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR1.getHost());
-        aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR2.getHost());
-        aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR3.getHost());
+        //aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR2.getHost());
+        //aux = bdJ.getMazoJugador(jugadorSeleccionado, ServidoresNom.SERVIDOR3.getHost());
         for (int i = 0; i < aux.getCartas().size(); i++) {
              addValoresTablaJugador(i, aux);
         }      

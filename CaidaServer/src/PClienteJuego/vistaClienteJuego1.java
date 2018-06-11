@@ -916,7 +916,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         grupoRB.clearSelection();
         BDCarta bdCJugador = new BDCarta();
         bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR1.getHost());
-        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR2.getHost());
+       // bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR2.getHost());
 //        bdCJugador.guardarCartaCliente(Cliente_Principal.getJugador(), jLabel_Reloj.getText().toString(), c, Cliente_Principal.getRonda(), ServidoresNom.SERVIDOR3.getHost());
         Cliente_Principal.enviarMSJ(elegido);
         Cliente.enviarToken();

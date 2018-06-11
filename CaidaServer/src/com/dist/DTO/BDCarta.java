@@ -38,7 +38,7 @@ public class BDCarta {
         mysql = new ConexionBD();
         try (Connection cn = mysql.ConectarpokePro(url)) {
             System.out.println("Borrando del servidor " + url);
-            PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
+            PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0");
             PreparedStatement ps1 = cn.prepareStatement("delete from cartas;");
             PreparedStatement ps2 = cn.prepareStatement("delete from servidor;");
             PreparedStatement ps3 = cn.prepareStatement("delete from jugadores;");
