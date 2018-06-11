@@ -3,8 +3,6 @@ package PServerJuego;
 import PClienteJuego.ClienteJuego;
 import PClienteJuego.Mensaje;
 import com.dist.DTO.BDJugador;
-import com.dist.juego.Carta;
-import com.dist.juego.Mazo;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -34,14 +32,15 @@ public class atenderCliente extends Thread {
     public void run() {
         Mensaje ms = new Mensaje();
         String cadenas[];
+        BDJugador bdJ;
         int ncarta;
         int njugadorBD;
         System.out.println("atenderCliente: Nuevo Hilo atender cliente");
-        System.out.println("atenderCliente: jugador " + jugador + ": " + mensaje.getProposito() +"+"+ mensaje.getInformacion());
+        System.out.println("atenderCliente: peticion " + jugador + ": " + mensaje.getProposito() +"+"+ mensaje.getInformacion());
         switch (mensaje.getProposito())
         {
             case "CONE": //primera conexion, se registra, y se responde numero jugador
-                BDJugador bdJ = new BDJugador();
+                bdJ = new BDJugador();
                 cadenas = mensaje.getInformacion().split(":");
                 njugadorBD = bdJ.obtenerUltimoJ();
                 njugadorBD++;
@@ -64,10 +63,12 @@ public class atenderCliente extends Thread {
                 break;
                 
             case "DES":
+                bdJ = new BDJugador();
+                njugadorBD = bdJ.obtenerUltimoJ();
                 ncarta = Integer.valueOf( mensaje.getInformacion());
                 System.out.println("Desactivando Carta:"+ mensaje.getInformacion());
-                vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(ncarta).setActiva(false);
-                if (vistaServerJuego1.Servidor_Principal.getConjuntoJugadores().size() == jugador) {
+                //vistaServerJuego1.Servidor_Principal.mazoEnviar.getCartas().get(ncarta).setActiva(false);
+                if (njugadorBD == mensaje.getNumeroJugador()) {
                     System.out.println("Generando Nuevas Cartas");
                     vistaServerJuego1.jbtnSelecCartas.doClick();
                 }
@@ -78,8 +79,7 @@ public class atenderCliente extends Thread {
         }
         
         System.out.println("atenderCliente: terminando hilo");
-        try {
-            // closing resources
+        try {           
             this.entrada.close();
             this.salida.close();
 
@@ -87,35 +87,7 @@ public class atenderCliente extends Thread {
             e.printStackTrace();
         }
     }
-    
-    private void enviarToken()
-    {
-        Mensaje ms = new Mensaje();
-        ms.setProposito("TOKE");
-        enviarMSG(ms);
-    }
-
-
-    private void enviarCarta(Mazo m) {
-        ObjectOutputStream ob = null;
-        try {
-            ob = new ObjectOutputStream(sock.getOutputStream());
-            ob.writeObject(m);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(atenderCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void enviarRonda(int ronda) {
-        try {
-            salida.writeInt(ronda);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(atenderCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-   
+  
     public Mensaje recibirMSG()
     {
         Mensaje ms = new Mensaje();

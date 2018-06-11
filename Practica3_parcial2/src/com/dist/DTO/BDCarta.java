@@ -8,7 +8,6 @@ package com.dist.DTO;
 import com.dist.bd.ConexionBD;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +24,7 @@ public class BDCarta {
     private Mazo m;
     private ConexionBD mysql;
     private static final String bd = "pokePro1";
+    private int actual; 
 
     public BDCarta() {
         
@@ -66,6 +66,7 @@ public class BDCarta {
         mysql = new ConexionBD();        
         Mazo maz = null;
         Carta c;
+        int t;
         try (Connection cn = mysql.ConectarpokePro()) 
         {
             Statement s1 = cn.createStatement();
@@ -76,21 +77,30 @@ public class BDCarta {
                 return null;
             
             maz = new Mazo();
+            System.out.println("----------------");
             for (int i = 2; i >= 0; i--) 
             {   
+                t = rs1.getInt(8);
                 rs1.absolute(cantidad - i);
                 c = new Carta();
                 c.EstablecerCarta(Integer.valueOf(rs1.getObject(1).toString()));
+                if(t == 1)
+                    c.setActiva(true);
+                else
+                    c.setActiva(false);
+                System.out.println("carta: "+ c.getNombre() +"--"+ c.isActiva());
                 maz.addCartasMazo(c);
+                
             }
+            System.out.println("----------------");
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return maz;
                 
     }
-    
-    public boolean checkCartas(int actual) // funcion para ver si ocurren cambios en la tabla de las cartas
+        
+    public boolean checkCartas() // funcion para ver si ocurren cambios en la tabla de las cartas
     {
         int nuevo = actual;
         try (Connection cn = mysql.ConectarpokePro()) {
@@ -118,7 +128,7 @@ public class BDCarta {
         mysql = new ConexionBD();
         try (Connection cn = mysql.ConectarpokePro()) {
             //Guardando Cartas
-            PreparedStatement ps1 = cn.prepareStatement("INSERT INTO cartas VALUES(?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps1 = cn.prepareStatement("INSERT INTO cartas VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
             PreparedStatement ps2 = cn.prepareStatement("INSERT INTO servidor (cartasRepartidas) VALUES(?)");
             for (int i = 0; i < mazo.getTamano(); i++) {
                 ps1.setInt(1, mazo.getCartas().get(i).getNum());
@@ -128,6 +138,11 @@ public class BDCarta {
                 ps1.setInt(5, mazo.getCartas().get(i).getHp());
                 ps1.setInt(6, mazo.getCartas().get(i).getAtaque());
                 ps1.setInt(7, mazo.getCartas().get(i).getDefensa());
+                if(mazo.getCartas().get(i).isActiva())
+                    ps1.setInt(8, 1);                
+                else
+                    ps1.setInt(8, 0);
+                
                 ps2.setInt(1, mazo.getCartas().get(i).getNum());
                 ps1.executeUpdate();
                 ps2.executeUpdate();
@@ -143,7 +158,8 @@ public class BDCarta {
         try (Connection cn = mysql.ConectarpokePro()) {
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO jugadorCartas VALUES(?, ?, ?, ?)");
             PreparedStatement ps2 = cn.prepareStatement("UPDATE servidor SET clienteConectado = ?, horaLamport = ?, ronda = ? WHERE cartasRepartidas = " + c.getNum());
-
+            PreparedStatement ps3 = cn.prepareStatement("UPDATE cartas SET estado = ? WHERE num = " + c.getNum());
+            System.out.println(c.getNombre()+"---"+c.getNum());
             ps1.setInt(1, numJugador);
             ps1.setInt(2, c.getNum());
             ps1.setString(3, horaLamp);
@@ -152,9 +168,12 @@ public class BDCarta {
             ps2.setInt(1, numJugador);
             ps2.setString(2, horaLamp);
             ps2.setInt(3, ronda);
+            
+            ps3.setInt(1, 0);
+            
             ps1.executeUpdate();
             ps2.executeUpdate();
-
+            ps3.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -33,6 +33,7 @@ public class ServerJuego {
     private Jugadores JugadorActual;
     private static ArrayList<Jugadores> ConjuntoJugadores;
     protected static Mazo mazoEnviar;
+    
     Thread t;
     atenderCliente t1;
 
@@ -118,8 +119,8 @@ public class ServerJuego {
         System.out.println("------- Method: setMazoServidor --------- ");
 
         this.mazoEnviar = m;
-        System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(0).getNombre());
-        System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(1).getNombre());
+        //System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(0).getNombre());
+        //System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(1).getNombre());
     }
 
 }

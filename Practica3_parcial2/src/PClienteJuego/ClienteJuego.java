@@ -73,6 +73,7 @@ public class ClienteJuego {
         Mensaje ms = new Mensaje();
         int ncarta;
         ms.setProposito("DES");
+        ms.setNumeroJugador(jugador);
         switch (elegido) 
         {
             case "seleccion1":

@@ -813,6 +813,8 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         boolean activaC2 = mazoRecibido.getCartas().get(1).isActiva();
         boolean activaC3 = mazoRecibido.getCartas().get(2).isActiva();
         System.out.println("Informacion " + activaC1);
+        System.out.println("Informacion " + activaC2);
+        System.out.println("Informacion " + activaC3);
         Component[] c = null;
         //CARTA 1
         jtfNombre1.setText(mazoRecibido.getCartas().get(0).getNombre());

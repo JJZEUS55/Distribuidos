@@ -69,7 +69,6 @@ public class Carta implements Serializable {
         try (Connection cn = mysql.Conectar()) {
         Statement s1 = cn.createStatement();
         ResultSet rs1 = s1.executeQuery("SELECT * FROM datos WHERE num=" + numC);
-
         while (rs1.next()) {
             this.num = Integer.parseInt(rs1.getObject(1).toString());
             this.nombre = rs1.getObject(2).toString();
@@ -77,12 +76,27 @@ public class Carta implements Serializable {
             this.tipo2 = rs1.getObject(4).toString();
             this.hp = Integer.parseInt(rs1.getObject(5).toString());
             this.ataque = Integer.parseInt(rs1.getObject(6).toString());
-            this.defensa = Integer.parseInt(rs1.getObject(7).toString());
-            this.activa = true;
+            this.defensa = Integer.parseInt(rs1.getObject(7).toString());                       
         }
+        
 
         } catch (SQLException e) {
             System.err.println("Problema cartas " + e);
+        }
+        mysql = new ConexionBD();
+        try (Connection cn = mysql.ConectarpokePro()) 
+        {
+            
+            Statement s1 = cn.createStatement();
+            ResultSet rs1 = s1.executeQuery("SELECT * FROM cartas WHERE num=" + numC);
+            rs1.first();
+            if (rs1.getInt("estado") == 1)
+                this.activa = true;
+            else
+                this.activa = false;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         
     }
