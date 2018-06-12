@@ -75,7 +75,8 @@ public class Carta implements Serializable {
             this.tipo2 = rs1.getObject(4).toString();
             this.hp = Integer.parseInt(rs1.getObject(5).toString());
             this.ataque = Integer.parseInt(rs1.getObject(6).toString());
-            this.defensa = Integer.parseInt(rs1.getObject(7).toString());                       
+            this.defensa = Integer.parseInt(rs1.getObject(7).toString());    
+            ingresarCartasOcupadas(this.num);
         }
         
 
@@ -120,8 +121,7 @@ public class Carta implements Serializable {
     
     public void ingresarCartasOcupadas(int carta)
     {
-        cont++;
-        cartasSeleccionadas[cont] = carta;
+        cartasSeleccionadas[carta] = carta;
     }
 
     public void addImagenCarta() {
