@@ -71,7 +71,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         addValoresMapColor();
         rec = new Recuperacion();
         rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR1.getHost());
-        rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR2.getHost());
+        //rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR2.getHost());
         //rec.iniciar(tokenAnterior, numeroJugador, ServidoresNom.SERVIDOR3.getHost());
         m1 = new Mazo();
         m1 = rec.getMazoRecuperado();
@@ -730,7 +730,7 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         crearMazos();//añade las cartas al mazo para darlas despues a los jugadores
 
         bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR1.getHost());
-        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR2.getHost());
+       bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR2.getHost());
 //        bdC.guardarMazoServidor(m1, ServidoresNom.SERVIDOR3.getHost());
         Servidor_Principal.setMazoServidor(m1);
     }
