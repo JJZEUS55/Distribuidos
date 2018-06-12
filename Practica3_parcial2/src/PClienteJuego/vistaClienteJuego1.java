@@ -96,23 +96,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             
         }
         while (hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted())) {
-            estado_mensajes = Cliente_Principal.InterpretarMensaje();
-            if (estado_mensajes == 1) {
-                Cliente.setPrioridad(prioridad);
-                Servidor.setPrioridad(prioridad);
-                if (Cliente_Principal.getJugador() == 1 && funcionamiento == false) {
-                    Servidor.setToken(true);
-                }
-                jButton_token.setEnabled(Servidor.isToken());
-                jButton_PedirCartas.setEnabled(Servidor.isToken());
-                funcionamiento = true;
-            }
-            else if (estado_mensajes == 2)
-            {
-                Servidor.setToken(true);
-                jButton_token.setEnabled(Servidor.isToken());
-                jButton_PedirCartas.setEnabled(Servidor.isToken());
-            }
+            // sin uso de momento
         }
 
         while (hilo == HiloLamport) {
@@ -134,8 +118,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePokemonSelect = new javax.swing.JTable();
         jPanel_inicio = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField_prioridad = new javax.swing.JTextField();
         PuertoPropio = new javax.swing.JTextField();
         jLabelinfo = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -258,13 +240,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jPanelMostrarCartas.setVisible(false);
 
         jPanel_inicio.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel6.setText("Prioridad");
-        jPanel_inicio.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
-
-        jTextField_prioridad.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jPanel_inicio.add(jTextField_prioridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 150, 55, -1));
 
         PuertoPropio.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         PuertoPropio.setText("300");
@@ -778,7 +753,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
         jLabelFondoCartas.setText("jLabel1");
         jLabelFondoCartas.setPreferredSize(new java.awt.Dimension(843, 562));
-        jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 843, 560));
+        jPanel3Cartas.add(jLabelFondoCartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 843, 520));
 
         getContentPane().add(jPanel3Cartas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
         jPanel3Cartas.setVisible(false);
@@ -910,7 +885,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
         Servidor = new tokenServer(Integer.valueOf(PuertoPropio.getText())); //servidor para token y caida del server        
         Servidor.iniciar();        
-        prioridad = Integer.valueOf(jTextField_prioridad.getText());
+        prioridad = Integer.valueOf("0");
         HiloEsperaConTok.start();       
         jButtonIniciar.setVisible(false);
     }//GEN-LAST:event_jButtonIniciarActionPerformed
@@ -1057,7 +1032,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelFondoCartas;
@@ -1079,7 +1053,6 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePokemonSelect;
     private javax.swing.JTextField jTextField_IPSIG;
-    private javax.swing.JTextField jTextField_prioridad;
     private javax.swing.JTextField jText_PUERTOSIG;
     private javax.swing.JRadioButton jrbCarta1;
     private javax.swing.JRadioButton jrbCarta2;
