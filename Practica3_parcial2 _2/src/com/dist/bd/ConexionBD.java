@@ -58,13 +58,12 @@ public class ConexionBD implements Serializable{
 
     }
     
-    public Connection ConectarpokePro(String host) {
+    public Connection ConectarpokePro() {
         bd = "pokePro1";
-        url = "jdbc:mysql://" + host +":3306/" + bd;
+        url = "jdbc:mysql://localhost:3306/" + bd;
         Connection link = null;
         try {
             Class.forName("org.gjt.mm.mysql.Driver");
-
             link = DriverManager.getConnection(this.url, this.user, this.pass);
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Problema " + e);
