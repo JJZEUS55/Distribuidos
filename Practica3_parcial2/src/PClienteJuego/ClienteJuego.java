@@ -36,11 +36,16 @@ public class ClienteJuego {
     private int ronda;
     private InfoServidor Servidores;
     private ArrayList<InfoIntermedio> Info;
+    private int arr[] = new int[4];
     
     public ClienteJuego(String host, int puerto, int jugador) {
         this.Servidores = new InfoServidor();
         this.jugador = jugador;
         this.Info = new ArrayList<InfoIntermedio>();
+        arr[0] = - 1;
+        arr[1] = - 1;
+        arr[2] = - 1;
+        arr[3] = - 1;
         
     }
 
@@ -105,7 +110,7 @@ public class ClienteJuego {
         Mensaje ms1 = new Mensaje();
         Mensaje ms2 = new Mensaje();
         ms1.setProposito("CART");
-        ms1.setInformacion("nada");
+        ms1.setInformacion("solicitando cartas");
         enviarMSG(ms1);
         ms2 = recibirMSG();
         m = ms2.getMazo1();
@@ -114,19 +119,6 @@ public class ClienteJuego {
    
     public int InterpretarMensaje()
     {
-        Mensaje ms = new Mensaje();
-        ms = recibirMSG();
-        switch(ms.getProposito())
-        {
-            case "CONE":
-                System.out.println("InterpretarMensaje: jugador "+ ms.getInformacion());
-                return 1;
-            case "CART":
-                System.out.println("InterpretarMensaje: Cartas");
-                return 2;
-            default:
-                System.out.println("Error");
-        }
         return 0;
     }
 
@@ -156,12 +148,11 @@ public class ClienteJuego {
         x.setHora(vistaClienteJuego1.rel.imprimeHora());
         
         try {
-            System.out.println("Recibiendo:"+ ms.getProposito()+ms.getInformacion() );
             x.setInfo("Recibiendo:"+ ms.getProposito()+ms.getInformacion());
             ob = new ObjectInputStream(sock.getInputStream());
             ms = (Mensaje) ob.readObject();
             System.out.println(ms.getProposito()+ms.getInformacion());
-
+            Info.add(x);
             return ms;
             
         } catch (IOException ex) {
@@ -171,17 +162,15 @@ public class ClienteJuego {
             ex.printStackTrace();
             Logger.getLogger(ClienteJuego.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Info.add(x);
         return null;
         
     }
     
   
-    public void Conexion()
+    private void Conexion()
     {
         int numero;
         InfoIntermedio x = new InfoIntermedio();
-        
         while(true)
         {
             numero = (int) (Math.random() * 4);
@@ -190,27 +179,21 @@ public class ClienteJuego {
                 sock = new Socket(Servidores.getIP(numero), Servidores.getPuerto(numero));
                 Entrada = new DataInputStream(sock.getInputStream());
                 salida = new DataOutputStream(sock.getOutputStream());
-                System.out.println("Conexion: "+Servidores.getIP(numero)+"-"+Servidores.getPuerto(numero));
-                x.setInfo("Conexion exitosa("+Servidores.getIP(numero)+":"+Servidores.getIP(numero)+")");
+                System.out.println("Conexion exitosa("+Servidores.getIP(numero)+" : "+Servidores.getPuerto(numero)+")");
+                x.setInfo("Conexion exitosa("+Servidores.getIP(numero)+" : "+Servidores.getPuerto(numero)+")");
+                Info.add(x);
                 break;
             } catch (UnknownHostException e) {
                 System.out.println("El host no existe o no está activo.");
-                x.setInfo("error de conexion");
+                                
             } catch (IOException e) {
-                System.out.println("Error de entrada/salida.");
-                x.setInfo("error de conexion");
+                System.out.println("Tratando conexion");                
             }
-        }
-        Info.add(x);
-    }
-    
-    public void mostrarReg()
-    {
-        for (int i = 0; i < Info.size(); i++) {
-            System.out.println(Info.get(i).getHora()+" | "+Info.get(i).getInfo());
-        }
+            
+        }        
     }
 
+    
     public int getJugador() {
         return jugador;
     }
@@ -262,6 +245,10 @@ public class ClienteJuego {
     public void setEntrada(DataInputStream Entrada) {
         this.Entrada = Entrada;
     }
-    
 
+    public ArrayList<InfoIntermedio> getInfo() {
+        return Info;
+    }
+    
+    
 }

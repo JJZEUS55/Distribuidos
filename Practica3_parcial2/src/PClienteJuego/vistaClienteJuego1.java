@@ -955,8 +955,8 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jTextField_IPSIGActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        Cliente_Principal.mostrarReg();
+        InfoInter ventana = new InfoInter(Cliente_Principal.getInfo());
+        ventana.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void limpiarTabla(){
