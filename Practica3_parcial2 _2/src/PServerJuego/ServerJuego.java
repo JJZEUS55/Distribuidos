@@ -116,7 +116,7 @@ public class ServerJuego {
     }
 
     public void setMazoServidor(Mazo m) {
-        System.out.println("------- Method: setMazoServidor --------- ");
+        //System.out.println("------- Method: setMazoServidor --------- ");
 
         this.mazoEnviar = m;
         //System.out.println("checando si hay datos: " + mazoEnviar.getCartas().get(0).getNombre());

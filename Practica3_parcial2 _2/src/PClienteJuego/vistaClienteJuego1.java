@@ -27,15 +27,15 @@ import token.tokenServer;
 
 public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
 
-    tokenServer Servidor; // tokenserver y cliente se encargan solamente de los procesos relacionados al token
-    tokenCliente Cliente;
-    static ClienteJuego Cliente_Principal;
+    public static tokenServer Servidor; // tokenserver y cliente se encargan solamente de los procesos relacionados al token
+    public static tokenCliente Cliente;
+    public static ClienteJuego Cliente_Principal;
     Thread HiloEsperaToken; //Hilo del servidor para esperar el token
     Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
     Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
     Thread HiloLamport;
     Thread hiloMulticast, hiloCapturaSalvaje;
-    Boolean funcionamiento = false;
+    public static Boolean panelAtacar = false;
     static reloj rel = new reloj();
     int prioridad;
     int jugador = 0;
@@ -103,7 +103,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             if (!buffer.equals("Token")) {
                 Cliente.accion(buffer);
             }
-
+            if (panelAtacar) {
+                jFrameSeleccionarPokemon.jbtnAtacar.setEnabled(true);
+            }
+            
         }
         while (hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted())) {
             // sin uso de momento
@@ -141,11 +144,13 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             try {
                 if (JFramePokemonSalvaje.capturado == true) {
                     addValoresTabla(JFramePokemonSalvaje.cartaSalvaje);
-                    JOptionPane.showMessageDialog(this, "Tienes un nuevo pokemon en tu inventario", "NUEVO POKEMON", JOptionPane.DEFAULT_OPTION);
+                    //JOptionPane.showMessageDialog(this, "Tienes un nuevo pokemon en tu inventario", "NUEVO POKEMON", JOptionPane.DEFAULT_OPTION);
                     JFramePokemonSalvaje.capturado = false;
+                    //CREAR FUNCION PARA DECIRLE AL SERVIDOR QUE ALGUIEN CAPTURO POKEMON
+                    
                     hiloCapturaSalvaje.interrupt();
                 }else if(jFrameSeleccionarPokemon.muerto == true){
-                    JOptionPane.showMessageDialog(this, "Tu pokemon ha sido abatido, Se borrara de tu inventario", "MATARON A TU POKEMON", JOptionPane.DEFAULT_OPTION);
+                    //JOptionPane.showMessageDialog(this, "Tu pokemon ha sido abatido, Se borrara de tu inventario", "MATARON A TU POKEMON", JOptionPane.DEFAULT_OPTION);
                     mazoCliente.deleteCarta(jFrameSeleccionarPokemon.idPokemonSelect);
                     limpiarTabla();
                     for (int i = 0; i < mazoCliente.getTamano(); i++) {
@@ -957,6 +962,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         jPanel3Cartas.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
         grupoRB.clearSelection();
+
         Cliente.enviarToken();
         Servidor.setToken(false);
         jButton_token.setEnabled(false);
@@ -1056,9 +1062,9 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     private javax.swing.JTextField PuertoPropio;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonIniciar;
-    private javax.swing.JButton jButton_PedirCartas;
+    public static javax.swing.JButton jButton_PedirCartas;
     private javax.swing.JButton jButton_conectarSiguiente;
-    private javax.swing.JButton jButton_token;
+    public static javax.swing.JButton jButton_token;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

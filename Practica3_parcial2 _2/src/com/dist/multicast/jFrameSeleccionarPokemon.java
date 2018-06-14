@@ -6,6 +6,7 @@
 package com.dist.multicast;
 
 import PClienteJuego.PeleaPokemon;
+import PClienteJuego.vistaClienteJuego1;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import static com.dist.multicast.JFramePokemonSalvaje.cartaSalvaje;
@@ -89,14 +90,14 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
                         jBarraVida.setForeground(new Color(237, 28, 36));
                     }
                 if(auxCartaSeleccion.getHp() <= 0){
-                    JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
-                    JOptionPane.showMessageDialog(this, "No pudiste capturar al pokemon!!!");
+//                    JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
+//                    JOptionPane.showMessageDialog(this, "No pudiste capturar al pokemon!!!");
                     this.muerto = true;
                     jbtnAtacar.setEnabled(false);
                     hiloAtaque.interrupt();
                 }
                 if(JFramePokemonSalvaje.capturado == true){
-                    JOptionPane.showMessageDialog(this, "Has Obtenido Un Nuevo Pokemon!!!", "CAPTURADO", JOptionPane.DEFAULT_OPTION);
+//                    JOptionPane.showMessageDialog(this, "Has Obtenido Un Nuevo Pokemon!!!", "CAPTURADO", JOptionPane.DEFAULT_OPTION);
 //                    if(){
 //                    
 //                    }
@@ -208,7 +209,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -428,6 +429,11 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
 
     private void jbtnAtacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAtacarActionPerformed
         auxCartaSeleccion.Atacar(JFramePokemonSalvaje.cartaSalvaje);
+        vistaClienteJuego1.Cliente.enviarToken();
+        vistaClienteJuego1.Servidor.setToken(false);
+        vistaClienteJuego1.jButton_token.setEnabled(false);
+        vistaClienteJuego1.jButton_PedirCartas.setEnabled(false);
+        jbtnAtacar.setEnabled(false);
         this.ataco = true;
     }//GEN-LAST:event_jbtnAtacarActionPerformed
 
@@ -531,7 +537,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
     private javax.swing.JPanel jPanelMostrarCartas;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePokemonSelect;
-    private javax.swing.JButton jbtnAtacar;
+    public static javax.swing.JButton jbtnAtacar;
     private javax.swing.JButton jbtnRetirada;
     private javax.swing.JButton jbtnSeleccionarPokemon;
     private javax.swing.JTextField jtfAtaque1;

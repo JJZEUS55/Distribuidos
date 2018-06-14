@@ -147,7 +147,7 @@ public class Carta implements Serializable {
         }
         
         System.out.println("hiciste un daño de " + (this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1())));
-        JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano, "Daño",JOptionPane.DEFAULT_OPTION);
+        //JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano, "Daño",JOptionPane.DEFAULT_OPTION);
         //JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano2, "Daño",JOptionPane.DEFAULT_OPTION);
         cartaAtacar.setHP(hpRestante);
         if (cartaAtacar.getHp() <= 0) {

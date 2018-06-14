@@ -5,6 +5,7 @@
  */
 package com.dist.multicast;
 
+import PClienteJuego.vistaClienteJuego1;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.awt.Color;
@@ -94,10 +95,10 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
                     
                     cartaSalvaje.Atacar(jFrameSeleccionarPokemon.auxCartaSeleccion);
                     jFrameSeleccionarPokemon.ataco = false;
-                    JOptionPane.showMessageDialog(this, "Acabo de atacar el salvaje");
+                    //JOptionPane.showMessageDialog(this, "Acabo de atacar el salvaje");
                 }else{
                      jBarVida.setValue(cartaSalvaje.getHp());
-                     JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
+                     //JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
                      jFrameSeleccionarPokemon.ataco = false;
                      cartaSalvaje.setHP(vidaTotal);
                      this.capturado = true;
@@ -393,6 +394,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
 //        }
         jFrameSeleccionarPokemon seleccion = new jFrameSeleccionarPokemon(mazoCliente, cartaSalvaje);
         seleccion.setVisible(true);
+        vistaClienteJuego1.panelAtacar = true;
         jbtnCapturar.setEnabled(false);
 
     }//GEN-LAST:event_jbtnCapturarActionPerformed
