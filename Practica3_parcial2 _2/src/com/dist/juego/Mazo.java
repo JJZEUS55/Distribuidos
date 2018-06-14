@@ -28,6 +28,10 @@ public class Mazo implements Serializable{
         return this.listCartas;
     }
     
+    public void deleteCarta(int idCarta){
+        listCartas.remove(idCarta);
+    }
+    
     public int getTamano(){
         return listCartas.size();
     }

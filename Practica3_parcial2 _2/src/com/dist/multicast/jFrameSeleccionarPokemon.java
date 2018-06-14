@@ -28,6 +28,8 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
     private String pokemonSeleccionado;
     public static Carta auxCartaSeleccion, cartaSalvaje;
     public static boolean ataco = false;
+    public static boolean muerto = false;
+    public static int idPokemonSelect;
     Map<String, Color> mapcolorTipo;
     private int vidaPokemon;
     private PeleaPokemon pelea;
@@ -81,7 +83,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
         while(hiloActual == hiloAtaque && !(hiloAtaque.isInterrupted())){
             if(this.ataco == false){
                 jBarraVida.setValue(auxCartaSeleccion.getHp());
-                if(auxCartaSeleccion.getHp() <= (vidaTotal/2) ){
+                if(auxCartaSeleccion.getHp() <= (vidaTotal/2) && auxCartaSeleccion.getHp() > (vidaTotal/4)){
                         jBarraVida.setForeground(new Color(249, 226, 27));
                     }else if(auxCartaSeleccion.getHp() <= (vidaTotal/4)){
                         jBarraVida.setForeground(new Color(237, 28, 36));
@@ -89,6 +91,8 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
                 if(auxCartaSeleccion.getHp() <= 0){
                     JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
                     JOptionPane.showMessageDialog(this, "No pudiste capturar al pokemon!!!");
+                    this.muerto = true;
+                    jbtnAtacar.setEnabled(false);
                     hiloAtaque.interrupt();
                 }
                 if(JFramePokemonSalvaje.capturado == true){
@@ -183,7 +187,6 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
         jTablePokemonSelect = new javax.swing.JTable();
         jbtnSeleccionarPokemon = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanelCarta.setBackground(new java.awt.Color(187, 187, 187));
@@ -289,7 +292,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
             .addGroup(jPanelCartaLayout.createSequentialGroup()
                 .addGap(67, 67, 67)
                 .addComponent(jbtnAtacar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addComponent(jbtnRetirada)
                 .addContainerGap())
             .addGroup(jPanelCartaLayout.createSequentialGroup()
@@ -416,6 +419,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
         if (columna == 0 && fila >= 0) {
             //JOptionPane.showMessageDialog(this, null, jTablePokemonSelect.getValueAt(fila, columna).toString(), JOptionPane.DEFAULT_OPTION);
             pokemonSeleccionado = jTablePokemonSelect.getValueAt(fila, columna).toString();
+            idPokemonSelect = fila;            
             addValoresPanelCarta();
         }
 //        }

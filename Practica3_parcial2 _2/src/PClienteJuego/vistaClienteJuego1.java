@@ -142,8 +142,19 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 if (JFramePokemonSalvaje.capturado == true) {
                     addValoresTabla(JFramePokemonSalvaje.cartaSalvaje);
                     JOptionPane.showMessageDialog(this, "Tienes un nuevo pokemon en tu inventario", "NUEVO POKEMON", JOptionPane.DEFAULT_OPTION);
+                    JFramePokemonSalvaje.capturado = false;
                     hiloCapturaSalvaje.interrupt();
-                } else {
+                }else if(jFrameSeleccionarPokemon.muerto == true){
+                    JOptionPane.showMessageDialog(this, "Tu pokemon ha sido abatido, Se borrara de tu inventario", "MATARON A TU POKEMON", JOptionPane.DEFAULT_OPTION);
+                    mazoCliente.deleteCarta(jFrameSeleccionarPokemon.idPokemonSelect);
+                    limpiarTabla();
+                    for (int i = 0; i < mazoCliente.getTamano(); i++) {
+                        addValoresTabla(mazoCliente.getCartas().get(i));
+                    }
+                    jFrameSeleccionarPokemon.muerto = false;
+                    hiloCapturaSalvaje.interrupt();
+                }                
+                else {
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException ex) {
