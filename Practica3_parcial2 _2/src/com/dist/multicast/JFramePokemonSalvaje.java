@@ -80,12 +80,18 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
-
+        int vidaTotal = cartaSalvaje.getHp();
         while (hiloActual == hiloAtaque && !(hiloAtaque.isInterrupted())) {
             if (jFrameSeleccionarPokemon.ataco == true) {
                 if (cartaSalvaje.getHp() > 0) {
                     System.out.println("Entre en el ATACO");
                     jBarVida.setValue(cartaSalvaje.getHp());
+                    if(cartaSalvaje.getHp() <= (vidaTotal/2) ){
+                        jBarVida.setForeground(new Color(249, 226, 27));
+                    }else if(cartaSalvaje.getHp() <= (vidaTotal/4)){
+                        jBarVida.setForeground(new Color(237, 28, 36));
+                    }
+                    
                     cartaSalvaje.Atacar(jFrameSeleccionarPokemon.auxCartaSeleccion);
                     jFrameSeleccionarPokemon.ataco = false;
                     JOptionPane.showMessageDialog(this, "Acabo de atacar el salvaje");

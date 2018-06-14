@@ -8,6 +8,7 @@ package com.dist.multicast;
 import PClienteJuego.PeleaPokemon;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
+import static com.dist.multicast.JFramePokemonSalvaje.cartaSalvaje;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.HashMap;
@@ -75,11 +76,16 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
 
     @Override
     public void run() {
-
+        int vidaTotal = auxCartaSeleccion.getHp();
         Thread hiloActual = Thread.currentThread();
         while(hiloActual == hiloAtaque && !(hiloAtaque.isInterrupted())){
             if(this.ataco == false){
                 jBarraVida.setValue(auxCartaSeleccion.getHp());
+                if(auxCartaSeleccion.getHp() <= (vidaTotal/2) ){
+                        jBarraVida.setForeground(new Color(249, 226, 27));
+                    }else if(auxCartaSeleccion.getHp() <= (vidaTotal/4)){
+                        jBarraVida.setForeground(new Color(237, 28, 36));
+                    }
                 if(auxCartaSeleccion.getHp() <= 0){
                     JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
                     JOptionPane.showMessageDialog(this, "No pudiste capturar al pokemon!!!");
@@ -87,6 +93,10 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
                 }
                 if(JFramePokemonSalvaje.capturado == true){
                     JOptionPane.showMessageDialog(this, "Has Obtenido Un Nuevo Pokemon!!!", "CAPTURADO", JOptionPane.DEFAULT_OPTION);
+//                    if(){
+//                    
+//                    }
+                    
                     addValoresTabla(cartaSalvaje);
                     jbtnAtacar.setEnabled(false);
                     hiloAtaque.interrupt();
@@ -445,6 +455,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
 //        }
         jPanelCarta.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jbtnRetiradaActionPerformed
 
     private void addValoresPanelCarta() {

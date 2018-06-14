@@ -9,6 +9,7 @@ import com.dist.juego.Mazo;
 import com.dist.multicast.CliMulticast;
 import com.dist.multicast.JFramePokemonSalvaje;
 import com.dist.multicast.ServMulticast;
+import com.dist.multicast.jFrameSeleccionarPokemon;
 import com.dist.multicast.jPanelPokemonSalvaje;
 import java.awt.Color;
 import java.awt.Component;
@@ -33,7 +34,7 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     Thread HiloEsperaConTok; //Hilo para la espera de la conexion, necesario para evitar el bloqueo del programa   
     Thread HiloesperarMensajeSP; //Hilo de espera de mensajes del servidor principal del juego 
     Thread HiloLamport;
-    Thread hiloMulticast;
+    Thread hiloMulticast, hiloCapturaSalvaje;
     Boolean funcionamiento = false;
     static reloj rel = new reloj();
     int prioridad;
@@ -127,9 +128,26 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                     JFramePokemonSalvaje salvaje = new JFramePokemonSalvaje(CliMulticast.cartaSalvaje, mazoCliente);
                     salvaje.setVisible(true);
                     CliMulticast.aparecePokemon = false;
+                    hiloCapturaSalvaje = new Thread(this);
+                    hiloCapturaSalvaje.start();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
+            }
+        }
+
+        while (hilo == hiloCapturaSalvaje && !(hiloCapturaSalvaje.isInterrupted())) {
+
+            try {
+                if (JFramePokemonSalvaje.capturado == true) {
+                    addValoresTabla(JFramePokemonSalvaje.cartaSalvaje);
+                    JOptionPane.showMessageDialog(this, "Tienes un nuevo pokemon en tu inventario", "NUEVO POKEMON", JOptionPane.DEFAULT_OPTION);
+                    hiloCapturaSalvaje.interrupt();
+                } else {
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(vistaClienteJuego1.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
