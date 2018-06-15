@@ -5,6 +5,7 @@
  */
 package com.dist.juego;
 
+import PClienteJuego.CartaSalvaje;
 import com.dist.bd.ConexionBD;
 import java.awt.Image;
 import java.io.Serializable;
@@ -138,20 +139,22 @@ public class Carta implements Serializable {
 
     public int Atacar(Carta cartaAtacar) 
     {
-        int hpRestante = cartaAtacar.getHp();
+        CartaSalvaje CS = new CartaSalvaje();
+        int hpRestante = CS.getVida();
+        System.out.println("-"+hpRestante);
         int dano = (int) ((this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1()))  - (cartaAtacar.getDefensa() / 3));
-        System.out.println(dano);
-        if(dano <= 1){
+        
+        if(dano <= 1)
             hpRestante -= 1;
-        }else{
+        else
             hpRestante -= dano;
-        }
         
         System.out.println("hiciste un daño de " + (this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1())));
         cartaAtacar.setHP(hpRestante);
         if (cartaAtacar.getHp() <= 0) {
             System.out.println("Ganaste");
         }
+        System.out.println("+"+hpRestante);
         return hpRestante;
     }
 
