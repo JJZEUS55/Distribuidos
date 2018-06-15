@@ -152,7 +152,6 @@ public class vistaServerJuego1 extends javax.swing.JFrame implements Runnable {
         setTitle("Juego de Cartas (Servidor)");
         setBackground(new java.awt.Color(204, 255, 0));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(860, 690));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton_Iniciar.setText("Borrar Base");

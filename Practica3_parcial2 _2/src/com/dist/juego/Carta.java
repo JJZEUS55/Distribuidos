@@ -138,7 +138,8 @@ public class Carta implements Serializable {
 
     public void Atacar(Carta cartaAtacar) {
         int hpRestante = cartaAtacar.getHp();
-        int dano = (int) ((this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1())) - cartaAtacar.getDefensa());
+        int dano = (int) ((this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1()))  - (cartaAtacar.getDefensa() / 3));
+        double dano2 = ((this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1()))  - (cartaAtacar.getDefensa() / 3));
         if(dano <= 1){
             hpRestante -= 1;
         }else{
@@ -146,7 +147,8 @@ public class Carta implements Serializable {
         }
         
         System.out.println("hiciste un daño de " + (this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1())));
-        JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + (this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1()) - cartaAtacar.getDefensa()), "Daño",JOptionPane.DEFAULT_OPTION);
+        //JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano, "Daño",JOptionPane.DEFAULT_OPTION);
+        //JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano2, "Daño",JOptionPane.DEFAULT_OPTION);
         cartaAtacar.setHP(hpRestante);
         if (cartaAtacar.getHp() <= 0) {
             System.out.println("Ganaste");

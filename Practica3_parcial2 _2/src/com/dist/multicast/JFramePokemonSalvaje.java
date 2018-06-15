@@ -5,6 +5,7 @@
  */
 package com.dist.multicast;
 
+import PClienteJuego.vistaClienteJuego1;
 import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import java.awt.Color;
@@ -80,19 +81,26 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
     @Override
     public void run() {
         Thread hiloActual = Thread.currentThread();
-
+        int vidaTotal = cartaSalvaje.getHp();
         while (hiloActual == hiloAtaque && !(hiloAtaque.isInterrupted())) {
             if (jFrameSeleccionarPokemon.ataco == true) {
                 if (cartaSalvaje.getHp() > 0) {
                     System.out.println("Entre en el ATACO");
                     jBarVida.setValue(cartaSalvaje.getHp());
+                    if(cartaSalvaje.getHp() <= (vidaTotal/2) && cartaSalvaje.getHp() > (vidaTotal/4)){
+                        jBarVida.setForeground(new Color(249, 226, 27));
+                    }else if(cartaSalvaje.getHp() <= (vidaTotal/4)){
+                        jBarVida.setForeground(new Color(237, 28, 36));
+                    }
+                    
                     cartaSalvaje.Atacar(jFrameSeleccionarPokemon.auxCartaSeleccion);
                     jFrameSeleccionarPokemon.ataco = false;
-                    JOptionPane.showMessageDialog(this, "Acabo de atacar el salvaje");
+                    //JOptionPane.showMessageDialog(this, "Acabo de atacar el salvaje");
                 }else{
                      jBarVida.setValue(cartaSalvaje.getHp());
-                     JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
+                     //JOptionPane.showMessageDialog(this, "Estoy Muerto!!!");
                      jFrameSeleccionarPokemon.ataco = false;
+                     cartaSalvaje.setHP(vidaTotal);
                      this.capturado = true;
                      hiloAtaque.interrupt();
                 }
@@ -136,6 +144,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanelCarta = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
@@ -157,7 +166,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
         jLabel31 = new javax.swing.JLabel();
         jBarVida = new javax.swing.JProgressBar();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jButton1.setText("jButton1");
 
         jLabel24.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 12)); // NOI18N
         jLabel24.setText("Pokemon Salvaje");
@@ -183,7 +192,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
             .addGroup(jPanelC1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelImg3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelC1Layout.setVerticalGroup(
             jPanelC1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,10 +256,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
             jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelCartaLayout.createSequentialGroup()
                 .addContainerGap(48, Short.MAX_VALUE)
-                .addGroup(jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCartaLayout.createSequentialGroup()
-                        .addComponent(jbtnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(74, 74, 74))
+                .addGroup(jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCartaLayout.createSequentialGroup()
                         .addGroup(jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelCartaLayout.createSequentialGroup()
@@ -284,8 +290,12 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
                     .addGroup(jPanelCartaLayout.createSequentialGroup()
                         .addComponent(jLabel31)
                         .addGap(18, 18, 18)
-                        .addComponent(jBarVida, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGroup(jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelCartaLayout.createSequentialGroup()
+                                .addGap(7, 7, 7)
+                                .addComponent(jbtnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jBarVida, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(29, Short.MAX_VALUE))))
             .addGroup(jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelCartaLayout.createSequentialGroup()
                     .addGap(72, 72, 72)
@@ -297,7 +307,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
         jPanelCartaLayout.setVerticalGroup(
             jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCartaLayout.createSequentialGroup()
-                .addContainerGap(172, Short.MAX_VALUE)
+                .addContainerGap(188, Short.MAX_VALUE)
                 .addGroup(jPanelCartaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
                     .addComponent(jtfNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -384,6 +394,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
 //        }
         jFrameSeleccionarPokemon seleccion = new jFrameSeleccionarPokemon(mazoCliente, cartaSalvaje);
         seleccion.setVisible(true);
+        vistaClienteJuego1.panelAtacar = true;
         jbtnCapturar.setEnabled(false);
 
     }//GEN-LAST:event_jbtnCapturarActionPerformed
@@ -425,6 +436,7 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar jBarVida;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;

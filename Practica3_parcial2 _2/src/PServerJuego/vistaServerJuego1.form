@@ -9,9 +9,12 @@
     </Property>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
       <Color id="Default Cursor"/>
+<<<<<<< HEAD
     </Property>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[860, 690]"/>
+=======
+>>>>>>> 78e4ef2941fa0707ea6d19e3b3a11298b62f712b
     </Property>
   </Properties>
   <SyntheticProperties>
