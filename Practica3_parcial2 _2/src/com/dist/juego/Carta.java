@@ -40,7 +40,7 @@ public class Carta implements Serializable {
     public void getCartaAleatoria() {
         Random r = new Random();
         do {
-            num = r.nextInt(151) + 1;
+            num = r.nextInt(150) + 1;
         } while (verificarDisponibilidadCarta(num) == false);
 
         mysql = new ConexionBD();

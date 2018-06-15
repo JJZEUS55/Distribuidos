@@ -367,9 +367,10 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
     private void jbtnAtacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAtacarActionPerformed
         CartaSalvaje CS = new CartaSalvaje();
         CS.EstablecerVida((auxCartaSeleccion.Atacar(JFramePokemonSalvaje.cartaSalvaje)));
-        if(CS.getVida() <= 0)
+        if(CS.getVida() <= 0){
             capturado = true;
-        
+            this.setVisible(false);
+        }
         vistaClienteJuego1.Cliente.enviarToken();
         vistaClienteJuego1.Servidor.setToken(false);
         vistaClienteJuego1.jButton_token.setEnabled(false);
@@ -378,7 +379,7 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
         jPanelCarta.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
         
-        this.setEnabled(false);
+        //this.setEnabled(false);
         
         
     }//GEN-LAST:event_jbtnAtacarActionPerformed

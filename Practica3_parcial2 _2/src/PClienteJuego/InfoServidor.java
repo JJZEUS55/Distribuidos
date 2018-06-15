@@ -12,11 +12,11 @@ public class InfoServidor {
         IP[0] = "localhost";
         puerto[0] = 3101;
         IP[1] = "localhost";
-        puerto[1] = 3101;
+        puerto[1] = 3102;
         IP[2] = "localhost";
-        puerto[2] = 3101;
+        puerto[2] = 3103;
         IP[3] = "localhost";
-        puerto[3] = 3101;
+        puerto[3] = 3104;
     }
     
     public String getIP(int i) {
