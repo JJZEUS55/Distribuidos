@@ -8,6 +8,7 @@ import com.dist.juego.Carta;
 import com.dist.juego.Mazo;
 import com.dist.multicast.CliMulticast;
 import com.dist.multicast.JFramePokemonSalvaje;
+import static com.dist.multicast.JFramePokemonSalvaje.cartaSalvaje;
 import com.dist.multicast.ServMulticast;
 import com.dist.multicast.jFrameSeleccionarPokemon;
 import com.dist.multicast.jPanelPokemonSalvaje;
@@ -77,6 +78,8 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
     public void run() {
         CliMulticast cliMulticast = new CliMulticast();
         String buffer;
+        CartaSalvaje CS;
+        
         int estado_mensajes;
         boolean bandera = false;
         Thread hilo = Thread.currentThread();
@@ -104,14 +107,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
                 Cliente.accion(buffer);
             }
             if (panelAtacar) {
-                jFrameSeleccionarPokemon.jbtnAtacar.setEnabled(true);
+                jFrameSeleccionarPokemon.jbtnSeleccionarPokemon.setEnabled(true);
             }
             
         }
-        while (hilo == HiloesperarMensajeSP && !(HiloesperarMensajeSP.isInterrupted())) {
-            // sin uso de momento
-        }
-
         while (hilo == HiloLamport) {
             rel.pasarTiempo();
             jLabel_Reloj.setText(rel.imprimeHora());
@@ -125,12 +124,16 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
             try {
                 cliMulticast.iniciarClienteMulticast();
                 if (CliMulticast.aparecePokemon == true) {
-//                    jPanelPokemonSalvaje panelSalvaje = new jPanelPokemonSalvaje(CliMulticast.cartaSalvaje, mazoCliente);
-//                    panelSalvaje.setVisible(true);
-//                    JOptionPane.showConfirmDialog(null, panelSalvaje, CliMulticast.cartaSalvaje.getNombre(), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    CS = new CartaSalvaje();
+                    CS.EstablecerVida(cliMulticast.cartaSalvaje.getHp());
                     JFramePokemonSalvaje salvaje = new JFramePokemonSalvaje(CliMulticast.cartaSalvaje, mazoCliente);
                     salvaje.setVisible(true);
                     CliMulticast.aparecePokemon = false;
+                    
+                    jFrameSeleccionarPokemon seleccion = new jFrameSeleccionarPokemon(mazoCliente, cartaSalvaje);
+                    seleccion.setVisible(true);
+                    panelAtacar = true;
+
                     hiloCapturaSalvaje = new Thread(this);
                     hiloCapturaSalvaje.start();
                 }

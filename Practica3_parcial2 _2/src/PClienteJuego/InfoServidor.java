@@ -10,13 +10,13 @@ public class InfoServidor {
         IP = new String[4];
         puerto = new int[4];
         IP[0] = "localhost";
-        puerto[0] = 3100;
+        puerto[0] = 3101;
         IP[1] = "localhost";
         puerto[1] = 3101;
         IP[2] = "localhost";
-        puerto[2] = 3102;
+        puerto[2] = 3101;
         IP[3] = "localhost";
-        puerto[3] = 3103;
+        puerto[3] = 3101;
     }
     
     public String getIP(int i) {

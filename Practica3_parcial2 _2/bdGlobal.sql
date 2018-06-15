@@ -46,6 +46,11 @@ create table servidor(
     on delete cascade on update cascade
 );
 
+create table salvaje(
+	id int (11) not null primary key,
+	vida int(11)
+);
+
 
 SET SQL_SAFE_UPDATES = 0;
 
@@ -60,4 +65,5 @@ delete from jugadores;
 delete from jugadorCartas;
 
 
+insert into salvaje values(1, 10);
 

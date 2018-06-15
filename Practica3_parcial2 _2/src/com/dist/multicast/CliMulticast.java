@@ -52,6 +52,7 @@ public class CliMulticast {
             if (readObject instanceof Carta) {
                 cartaSalvaje = (Carta) readObject;
                 System.out.println("Carta es: " + cartaSalvaje);
+                cartaSalvaje.setHP(cartaSalvaje.getHp()*6);
                 this.aparecePokemon = true;  
             } else {
                 System.out.println("No se ha recibido una carta");

@@ -136,10 +136,11 @@ public class Carta implements Serializable {
         return icon;
     }
 
-    public void Atacar(Carta cartaAtacar) {
+    public int Atacar(Carta cartaAtacar) 
+    {
         int hpRestante = cartaAtacar.getHp();
         int dano = (int) ((this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1()))  - (cartaAtacar.getDefensa() / 3));
-        double dano2 = ((this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1()))  - (cartaAtacar.getDefensa() / 3));
+        System.out.println(dano);
         if(dano <= 1){
             hpRestante -= 1;
         }else{
@@ -147,25 +148,12 @@ public class Carta implements Serializable {
         }
         
         System.out.println("hiciste un daño de " + (this.getAtaque() * Multiplicador(this.getTipo1(), cartaAtacar.getTipo1())));
-        //JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano, "Daño",JOptionPane.DEFAULT_OPTION);
-        //JOptionPane.showMessageDialog(null, "Hiciste un daño de: " + dano2, "Daño",JOptionPane.DEFAULT_OPTION);
         cartaAtacar.setHP(hpRestante);
         if (cartaAtacar.getHp() <= 0) {
             System.out.println("Ganaste");
-        }       
+        }
+        return hpRestante;
     }
-
-//    public void defender(Carta CartaDelJugador) {
-//        int HP_jugador = CartaDelJugador.getHp();
-//        HP_jugador -= CartaSalvaje.getAtaque() * Multiplicador(CartaSalvaje.getTipo1(), CartaDelJugador.getTipo1());
-//        if (HP_jugador <= 0) {
-//            System.out.println("Murio tu pokemon");
-//            ContadorMuertes++;
-//        }
-//        if (ContadorMuertes >= CantidadCartas) {
-//            System.out.println("GG");
-//        }
-//    }
 
     private double Multiplicador(String tipoAtacante, String tipoDefensor) {
         double val = 1;

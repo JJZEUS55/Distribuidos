@@ -117,11 +117,6 @@ public class ClienteJuego {
         
     }
    
-    public int InterpretarMensaje()
-    {
-        return 0;
-    }
-
     public void enviarMSG(Mensaje ms)
     {
         Conexion();
