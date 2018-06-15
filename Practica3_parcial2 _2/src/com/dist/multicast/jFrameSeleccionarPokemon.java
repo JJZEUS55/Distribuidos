@@ -29,11 +29,11 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
     private Mazo mazoSeleccion;
     private String pokemonSeleccionado;
     public static Carta auxCartaSeleccion, cartaSalvaje;
-    public static boolean ataco = false;
     public static boolean muerto = false;
     public static int idPokemonSelect;
     Map<String, Color> mapcolorTipo;
     private int vidaPokemon;
+    public static boolean capturado = false;
     private PeleaPokemon pelea;
     int aux = 0;
 
@@ -367,8 +367,8 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
     private void jbtnAtacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAtacarActionPerformed
         CartaSalvaje CS = new CartaSalvaje();
         CS.EstablecerVida((auxCartaSeleccion.Atacar(JFramePokemonSalvaje.cartaSalvaje)));
-        
-        System.out.println("Vida Restante:"+cartaSalvaje.getHp());
+        if(CS.getVida() <= 0)
+            capturado = true;
         
         vistaClienteJuego1.Cliente.enviarToken();
         vistaClienteJuego1.Servidor.setToken(false);
@@ -378,8 +378,9 @@ public class jFrameSeleccionarPokemon extends javax.swing.JFrame implements Runn
         jPanelCarta.setVisible(false);
         jPanelMostrarCartas.setVisible(true);
         
+        this.setEnabled(false);
         
-        this.ataco = true;
+        
     }//GEN-LAST:event_jbtnAtacarActionPerformed
 
     private void jbtnSeleccionarPokemonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSeleccionarPokemonActionPerformed

@@ -27,7 +27,6 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
     Mazo mazoCliente;
     public static Carta cartaSalvaje;
     private Thread hiloAtaque;
-    public static boolean capturado = false;
     ConexionBD temporal;
     
     public JFramePokemonSalvaje() {
@@ -67,6 +66,8 @@ public class JFramePokemonSalvaje extends javax.swing.JFrame implements Runnable
         try {
             jBarVida.setValue(CS.getVida());
             //System.out.println(CS.getVida());
+            if(CS.getVida() <= 0)
+                this.setEnabled(false);
             if(cartaSalvaje.getHp() <= (vidaTotal/2) && cartaSalvaje.getHp() > (vidaTotal/4)){
                 jBarVida.setForeground(new Color(249, 226, 27));
             }else if(cartaSalvaje.getHp() <= (vidaTotal/4)){

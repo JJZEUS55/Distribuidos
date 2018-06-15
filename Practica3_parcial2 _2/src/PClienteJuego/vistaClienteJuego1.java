@@ -145,10 +145,10 @@ public class vistaClienteJuego1 extends javax.swing.JFrame implements Runnable {
         while (hilo == hiloCapturaSalvaje && !(hiloCapturaSalvaje.isInterrupted())) {
 
             try {
-                if (JFramePokemonSalvaje.capturado == true) {
+                if (jFrameSeleccionarPokemon.capturado == true) {
                     addValoresTabla(JFramePokemonSalvaje.cartaSalvaje);
                     //JOptionPane.showMessageDialog(this, "Tienes un nuevo pokemon en tu inventario", "NUEVO POKEMON", JOptionPane.DEFAULT_OPTION);
-                    JFramePokemonSalvaje.capturado = false;
+                    jFrameSeleccionarPokemon.capturado = false;
                     //CREAR FUNCION PARA DECIRLE AL SERVIDOR QUE ALGUIEN CAPTURO POKEMON
                     
                     hiloCapturaSalvaje.interrupt();
