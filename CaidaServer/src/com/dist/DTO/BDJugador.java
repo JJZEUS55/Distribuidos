@@ -24,14 +24,28 @@ public class BDJugador {
     public void guardarJuagador(int numJugador, String ip, int puerto, String host) {
         mysql = new ConexionBD();
         System.out.println("------ BD JUGADOR: guardarJugador ------");
-        try (Connection cn = mysql.ConectarpokePro(host)) {
+        Connection cn = null;
+        try {
+            cn = mysql.ConectarpokePro(host);
+            cn.setAutoCommit(false);
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO jugadores VALUES(?, ?, ?)");
             ps1.setInt(1, numJugador);
             ps1.setString(2, ip);
             ps1.setInt(3, puerto);
             ps1.executeUpdate();
         } catch (SQLException e) {
+            try {
+                cn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+        } finally {
+            try {
+                cn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -41,7 +55,10 @@ public class BDJugador {
         Mazo m = new Mazo();
         Carta c = null;
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro(host)) {
+        Connection cn = null;
+        try {
+            cn = mysql.ConectarpokePro(host);
+            cn.setAutoCommit(false);
             PreparedStatement ps1 = cn.prepareStatement("select c.num, c.nombre, c.tipo1, c.tipo2, c.hp, c.ataque, c.defensa "
                     + "from cartas c, jugadorCartas j "
                     + "where c.num = j.cartaSeleccionada "
@@ -57,9 +74,21 @@ public class BDJugador {
                 defensa = Integer.parseInt(rs.getObject(7).toString());
                 c = new Carta(num, nombre, tipo1, tipo2, hp, ataque, defensa);
                 m.addCartasMazo(c);
+                cn.commit();
             }
         } catch (SQLException e) {
+            try {
+                cn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+        }finally{            
+            try {
+                cn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
         return m;
     }

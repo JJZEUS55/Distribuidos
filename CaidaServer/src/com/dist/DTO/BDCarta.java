@@ -11,6 +11,8 @@ import com.dist.juego.Mazo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,28 +38,46 @@ public class BDCarta {
 
     public void borrarTodoTablas(String url) {
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro(url)) {
+        Connection cn = null;
+        try {
+            cn = mysql.ConectarpokePro(url);
+            cn.setAutoCommit(false);
             System.out.println("Borrando del servidor " + url);
             PreparedStatement ps0 = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0");
             PreparedStatement ps1 = cn.prepareStatement("delete from cartas;");
             PreparedStatement ps2 = cn.prepareStatement("delete from servidor;");
             PreparedStatement ps3 = cn.prepareStatement("delete from jugadores;");
             PreparedStatement ps4 = cn.prepareStatement("delete from jugadorCartas;");
-            
+
             ps0.execute();
             ps1.executeUpdate();
             ps2.executeUpdate();
             ps3.executeUpdate();
             ps4.executeUpdate();
+            cn.commit();
         } catch (SQLException e) {
+            try {
+                cn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+        }finally{            
+            try {
+                cn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     public void guardarMazoServidor(Mazo mazo, String url) {
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro(url)) {
-            //Guardando Cartas
+        Connection cn = null;
+        try  {
+            //Guardando Cartas           
+            cn = mysql.ConectarpokePro(url);
+            cn.setAutoCommit(false);
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO cartas VALUES(?, ?, ?, ?, ?, ?, ?)");
             PreparedStatement ps2 = cn.prepareStatement("INSERT INTO servidor (cartasRepartidas) VALUES(?)");
             for (int i = 0; i < mazo.getTamano(); i++) {
@@ -71,16 +91,31 @@ public class BDCarta {
                 ps2.setInt(1, mazo.getCartas().get(i).getNum());
                 ps1.executeUpdate();
                 ps2.executeUpdate();
+                cn.commit();
             }
 
         } catch (SQLException e) {
+            try {
+                cn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+        }finally{            
+            try {
+                cn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     public void guardarCartaCliente(int numJugador, String horaLamp, Carta c, int ronda, String url) {
         mysql = new ConexionBD();
-        try (Connection cn = mysql.ConectarpokePro(url)) {
+        Connection cn = null;
+        try {
+            cn = mysql.ConectarpokePro(url);
+            cn.setAutoCommit(false);
             PreparedStatement ps1 = cn.prepareStatement("INSERT INTO jugadorCartas VALUES(?, ?, ?, ?)");
             PreparedStatement ps2 = cn.prepareStatement("UPDATE servidor SET clienteConectado = ?, horaLamport = ?, ronda = ? WHERE cartasRepartidas = " + c.getNum());
 
@@ -95,8 +130,20 @@ public class BDCarta {
             ps1.executeUpdate();
             ps2.executeUpdate();
 
+            cn.commit();
         } catch (SQLException e) {
+            try {
+                cn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+        }finally{            
+            try {
+                cn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
